@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arshad - Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div class="apple-logo">
+            <i class="fab fa-apple"></i>
+        </div>
+        <div class="loading-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="hidden">
+        <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-name">Arshad</div>
+        <div class="password-input-wrapper">
+            <input type="password" placeholder="Enter Password" id="password-input">
+            <div class="arrow-btn" id="login-btn"><i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="login-hint">Hint: Just press Enter</div>
+    </div>
+
+    <!-- Desktop Environment -->
+    <div id="desktop" class="hidden">
+        <!-- Menu Bar -->
+        <div id="menu-bar">
+            <div class="left-menu">
+                <span class="apple-icon"><i class="fab fa-apple"></i></span>
+                <span class="app-name" id="active-app-name">Finder</span>
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+                <span>Go</span>
+                <span>Window</span>
+                <span>Help</span>
+            </div>
+            <div class="right-menu">
+                <span class="status-icon" id="wifi-icon"><i class="fas fa-wifi"></i></span>
+                <span class="status-icon" id="battery-icon"><i class="fas fa-battery-full"></i></span>
+                <span class="status-icon"><i class="fas fa-search"></i></span>
+                <span class="control-center"><i class="fas fa-sliders-h"></i></span>
+                <span id="clock">Mon Jun 22 9:41 AM</span>
+            </div>
+        </div>
+
+        <!-- Desktop Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" ondblclick="openApp('finder')">
+                <div class="icon-img folder-icon"><i class="fas fa-folder"></i></div>
+                <div class="icon-label">Portfolio</div>
+            </div>
+            <div class="desktop-icon" ondblclick="openApp('preview')">
+                <div class="icon-img file-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="icon-label">Resume.pdf</div>
+            </div>
+        </div>
+
+        <!-- Windows Container -->
+        <div id="windows-container">
+            <!-- Windows will be injected here by JS -->
+        </div>
+
+        <!-- Dock -->
+        <div id="dock-container">
+            <div class="dock">
+                <div class="dock-item" onclick="openApp('finder')" data-title="Finder">
+                    <div class="app-icon finder-icon"><i class="fas fa-smile"></i></div>
+                    <div class="dot hidden"></div>
+                </div>
+                <div class="dock-item" onclick="openApp('safari')" data-title="Safari">
+                    <div class="app-icon safari-icon"><i class="fab fa-safari"></i></div>
+                    <div class="dot hidden"></div>
+                </div>
+                <div class="dock-item" onclick="openApp('terminal')" data-title="Terminal">
+                    <div class="app-icon terminal-icon"><i class="fas fa-terminal"></i></div>
+                    <div class="dot hidden"></div>
+                </div>
+                <div class="dock-item" onclick="openApp('mail')" data-title="Mail">
+                    <div class="app-icon mail-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="dot hidden"></div>
+                </div>
+                <div class="dock-item" onclick="openApp('vscode')" data-title="VS Code">
+                    <div class="app-icon vscode-icon"><i class="fas fa-code"></i></div>
+                    <div class="dot hidden"></div>
+                </div>
+                <div class="divider"></div>
+                <div class="dock-item" onclick="openApp('trash')" data-title="Trash">
+                    <div class="app-icon trash-icon"><i class="fas fa-trash"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

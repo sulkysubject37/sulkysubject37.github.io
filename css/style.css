@@ -1,0 +1,688 @@
+:root {
+    --bg-color: #000;
+    --text-color: #fff;
+    --dock-bg: rgba(255, 255, 255, 0.15);
+    --window-bg: rgba(30, 30, 30, 0.6);
+    --window-header-bg: rgba(40, 40, 40, 0.8);
+    --accent-color: #007aff;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    overflow: hidden;
+    background-color: #000;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Boot Screen */
+#boot-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #000000;
+    color: #9eec69;
+    z-index: 9999;
+    position: absolute;
+    width: 100%;
+}
+
+.apple-logo {
+    font-size: 80px;
+    margin-bottom: 50px;
+}
+
+.loading-bar {
+    width: 200px;
+    height: 6px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    transition: width 2s ease-in-out;
+}
+
+/* Login Screen */
+#login-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+    color: #fff;
+    backdrop-filter: blur(10px);
+}
+
+.user-avatar {
+    font-size: 80px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.user-name {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.password-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#password-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    outline: none;
+    padding: 5px;
+    font-size: 14px;
+    width: 150px;
+}
+
+#password-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.arrow-btn {
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    margin-left: 5px;
+    transition: color 0.3s;
+}
+
+.arrow-btn:hover {
+    color: #fff;
+}
+
+.login-hint {
+    margin-top: 15px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Desktop */
+#desktop {
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Menu Bar */
+#menu-bar {
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    color: #fff;
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.left-menu,
+.right-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#weather-widget {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+.app-name {
+    font-weight: 700;
+}
+
+/* Desktop Icons */
+.desktop-icons {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.desktop-icon:active .icon-img {
+    filter: brightness(0.7);
+}
+
+.desktop-icon:active .icon-label {
+    background: #0063e1;
+    border-radius: 4px;
+}
+
+.icon-img {
+    font-size: 50px;
+    margin-bottom: 5px;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+}
+
+.folder-icon {
+    color: #00aaff;
+}
+
+.file-icon {
+    color: #fff;
+}
+
+.icon-label {
+    color: #fff;
+    font-size: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    padding: 2px 4px;
+}
+
+/* Dock */
+#dock-container {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dock {
+    background: var(--dock-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.4s ease;
+}
+
+.dock-item {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dock-item:hover {
+    transform: scale(1.2) translateY(-10px);
+}
+
+.app-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+}
+
+.finder-icon {
+    background: linear-gradient(180deg, #00d2ff 0%, #3a7bd5 100%);
+}
+
+.safari-icon {
+    background: #fff;
+    color: #007aff;
+}
+
+.terminal-icon {
+    background: #333;
+    color: #cf181873;
+    font-family: monospace;
+}
+
+.mail-icon {
+    background: linear-gradient(180deg, #d18feb 0%, #2F80ED 100%);
+}
+
+.vscode-icon {
+    background: #007acc;
+    color: #fff;
+}
+
+.trash-icon {
+    background: transparent;
+    box-shadow: none;
+    color: #ddd;
+}
+
+.dock-item::after {
+    content: attr(data-title);
+    position: absolute;
+    top: -40px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.dock-item:hover::after {
+    opacity: 1;
+}
+
+.dot {
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+.divider {
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    height: 40px;
+    margin: 0 5px;
+}
+
+/* Windows */
+.window {
+    position: absolute;
+    background: var(--window-bg);
+    border-radius: 10px;
+    box-shadow: var(--glass-shadow);
+    border: var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s, opacity 0.2s;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.window.minimized {
+    transform: scale(0) translateY(500px);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.window-header {
+    height: 30px;
+    background: var(--window-header-bg);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    cursor: default;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.close {
+    background: #ff5f56;
+}
+
+.minimize {
+    background: #ffbd2e;
+}
+
+.maximize {
+    background: #27c93f;
+}
+
+.window-title {
+    flex-grow: 1;
+    text-align: center;
+    color: #ccc;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.window-content {
+    flex-grow: 1;
+    overflow: auto;
+    color: #fff;
+    position: relative;
+}
+
+/* App Specific Styles */
+
+/* Finder */
+.finder-layout {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    width: 150px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.sidebar-item {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.finder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 20px;
+}
+
+.finder-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.finder-item i {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #00aaff;
+}
+
+/* Terminal */
+.terminal-content {
+    background: #1e1e1e;
+    color: #33ff00;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.command-line {
+    display: flex;
+    gap: 10px;
+}
+
+.prompt {
+    color: #00aaff;
+}
+
+/* Safari */
+.safari-content {
+    background: #fff;
+    color: #000;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.url-bar {
+    background: #f0f0f0;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.url-input {
+    flex-grow: 1;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #333;
+}
+
+.web-page {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.project-card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.project-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.project-tech {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Mail */
+.mail-layout {
+    display: flex;
+    height: 100%;
+}
+
+.mail-sidebar {
+    width: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mail-item {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+.mail-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mail-sender {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.mail-subject {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.mail-view {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.contact-form button {
+    background: #007aff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* VS Code */
+.vscode-layout {
+    display: flex;
+    height: 100%;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.vscode-sidebar {
+    width: 50px;
+    background: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    gap: 20px;
+}
+
+.vscode-sidebar i {
+    font-size: 24px;
+    color: #858585;
+    cursor: pointer;
+}
+
+.vscode-sidebar i:hover {
+    color: #fff;
+}
+
+.vscode-editor {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.code-line {
+    line-height: 1.5;
+}
+
+.keyword {
+    color: #569cd6;
+}
+
+.string {
+    color: #ce9178;
+}
+
+.comment {
+    color: #6a9955;
+}
+
+.function {
+    color: #dcdcaa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dock {
+        gap: 10px;
+        padding: 5px;
+    }
+
+    .app-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .desktop-icons {
+        display: none;
+    }
+}
