@@ -118,6 +118,30 @@ const portfolioData = {
             tech: "Pathway Mapping",
             description: "Investigated NLRC4 inflammasome biomarkers; conducted pathway mapping and published findings in Human Gene (Elsevier).",
             link: "#"
+        },
+        {
+            title: "BioMoR: R package for bioinformatics modeling",
+            tech: "R, Autoencoders, Random Forest",
+            description: "Bioinformatics Modeling with Recursion and Autoencoder-Based Ensemble using recursive transformer-inspired architectures.",
+            link: "#"
+        },
+        {
+            title: "Chemical–Biological Dynamics Modeling",
+            tech: "R, Stochastic Modeling",
+            description: "Developed computational models simulating chemical–biological interactions; implemented stochastic and deterministic processes.",
+            link: "#"
+        },
+        {
+            title: "Monte Carlo Finance (R)",
+            tech: "R, Monte Carlo Simulations",
+            description: "Created R-based Monte Carlo simulations applicable to stochastic biological systems and quantitative modeling.",
+            link: "#"
+        },
+        {
+            title: "SINDy–HMM Framework",
+            tech: "SINDy, HMM",
+            description: "Developed interpretable framework combining SINDy and HMM for transient acoustic segmentation.",
+            link: "#"
         }
     ],
     skills: [
@@ -131,7 +155,8 @@ const portfolioData = {
         "Arshad, M. (Submitted). annotaR: Automated Annotation for Genomic Intervals. CRAN.",
         "Arshad, M., Mal, C., Das, S., & Bhattacharyya, D. (2024). The potential of the NLRC4 inflammasome as a cancer biomarker: A pan-cancer investigation. Human Gene, 42(8). DOI:10.1016/j.humgen.2024.201351",
         "Arshad, M., & Mal, C. (Under review). MIKU: A multi-modal integrated knowledge-guided unified model for Alzheimer’s disease prediction. 3 Biotech.",
-        "Arshad, M., & Md, S. A. (Under review). Deep learning in Huntington’s disease: Advances in prediction, biomarkers, and progression modeling. Journal of Huntington’s Disease."
+        "Arshad, M., & Md, S. A. (Under review). Deep learning in Huntington’s disease: Advances in prediction, biomarkers, and progression modeling. Journal of Huntington’s Disease.",
+        "Arshad, M. (In submission). SINDy-MUSE: An interpretable dynamics and structure modeling . IEEE/ACM"
     ],
     interests: [
         "Systems Programming", "Network Biology", "Quantum Computing", "Algorithmic Rigor", "Open Source"
