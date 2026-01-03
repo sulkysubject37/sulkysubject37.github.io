@@ -283,6 +283,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 break;
+            case 'rstudio':
+                title = 'RStudio - Environment';
+                width = '900px';
+                height = '600px';
+                content = `
+                    <div style="height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; background: #eee;">
+                        <div style="background: #fff; padding: 10px; font-family: monospace; font-size: 12px; color: #333; overflow: auto; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+                            <span style="color: #888;"># Source Editor</span><br>
+                            <span style="color: #0000FF;">library</span>(annotaR)<br>
+                            <span style="color: #0000FF;">library</span>(BioMoR)<br><br>
+                            <span style="color: #008000;"># Load and process data</span><br>
+                            data <- load_genomic_intervals("hg38")<br>
+                            annotated <- annotate_regions(data, dist=5000)<br><br>
+                            <span style="color: #008000;"># Plot results</span><br>
+                            plot_enrichment(annotated)<br>
+                        </div>
+                        <div style="background: #fff; padding: 10px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column;">
+                            <div style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px; font-size: 11px; color: #666;">Global Environment</div>
+                            <div style="font-family: monospace; font-size: 11px;">
+                                <div style="display: flex; justify-content: space-between;"><span style="color: #333;">data</span> <span style="color: #888;">Large GRanges (1.2 GB)</span></div>
+                                <div style="display: flex; justify-content: space-between;"><span style="color: #333;">annotated</span> <span style="color: #888;">List of 4</span></div>
+                                <div style="display: flex; justify-content: space-between;"><span style="color: #333;">model_gvae</span> <span style="color: #888;">Module (PyTorch)</span></div>
+                            </div>
+                        </div>
+                        <div style="background: #fff; padding: 10px; font-family: monospace; font-size: 12px; color: #333; border-right: 1px solid #ddd; overflow: auto;">
+                            <span style="color: #888;"># Console</span><br>
+                            > summary(annotated)<br>
+                            &nbsp;&nbsp;Min. 1st Qu.  Median    Mean 3rd Qu.    Max.<br>
+                            &nbsp;&nbsp;0.00    2.00    5.00    8.42   12.00  150.00<br>
+                            > install.packages("annotaR")<br>
+                            Trying URL 'https://cran.r-project.org/bin/macosx/big-sur-arm64/contrib/4.3/annotaR_0.1.0.tgz'<br>
+                            Content type 'application/x-gzip' length 245000 bytes (239 KB)<br>
+                            ==================================================<br>
+                            downloaded 239 KB<br>
+                            > _<span class="cursor">|</span>
+                        </div>
+                        <div style="background: #fff; padding: 10px; display: flex; justify-content: center; align-items: center; background: #f9f9f9;">
+                            <div style="width: 200px; height: 150px; border-left: 1px solid #333; border-bottom: 1px solid #333; position: relative;">
+                                <div style="position: absolute; bottom: 0; left: 10px; width: 20px; height: 80px; background: #75aadb;"></div>
+                                <div style="position: absolute; bottom: 0; left: 40px; width: 20px; height: 120px; background: #75aadb;"></div>
+                                <div style="position: absolute; bottom: 0; left: 70px; width: 20px; height: 60px; background: #75aadb;"></div>
+                                <div style="position: absolute; bottom: 0; left: 100px; width: 20px; height: 90px; background: #75aadb;"></div>
+                                <div style="position: absolute; bottom: 0; left: 130px; width: 20px; height: 40px; background: #75aadb;"></div>
+                                <div style="position: absolute; bottom: -20px; width: 100%; text-align: center; font-size: 10px; color: #666;">Genomic Feature Distribution</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                break;
             case 'mail':
                 title = 'Contact - Mail';
                 content = `
@@ -324,13 +373,23 @@ document.addEventListener('DOMContentLoaded', () => {
                             <i class="fas fa-code-branch"></i>
                         </div>
                         <div class="vscode-editor">
-                            <div class="code-line"><span class="keyword">const</span> <span class="function">developer</span> = {</div>
-                            <div class="code-line">&nbsp;&nbsp;<span class="string">name</span>: <span class="string">"${portfolioData.about.name}"</span>,</div>
-                            <div class="code-line">&nbsp;&nbsp;<span class="string">skills</span>: [${portfolioData.skills.map(s => `"${s}"`).join(', ')}],</div>
-                            <div class="code-line">&nbsp;&nbsp;<span class="function">hire</span>: <span class="keyword">function</span>() {</div>
-                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"Great choice!"</span>;</div>
+                            <div class="code-line"><span class="comment">// jinxembler: core/assembler.cpp</span></div>
+                            <div class="code-line"><span class="keyword">#include</span> <span class="string">"assembler.hpp"</span></div>
+                            <div class="code-line"><span class="keyword">#include</span> <span class="string">&lt;omp.h&gt;</span></div>
+                            <br>
+                            <div class="code-line"><span class="keyword">namespace</span> jinx {</div>
+                            <div class="code-line">&nbsp;&nbsp;<span class="keyword">void</span> <span class="function">Assembler::construct_graph</span>(<span class="keyword">const</span> std::vector&lt;Read&gt;&amp; reads) {</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// O(N) De Bruijn Graph construction with 2-bit encoding</span></div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">#pragma</span> omp parallel for</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; read : reads) {</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">auto</span> kmers = <span class="function">decompose_to_kmers</span>(read.sequence, 31);</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span> (<span class="keyword">auto</span>&amp; kmer : kmers) {</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="function">atomic_add_node</span>(kmer);</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+                            <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="function">log_info</span>(<span class="string">"Graph construction complete."</span>);</div>
                             <div class="code-line">&nbsp;&nbsp;}</div>
-                            <div class="code-line">};</div>
+                            <div class="code-line">}</div>
                         </div>
                     </div>
                 `;
