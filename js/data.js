@@ -1,8 +1,8 @@
 const portfolioData = {
     about: {
         name: "MD. Arshad",
-        title: "AI Enthusiast, Bioinformatician",
-        bio: "Innovative bioinformatics researcher blending AI, systems biology, and computational modeling to extract biological insight from high-dimensional, multimodal data. Experienced in building explainable deep learning frameworks and applying knowledge graphs, SHAP, and quantum algorithms for biological interpretation. Passionate about designing interpretable, creative, and reproducible pipelines that bridge data-driven discovery with molecular understanding.",
+        title: "Research Software Engineer | Systems Biologist | AI Engineer | Bioinformatician",
+        bio: "Innovative Research Software Engineer and Systems Biologist bridging the gap between high-performance systems programming (C++) and statistical biology (R). I build rigorous, reproducible, and scalable solutions under the 'Cruel Standard': systems must fail loudly and safely rather than hallucinate or mislead. Experienced in building explainable deep learning frameworks, de novo assemblers, and graph neural networks for biological interpretation.",
         location: "New Delhi, India",
         email: "arshad10867c@gmail.com",
         social: {
@@ -17,7 +17,7 @@ const portfolioData = {
             degree: "M.Sc. in Bioinformatics",
             institution: "Jamia Millia Islamia",
             duration: "2025–2027",
-            details: "Coursework: Structural Bioinformatics, Systems Biology, Computational Genomics, AI/ML in Biology"
+            details: "Coursework: Structural Bioinformatics, Systems Biology, Computational Genomics, AI/ML in Biology. Focus on Algorithm Design and Network Analysis."
         },
         {
             degree: "B.Sc. in Bioinformatics",
@@ -27,6 +27,18 @@ const portfolioData = {
         }
     ],
     experience: [
+        {
+            role: "Research Software Engineer",
+            company: "Jamia Millia Islamia",
+            duration: "2023–Present",
+            description: "Developing high-performance C++ libraries for PPI analysis and de novo assembly algorithms."
+        },
+        {
+            role: "Open Source Maintainer",
+            company: "GitHub",
+            duration: "2023–Present",
+            description: "Maintainer of 'tangle', 'jinxembler', and 'annotaR'. Focused on systems biology tools and algorithmic rigor."
+        },
         {
             role: "Student Leader, NSS Unit",
             company: "NSS",
@@ -41,6 +53,42 @@ const portfolioData = {
         }
     ],
     projects: [
+        {
+            title: "jinxembler",
+            tech: "C++20, Python, CMake",
+            description: "High-performance de novo transcriptome assembler using 2-bit k-mer encoding and Tarjan's SCC algorithm. 100% precision on synthetic benchmarks.",
+            link: "https://github.com/Sulkysubject37/jinxembler"
+        },
+        {
+            title: "Atlas Deconvolve",
+            tech: "Python, PyTorch, GATv2",
+            description: "Graph Variational Autoencoder (GVAE) for deconvolving Protein-Protein Interaction networks. Implements 'Encode-then-Cluster' strategy for module discovery.",
+            link: "https://github.com/Sulkysubject37/Atlas_Deconvolve"
+        },
+        {
+            title: "tangle",
+            tech: "C++, FTXUI, Threads",
+            description: "Systems-level PPI network analysis library with a responsive TUI. Features async loading, Louvain clustering, and SBML export.",
+            link: "https://github.com/Sulkysubject37/tangle"
+        },
+        {
+            title: "cruel-gemma",
+            tech: "Python, MLX, LLMs",
+            description: "Fine-tuning Gemma 3 (4B) on Apple Silicon for biological reasoning. Enforces strict refusal of hallucinations via a custom 'Cruel Standard' dataset.",
+            link: "https://github.com/Sulkysubject37/cruel-gemma"
+        },
+        {
+            title: "annotaR",
+            tech: "R, CRAN",
+            description: "Statistical R package for automated genomic annotation and interval management. Successfully submitted to CRAN.",
+            link: "https://github.com/Sulkysubject37/annotaR"
+        },
+        {
+            title: "GAI Analyzer",
+            tech: "R, Shiny, ADMET",
+            description: "Production-grade ADMET profiling toolkit. Integrates ADMETlab 3.0 and SwissADME data for standardized drug discovery indexing.",
+            link: "https://sulkysubject37.shinyapps.io/GAI-Analyzer/"
+        },
         {
             title: "Operation Subjects",
             tech: "Python, BLAST, MEME, Biopython",
@@ -70,62 +118,32 @@ const portfolioData = {
             tech: "Pathway Mapping",
             description: "Investigated NLRC4 inflammasome biomarkers; conducted pathway mapping and published findings in Human Gene (Elsevier).",
             link: "#"
-        },
-        {
-            title: "BioMoR: R package for bioinformatics modeling",
-            tech: "R, Autoencoders, Random Forest",
-            description: "Bioinformatics Modeling with Recursion and Autoencoder-Based Ensemble using recursive transformer-inspired architectures.",
-            link: "#"
-        },
-        {
-            title: "Chemical–Biological Dynamics Modeling",
-            tech: "R, Stochastic Modeling",
-            description: "Developed computational models simulating chemical–biological interactions; implemented stochastic and deterministic processes.",
-            link: "#"
-        },
-        {
-            title: "Monte Carlo Finance (R)",
-            tech: "R, Monte Carlo Simulations",
-            description: "Created R-based Monte Carlo simulations applicable to stochastic biological systems and quantitative modeling.",
-            link: "#"
-        },
-        {
-            title: "SINDy–HMM Framework",
-            tech: "SINDy, HMM",
-            description: "Developed interpretable framework combining SINDy and HMM for transient acoustic segmentation.",
-            link: "#"
         }
     ],
     skills: [
-        "Python", "R", "MATLAB", "C++", "Bash",
-        "Deep Learning", "SHAP", "GNN", "SINDy", "HMM",
-        "Sequence Analysis", "Structural Modelling",
-        "TensorFlow", "PyMOL", "Cytoscape", "ggplot2",
-        "NACC", "ADNI", "Git"
+        "C++20", "R (CRAN)", "Python", "CMake", "Catch2",
+        "MLX", "PyTorch", "GNN", "Bioinformatics",
+        "Systems Biology", "Graph Theory", "TUI (FTXUI)",
+        "Shiny", "FastAPI", "Docker", "Git", "SHAP"
     ],
     publications: [
+        "Arshad, M. (In Prep). Deconvolving PPI Networks using Graph Variational Autoencoders. PLOS Computational Biology.",
+        "Arshad, M. (Submitted). annotaR: Automated Annotation for Genomic Intervals. CRAN.",
         "Arshad, M., Mal, C., Das, S., & Bhattacharyya, D. (2024). The potential of the NLRC4 inflammasome as a cancer biomarker: A pan-cancer investigation. Human Gene, 42(8). DOI:10.1016/j.humgen.2024.201351",
         "Arshad, M., & Mal, C. (Under review). MIKU: A multi-modal integrated knowledge-guided unified model for Alzheimer’s disease prediction. 3 Biotech.",
-        "Arshad, M., & Md, S. A. (Under review). Deep learning in Huntington’s disease: Advances in prediction, biomarkers, and progression modeling. Journal of Huntington’s Disease.",
-        "Arshad, M. (In submission). SINDy-MUSE: An interpretable dynamics and structure modeling . IEEE/ACM"
+        "Arshad, M., & Md, S. A. (Under review). Deep learning in Huntington’s disease: Advances in prediction, biomarkers, and progression modeling. Journal of Huntington’s Disease."
     ],
     interests: [
-        "Interpretable AI", "Systems Biology", "Knowledge Graphs", "Quantum–Biological Modeling", "Computational Creativity"
+        "Systems Programming", "Network Biology", "Quantum Computing", "Algorithmic Rigor", "Open Source"
     ],
     quotes: [
-        { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-        { text: "Artificial Intelligence is not a substitute for human intelligence; it is a tool to amplify human creativity and ingenuity.", author: "Fei-Fei Li" },
-        { text: "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice and most of all, love of what you are doing or learning to do.", author: "Pele" },
-        { text: "AI is the new electricity.", author: "Andrew Ng" },
-        { text: "Genius is 1% inspiration, 99% perspiration.", author: "Thomas Edison" },
-        { text: "Predicting the future isn't magic, it's artificial intelligence.", author: "Dave Waters" },
-        { text: "There is no substitute for hard work.", author: "Thomas Edison" },
+        { text: "Systems must fail loudly and safely.", author: "The Cruel Standard" },
+        { text: "Biology is a system of systems.", author: "Unknown" },
         { text: "The best way to predict the future is to invent it.", author: "Alan Kay" }
     ],
     bioQuotes: [
-        { text: "Bioinformatics is the key to unlocking the secrets of the genome.", author: "Unknown" },
+        { text: "Decoding life, one bit at a time.", author: "Sulkysubject37" },
         { text: "Biology is becoming a digital science.", author: "Leroy Hood" },
-        { text: "The future of biology is computational.", author: "Unknown" },
-        { text: "Data is the new oil, and bioinformatics is the refinery.", author: "Unknown" }
+        { text: "In God we trust; all others must bring data.", author: "W. Edwards Deming" }
     ]
 };
