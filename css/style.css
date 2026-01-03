@@ -176,3 +176,14 @@ body {
     }
     .sidebar { display: none; } /* Or collapse into a menu */
 }
+
+/* Cruel Theme Overrides */
+.cruel-theme {
+    --accent-blue: #ff6b6b; /* Shift blue to red */
+    --accent-green: #e94560; /* Shift green to deep red */
+    --border-color: #5a1e1e;
+}
+.cruel-theme .status-bar {
+    background: #4a0d0d;
+    color: #ff6b6b;
+}

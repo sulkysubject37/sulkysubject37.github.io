@@ -8,7 +8,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // State
     let currentView = 'profile';
+    let isCruelMode = false;
     const startTime = new Date();
+
+    const modeIndicator = document.getElementById('mode-indicator');
+
+    // Toggle Mode
+    modeIndicator.style.cursor = 'pointer';
+    modeIndicator.addEventListener('click', () => {
+        isCruelMode = !isCruelMode;
+        
+        if (isCruelMode) {
+            modeIndicator.textContent = 'CRUEL';
+            modeIndicator.classList.add('text-red');
+            document.body.classList.add('cruel-theme');
+            log('WARNING: CRUEL MODE ENGAGED. RAW DATA EXPOSED.', 'error');
+        } else {
+            modeIndicator.textContent = 'NORMAL';
+            modeIndicator.classList.remove('text-red');
+            document.body.classList.remove('cruel-theme');
+            log('System restored to safe mode.');
+        }
+
+        // Re-render current view
+        renderView(currentView);
+    });
 
     // 1. Navigation Logic
     navItems.forEach(item => {
@@ -55,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderProfile() {
         const p = portfolioData.about;
+        const bioText = isCruelMode ? p.cruelBio : p.bio;
         const html = `
             <div class="man-page">
                 <div class="man-header">
@@ -65,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 <div class="man-section">
                     <div class="section-title">SYNOPSIS</div>
-                    <p class="man-text">${p.bio}</p>
+                    <p class="man-text ${isCruelMode ? 'text-red' : ''}">${bioText}</p>
                 </div>
 
                 <div class="man-section">
@@ -91,14 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderProjects() {
-        const rows = portfolioData.projects.map(proj => `
+        const rows = portfolioData.projects.map(proj => {
+            const desc = isCruelMode ? (proj.cruelDescription || proj.description) : proj.description;
+            const descClass = isCruelMode && proj.cruelDescription ? 'text-red' : 'text-primary';
+            
+            return `
             <tr>
                 <td style="font-weight: bold; color: var(--accent-blue);">${proj.title}</td>
                 <td>${proj.tech.split(',').map(t => `<span class="tech-tag">${t.trim()}</span>`).join('')}</td>
-                <td style="color: var(--text-secondary);">${proj.description.substring(0, 60)}...</td>
+                <td class="${descClass}">${desc}</td>
                 <td style="text-align: right;"><a href="${proj.link}" target="_blank" style="color: var(--accent-green); text-decoration: none;">[LINK]</a></td>
             </tr>
-        `).join('');
+        `}).join('');
 
         const html = `
             <div class="man-page">
