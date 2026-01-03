@@ -11,28 +11,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let isCruelMode = false;
     const startTime = new Date();
 
+    const modeSwitch = document.getElementById('mode-switch');
     const modeIndicator = document.getElementById('mode-indicator');
 
     // Toggle Mode
-    modeIndicator.style.cursor = 'pointer';
-    modeIndicator.addEventListener('click', () => {
-        isCruelMode = !isCruelMode;
-        
-        if (isCruelMode) {
-            modeIndicator.textContent = 'CRUEL';
-            modeIndicator.classList.add('text-red');
-            document.body.classList.add('cruel-theme');
-            log('WARNING: CRUEL MODE ENGAGED. RAW DATA EXPOSED.', 'error');
-        } else {
-            modeIndicator.textContent = 'NORMAL';
-            modeIndicator.classList.remove('text-red');
-            document.body.classList.remove('cruel-theme');
-            log('System restored to safe mode.');
-        }
+    if (modeSwitch) {
+        modeSwitch.addEventListener('click', () => {
+            console.log("Mode switch clicked. Current state:", isCruelMode);
+            isCruelMode = !isCruelMode;
+            
+            if (isCruelMode) {
+                modeIndicator.textContent = 'CRUEL';
+                document.body.classList.add('cruel-theme');
+                log('WARNING: CRUEL MODE ENGAGED. RAW DATA EXPOSED.', 'error');
+            } else {
+                modeIndicator.textContent = 'NORMAL';
+                document.body.classList.remove('cruel-theme');
+                log('System restored to safe mode.');
+            }
 
-        // Re-render current view
-        renderView(currentView);
-    });
+            // Re-render current view
+            renderView(currentView);
+        });
+    } else {
+        console.error("Critical: Mode switch element not found.");
+    }
 
     // 1. Navigation Logic
     navItems.forEach(item => {

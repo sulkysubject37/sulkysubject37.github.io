@@ -161,8 +161,22 @@ body {
     padding: 0 10px;
     font-weight: bold;
     font-size: 12px;
+    z-index: 9999;
+    position: relative;
 }
 .left-status, .right-status { display: flex; gap: 15px; }
+
+.mode-toggle {
+    cursor: pointer;
+    padding: 0 5px;
+    transition: all 0.2s;
+    border-radius: 3px;
+    user-select: none;
+}
+.mode-toggle:hover {
+    background-color: rgba(0,0,0,0.2);
+    color: #fff;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
