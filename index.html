@@ -1,112 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arshad - Portfolio</title>
+    <title>Sulkysubject37 // Tangle Interface</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-    <!-- Boot Screen -->
-    <div id="boot-screen">
-        <div id="boot-log"></div>
-        <div class="loading-bar">
-            <div class="progress"></div>
+    <div class="tangle-container">
+        <!-- Zone A: The Registry (Sidebar) -->
+        <div class="pane sidebar" id="zone-a">
+            <div class="pane-header">
+                <span class="pane-title">~/REGISTRY</span>
+                <span class="pane-status">[ONLINE]</span>
+            </div>
+            <div class="pane-content">
+                <ul class="nav-tree" id="nav-tree">
+                    <li class="nav-item active" data-target="profile">
+                        <span class="icon">➜</span> <span class="label">profile.man</span>
+                    </li>
+                    <li class="nav-item" data-target="projects">
+                        <span class="icon">➜</span> <span class="label">projects/</span>
+                    </li>
+                    <li class="nav-item" data-target="experience">
+                        <span class="icon">➜</span> <span class="label">experience.log</span>
+                    </li>
+                    <li class="nav-item" data-target="publications">
+                        <span class="icon">➜</span> <span class="label">publications.bib</span>
+                    </li>
+                    <li class="nav-item" data-target="contact">
+                        <span class="icon">➜</span> <span class="label">contact.sh</span>
+                    </li>
+                </ul>
+                <div class="system-info">
+                    <div class="info-row">
+                        <span class="label">KERNEL:</span>
+                        <span class="value">ArshadOS v2.0.1</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">UPTIME:</span>
+                        <span class="value" id="uptime">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone B: The Viewport (Content) -->
+        <div class="pane viewport" id="zone-b">
+            <div class="pane-header">
+                <span class="pane-title" id="viewport-title">~/profile.man</span>
+                <span class="pane-controls">
+                    <span class="control">[MIN]</span>
+                    <span class="control">[MAX]</span>
+                    <span class="control">[X]</span>
+                </span>
+            </div>
+            <div class="pane-content" id="viewport-content">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+
+        <!-- Zone C: The Telemetry (Stats & Logs) -->
+        <div class="pane telemetry" id="zone-c">
+            <div class="pane-header">
+                <span class="pane-title">~/TELEMETRY</span>
+                <span class="pane-status">[LIVE]</span>
+            </div>
+            <div class="pane-content">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-label">MEMORY</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 42%;"></div>
+                        </div>
+                        <span class="stat-value">64GB / LPDDR5</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">CRAN_PKG</span>
+                        <span class="stat-value text-green">SUBMITTED</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">TRAINING</span>
+                        <span class="stat-value text-yellow">PAUSED</span>
+                    </div>
+                </div>
+                <div class="log-feed" id="log-feed">
+                    <div class="log-entry"><span class="timestamp">[00:00:01]</span> <span class="log-msg">Boot sequence initiated...</span></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Login Screen -->
-    <div id="login-screen" class="hidden">
-        <div class="user-avatar">
-            <i class="fas fa-user-circle"></i>
+    <!-- Footer Status Bar -->
+    <div class="status-bar">
+        <div class="left-status">
+            <span class="status-item">MODE: <span id="mode-indicator">NORMAL</span></span>
+            <span class="status-item">BRANCH: <span class="text-green">main</span></span>
         </div>
-        <div class="user-name">Arshad</div>
-        <div class="password-input-wrapper">
-            <input type="password" placeholder="Enter Password" id="password-input">
-            <div class="arrow-btn" id="login-btn"><i class="fas fa-arrow-right"></i></div>
-        </div>
-        <div class="login-hint">Hint: Just press Enter</div>
-    </div>
-
-    <!-- Desktop Environment -->
-    <div id="desktop" class="hidden">
-        <!-- Menu Bar -->
-        <div id="menu-bar">
-            <div class="left-menu">
-                <span class="apple-icon"><i class="fab fa-apple"></i></span>
-                <span class="app-name" id="active-app-name">Finder</span>
-                <span>File</span>
-                <span>Edit</span>
-                <span>View</span>
-                <span>Go</span>
-                <span>Window</span>
-                <span>Help</span>
-            </div>
-            <div class="right-menu">
-                <span class="status-icon" id="wifi-icon"><i class="fas fa-wifi"></i></span>
-                <span class="status-icon" id="battery-icon"><i class="fas fa-battery-full"></i></span>
-                <span class="status-icon"><i class="fas fa-search"></i></span>
-                <span class="control-center"><i class="fas fa-sliders-h"></i></span>
-                <span id="clock">Mon Jun 22 9:41 AM</span>
-            </div>
-        </div>
-
-        <!-- Desktop Icons -->
-        <div class="desktop-icons">
-            <div class="desktop-icon" ondblclick="openApp('finder')">
-                <div class="icon-img folder-icon"><i class="fas fa-folder"></i></div>
-                <div class="icon-label">Portfolio</div>
-            </div>
-            <div class="desktop-icon" ondblclick="openApp('preview')">
-                <div class="icon-img file-icon"><i class="fas fa-file-pdf"></i></div>
-                <div class="icon-label">Resume.pdf</div>
-            </div>
-        </div>
-
-        <!-- Windows Container -->
-        <div id="windows-container">
-            <!-- Windows will be injected here by JS -->
-        </div>
-
-        <!-- Dock -->
-        <div id="dock-container">
-            <div class="dock">
-                <div class="dock-item" onclick="openApp('finder')" data-title="Profile">
-                    <div class="app-icon finder-icon"><i class="fas fa-user-tie"></i></div>
-                    <div class="dot hidden"></div>
-                </div>
-                <div class="dock-item" onclick="openApp('safari')" data-title="Projects">
-                    <div class="app-icon safari-icon"><i class="fas fa-project-diagram"></i></div>
-                    <div class="dot hidden"></div>
-                </div>
-                <div class="dock-item" onclick="openApp('terminal')" data-title="Terminal">
-                    <div class="app-icon terminal-icon"><i class="fas fa-terminal"></i></div>
-                    <div class="dot hidden"></div>
-                </div>
-                <div class="dock-item" onclick="openApp('rstudio')" data-title="RStudio">
-                    <div class="app-icon rstudio-icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="dot hidden"></div>
-                </div>
-                <div class="dock-item" onclick="openApp('vscode')" data-title="VS Code">
-                    <div class="app-icon vscode-icon"><i class="fas fa-code"></i></div>
-                    <div class="dot hidden"></div>
-                </div>
-                <div class="dock-item" onclick="window.open('https://github.com/Sulkysubject37', '_blank')" data-title="GitHub">
-                    <div class="app-icon github-icon"><i class="fab fa-github"></i></div>
-                </div>
-                <div class="divider"></div>
-                <div class="dock-item" onclick="openApp('trash')" data-title="Trash">
-                    <div class="app-icon trash-icon"><i class="fas fa-trash"></i></div>
-                </div>
-            </div>
+        <div class="right-status">
+            <span class="status-item">UTF-8</span>
+            <span class="status-item">Ln 1, Col 1</span>
         </div>
     </div>
 
     <script src="js/data.js"></script>
     <script src="js/script.js"></script>
 </body>
-
 </html>
