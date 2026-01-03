@@ -250,8 +250,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Init
-    renderView('profile');
-    setInterval(updateUptime, 1000);
-    log('System initialized. Welcome, user.');
-    log('Loaded portfolioData from data.js');
+    try {
+        if (typeof portfolioData === 'undefined') {
+            throw new Error("Critical: portfolioData is undefined. Check data.js loading.");
+        }
+        console.log("Portfolio Data Loaded:", portfolioData);
+        renderView('profile');
+        setInterval(updateUptime, 1000);
+        log('System initialized. Welcome, user.');
+        log('Loaded portfolioData from data.js');
+    } catch (e) {
+        console.error(e);
+        viewportContent.innerHTML = `<div class="man-text text-red">FATAL ERROR: ${e.message}</div>`;
+        log(`FATAL ERROR: ${e.message}`, 'error');
+    }
 });
