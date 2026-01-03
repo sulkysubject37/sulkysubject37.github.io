@@ -12,9 +12,7 @@
 <body>
     <!-- Boot Screen -->
     <div id="boot-screen">
-        <div class="apple-logo">
-            <i class="fab fa-apple"></i>
-        </div>
+        <div id="boot-log"></div>
         <div class="loading-bar">
             <div class="progress"></div>
         </div>
@@ -76,25 +74,28 @@
         <!-- Dock -->
         <div id="dock-container">
             <div class="dock">
-                <div class="dock-item" onclick="openApp('finder')" data-title="Finder">
-                    <div class="app-icon finder-icon"><i class="fas fa-smile"></i></div>
+                <div class="dock-item" onclick="openApp('finder')" data-title="Profile">
+                    <div class="app-icon finder-icon"><i class="fas fa-user-tie"></i></div>
                     <div class="dot hidden"></div>
                 </div>
-                <div class="dock-item" onclick="openApp('safari')" data-title="Safari">
-                    <div class="app-icon safari-icon"><i class="fab fa-safari"></i></div>
+                <div class="dock-item" onclick="openApp('safari')" data-title="Projects">
+                    <div class="app-icon safari-icon"><i class="fas fa-project-diagram"></i></div>
                     <div class="dot hidden"></div>
                 </div>
                 <div class="dock-item" onclick="openApp('terminal')" data-title="Terminal">
                     <div class="app-icon terminal-icon"><i class="fas fa-terminal"></i></div>
                     <div class="dot hidden"></div>
                 </div>
-                <div class="dock-item" onclick="openApp('mail')" data-title="Mail">
-                    <div class="app-icon mail-icon"><i class="fas fa-envelope"></i></div>
+                <div class="dock-item" onclick="openApp('rstudio')" data-title="RStudio">
+                    <div class="app-icon rstudio-icon"><i class="fas fa-chart-line"></i></div>
                     <div class="dot hidden"></div>
                 </div>
                 <div class="dock-item" onclick="openApp('vscode')" data-title="VS Code">
                     <div class="app-icon vscode-icon"><i class="fas fa-code"></i></div>
                     <div class="dot hidden"></div>
+                </div>
+                <div class="dock-item" onclick="window.open('https://github.com/Sulkysubject37', '_blank')" data-title="GitHub">
+                    <div class="app-icon github-icon"><i class="fab fa-github"></i></div>
                 </div>
                 <div class="divider"></div>
                 <div class="dock-item" onclick="openApp('trash')" data-title="Trash">

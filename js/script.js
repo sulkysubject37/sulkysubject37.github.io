@@ -9,15 +9,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const clockElement = document.getElementById('clock');
     const activeAppName = document.getElementById('active-app-name');
 
-    // Boot Sequence
-    setTimeout(() => {
-        progress.style.width = '100%';
-    }, 500);
+    const bootLog = document.getElementById('boot-log');
 
-    setTimeout(() => {
-        bootScreen.classList.add('hidden');
-        loginScreen.classList.remove('hidden');
-    }, 2500);
+    const bootMessages = [
+        { text: "[  0.000000] Initializing Sulkysubject37 Kernel v6.12.0...", type: "info" },
+        { text: "[  0.452103] Memory: 64GB LPDDR5x detected", type: "info" },
+        { text: "[  0.892341] CPU: Apple M3 Max (16-core) optimized for bioinformatics", type: "info" },
+        { text: "[  1.234567] Checking file systems... OK", type: "ok" },
+        { text: "[  1.567890] Initializing C++20 Runtime Environment...", type: "info" },
+        { text: "[  1.901234] Loading R-Project CRAN libraries: annotaR, BioMoR...", type: "info" },
+        { text: "[  2.123456] Mounting network volumes: /mnt/projects/jinxembler", type: "info" },
+        { text: "[  2.456789] Starting GVAE Neural Engine...", type: "info" },
+        { text: "[  2.789012] Applying Cruel Standard security policies...", type: "warn" },
+        { text: "[  3.123456] Hallucination prevention active.", type: "ok" },
+        { text: "[  3.456789] Initializing Bio-Desktop Environment...", type: "info" },
+        { text: "[  3.890123] Starting Sulkysubject37 UI server...", type: "ok" }
+    ];
+
+    function runBootLog() {
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < bootMessages.length) {
+                const line = document.createElement('div');
+                line.className = `log-line ${bootMessages[i].type}`;
+                line.textContent = bootMessages[i].text;
+                bootLog.appendChild(line);
+                progress.style.width = `${((i + 1) / bootMessages.length) * 100}%`;
+                i++;
+            } else {
+                clearInterval(interval);
+                setTimeout(() => {
+                    bootScreen.classList.add('hidden');
+                    loginScreen.classList.remove('hidden');
+                }, 800);
+            }
+        }, 300);
+    }
+
+    runBootLog();
 
     // Login Sequence
     function login() {
