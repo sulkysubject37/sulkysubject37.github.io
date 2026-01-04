@@ -30,9 +30,9 @@ const portfolioData = {
     experience: [
         {
             role: "Research Software Engineer",
-            company: "Jamia Millia Islamia",
+            company: "Independent",
             duration: "2023–Present",
-            description: "Developing high-performance C++ libraries for PPI analysis and de novo assembly algorithms."
+            description: "Developing high-performance C++ libraries for PPI analysis and de novo assembly algorithms. Focused on open-source community tools and interpretable bioinformatics."
         },
         {
             role: "Open Source Maintainer",
