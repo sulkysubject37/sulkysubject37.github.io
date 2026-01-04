@@ -237,27 +237,27 @@ body {
 }
 
 /* God Mode (Konami Code) */
-.god-mode {
-    --bg-color: #000;
-    --border-color: #ff9800;
-    --text-primary: #ffb74d;
-    --text-secondary: #f57c00;
-    --accent-green: #ff9800;
-    --accent-blue: #ff9800;
-    --accent-red: #d84315;
-    --accent-yellow: #ffeb3b;
-    --highlight-bg: #1a1000;
-    --selection-bg: #e65100;
+body.god-mode {
+    --bg-color: #000 !important;
+    --border-color: #ff9800 !important;
+    --text-primary: #ffb74d !important;
+    --text-secondary: #f57c00 !important;
+    --accent-green: #ff9800 !important;
+    --accent-blue: #ff9800 !important;
+    --accent-red: #d84315 !important;
+    --accent-yellow: #ffeb3b !important;
+    --highlight-bg: #1a1000 !important;
+    --selection-bg: #e65100 !important;
 }
-.god-mode .status-bar {
-    background: #e65100;
-    color: #000;
+body.god-mode .status-bar {
+    background: #e65100 !important;
+    color: #000 !important;
 }
-.god-mode .node circle {
-    stroke: #ff9800;
-    fill: #000;
+body.god-mode .node circle {
+    stroke: #ff9800 !important;
+    fill: #000 !important;
 }
-.god-mode .link {
-    stroke: #f57c00;
-    stroke-opacity: 0.8;
+body.god-mode .link {
+    stroke: #f57c00 !important;
+    stroke-opacity: 0.8 !important;
 }

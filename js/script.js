@@ -279,10 +279,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = `
             <div class="terminal-view" id="terminal-view">
                 <div class="terminal-output" id="terminal-output">
-                    <div class="cmd-response">Welcome to ArshadOS Shell v2.0.1\nType 'help' for available commands.</div>
+                    <div class="cmd-response">Welcome to SulkyOS Shell v2.0.1\nType 'help' for available commands.</div>
                 </div>
                 <div class="cmd-line">
-                    <span class="cmd-prompt">user@arshad:~ $</span>
+                    <span class="cmd-prompt">user@sulky:~ $</span>
                     <div class="cmd-input-container">
                         <input type="text" class="cmd-input" id="cmd-input" autocomplete="off" autofocus>
                     </div>
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Echo command
         const cmdNode = document.createElement('div');
         cmdNode.className = 'cmd-line';
-        cmdNode.innerHTML = `<span class="cmd-prompt">user@arshad:~ $</span> <span>${cmd}</span>`;
+        cmdNode.innerHTML = `<span class="cmd-prompt">user@sulky:~ $</span> <span>${cmd}</span>`;
         output.appendChild(cmdNode);
 
         // Process Command
