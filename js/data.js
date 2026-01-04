@@ -112,9 +112,9 @@ const portfolioData = {
         },
         {
             title: "Causal STDP",
-            tech: "Python, Brian2, Neuroscience",
-            description: "Causal Spike-Timing Dependent Plasticity. A framework for modeling causal relationships in neural circuits using STDP rules.",
-            cruelDescription: "Simulating STDP with Brian2. If you think backpropagation is hard, try Hebbian learning rules where timing is everything. Recovered synthetic GRNs above chance level, which is a win in this field.",
+            tech: "Python, Brian2, Covid-19 Transcriptomics",
+            description: "Biologically inspired pipeline for inferring directed Gene Regulatory Networks (GRNs) from COVID-19 transcriptomics (GSE215865, GSE157859). Identified top regulators including PHC2 and NSA2.",
+            cruelDescription: "Recovered directed GRNs above chance level (Precision ~0.28 vs Chance 0.15) using pair-based STDP learning. Validated via temporal permutation and negative control diagnostics. If your causal trace doesn't survive a shuffle test, it's just noise.",
             link: "https://github.com/Sulkysubject37/c-stdp"
         },
         {
