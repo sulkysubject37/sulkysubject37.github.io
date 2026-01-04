@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Rendering Engine
     function renderView(view) {
+        console.log("Rendering view:", view); // Debug Log
         viewportContent.innerHTML = ''; // Clear
         viewportTitle.textContent = `~/${view}`;
 
