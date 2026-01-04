@@ -235,3 +235,29 @@ body {
     background: #4a0d0d;
     color: #ff6b6b;
 }
+
+/* God Mode (Konami Code) */
+.god-mode {
+    --bg-color: #000;
+    --border-color: #ff9800;
+    --text-primary: #ffb74d;
+    --text-secondary: #f57c00;
+    --accent-green: #ff9800;
+    --accent-blue: #ff9800;
+    --accent-red: #d84315;
+    --accent-yellow: #ffeb3b;
+    --highlight-bg: #1a1000;
+    --selection-bg: #e65100;
+}
+.god-mode .status-bar {
+    background: #e65100;
+    color: #000;
+}
+.god-mode .node circle {
+    stroke: #ff9800;
+    fill: #000;
+}
+.god-mode .link {
+    stroke: #f57c00;
+    stroke-opacity: 0.8;
+}

@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeSwitch = document.getElementById('mode-switch');
     const modeIndicator = document.getElementById('mode-indicator');
 
+    // Konami Code State
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+
     // Toggle Mode
     if (modeSwitch) {
         modeSwitch.addEventListener('click', () => {
@@ -453,17 +457,37 @@ document.addEventListener('DOMContentLoaded', () => {
         uptimeElement.textContent = `${h}:${m}:${s}`;
     }
 
-    // Keyboard Navigation
+    // Keyboard Navigation & Konami Code
     document.addEventListener('keydown', (e) => {
-        const active = document.querySelector('.nav-item.active');
-        if (e.key === 'ArrowDown') {
-            const next = active.nextElementSibling;
-            if (next) next.click();
-        } else if (e.key === 'ArrowUp') {
-            const prev = active.previousElementSibling;
-            if (prev) prev.click();
+        // Konami Code Logic
+        if (e.key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                activateGodMode();
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0; // Reset if key doesn't match
+        }
+
+        // Arrow Navigation (only if not in terminal)
+        if (currentView !== 'terminal') {
+            const active = document.querySelector('.nav-item.active');
+            if (e.key === 'ArrowDown') {
+                const next = active.nextElementSibling;
+                if (next) next.click();
+            } else if (e.key === 'ArrowUp') {
+                const prev = active.previousElementSibling;
+                if (prev) prev.click();
+            }
         }
     });
+
+    function activateGodMode() {
+        document.body.classList.add('god-mode');
+        log('GOD MODE ACTIVATED. ACCESS GRANTED.', 'success');
+        alert("GOD MODE ACTIVATED // WELCOME TO THE MATRIX");
+    }
 
     // Init
     try {
