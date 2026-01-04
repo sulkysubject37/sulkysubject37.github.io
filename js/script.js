@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'projects':
                 renderProjects();
                 break;
+            case 'network':
+                renderNetwork();
+                break;
             case 'experience':
                 renderExperience();
                 break;
@@ -153,6 +156,115 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         viewportContent.innerHTML = html;
+    }
+
+    function renderNetwork() {
+        // Construct Graph Data
+        const nodes = [];
+        const links = [];
+        const skillsMap = new Map();
+
+        // Add Center Node
+        nodes.push({ id: "Arshad", group: 1, r: 10 });
+
+        // Add Projects and Skills
+        portfolioData.projects.forEach(p => {
+            nodes.push({ id: p.title, group: 2, r: 7 });
+            links.push({ source: "Arshad", target: p.title });
+            
+            p.tech.split(',').forEach(t => {
+                const skill = t.trim();
+                if (!skillsMap.has(skill)) {
+                    skillsMap.set(skill, true);
+                    nodes.push({ id: skill, group: 3, r: 5 });
+                }
+                links.push({ source: p.title, target: skill });
+            });
+        });
+
+        // Add Graph Container
+        viewportContent.innerHTML = '<div id="network-graph" class="network-container"></div>';
+        
+        // Initialize D3
+        const width = viewportContent.clientWidth;
+        const height = viewportContent.clientHeight;
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(50))
+            .force("charge", d3.forceManyBody().strength(-100))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collide", d3.forceCollide().radius(d => d.r + 5));
+
+        const svg = d3.select("#network-graph").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            }));
+
+        const g = svg.append("g");
+
+        const link = g.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("stroke", "#30363d")
+            .attr("stroke-width", 1.5);
+
+        const node = g.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => d.r)
+            .attr("fill", d => {
+                if(d.group === 1) return "#238636"; // Green (You)
+                if(d.group === 2) return "#58a6ff"; // Blue (Projects)
+                return "#d29922"; // Yellow (Skills)
+            })
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 1.5);
+
+        node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(d => d.id)
+            .attr("fill", "#c9d1d9");
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
     }
 
     function renderExperience() {
