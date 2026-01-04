@@ -97,6 +97,27 @@ const portfolioData = {
             link: "https://sulkysubject37.shinyapps.io/GAI-Analyzer/"
         },
         {
+            title: "trace-seq",
+            tech: "C++, Python, R",
+            description: "A comprehensive toolkit for phylogenetic lineage tracing and analysis. Features robust project root detection and bindings for Python and R.",
+            cruelDescription: "Implemented cross-language bindings (pybind11, Rcpp) because data scientists refuse to use the command line. Solved the 'where am I running from?' path resolution hell in C++ so you don't have to.",
+            link: "https://github.com/Sulkysubject37/trace-seq"
+        },
+        {
+            title: "KORA",
+            tech: "Python, Spiking Neural Networks",
+            description: "Kinetic Ordered Regulatory Analysis. A pipeline for inferring Gene Regulatory Networks using Spiking Neural Networks from transcriptomic data.",
+            cruelDescription: "Training SNNs on CPU because neuromorphic hardware is expensive. Infers GRNs from spike timing. It's biologically plausible, which means it's incredibly hard to train compared to standard ANNs.",
+            link: "https://github.com/Sulkysubject37/kora"
+        },
+        {
+            title: "Causal STDP",
+            tech: "Python, Brian2, Neuroscience",
+            description: "Causal Spike-Timing Dependent Plasticity. A framework for modeling causal relationships in neural circuits using STDP rules.",
+            cruelDescription: "Simulating STDP with Brian2. If you think backpropagation is hard, try Hebbian learning rules where timing is everything. Recovered synthetic GRNs above chance level, which is a win in this field.",
+            link: "https://github.com/Sulkysubject37/c-stdp"
+        },
+        {
             title: "Operation Subjects",
             tech: "Python, BLAST, MEME, Biopython",
             description: "A comprehensive bioinformatics sequence analysis suite featuring quality control, sequence alignment, motif discovery, and genomic feature analysis capabilities.",

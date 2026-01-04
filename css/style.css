@@ -182,7 +182,13 @@ body {
 .info-row .value { color: var(--text-primary); }
 
 /* Viewport Content Styles */
-.man-page { line-height: 1.6; max-width: 800px; }
+.man-page { 
+    line-height: 1.6; 
+    max-width: 100%; /* Allow full width */
+    height: 100%; /* Take full height of viewport */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 10px; /* Space for scrollbar */
+}
 .man-header { margin-bottom: 20px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; }
 .man-title { font-size: 24px; color: var(--accent-blue); margin-bottom: 5px; }
 .man-subtitle { color: var(--accent-green); font-size: 14px; margin-bottom: 10px; }
