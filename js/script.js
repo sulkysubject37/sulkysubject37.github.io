@@ -1,5 +1,83 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
+    // --- Boot Sequence ---
+    const bootOverlay = document.getElementById('boot-overlay');
+    const bootBar = document.getElementById('boot-bar');
+    const bootPercent = document.getElementById('boot-percent');
+    const initLog = document.getElementById('init-log');
+    const mainContainer = document.querySelector('.tangle-container');
+    const statusBar = document.querySelector('.status-bar');
+
+    let progress = 0.37;
+    const target = 37.00;
+    
+    // Fake boot messages
+    const bootLogs = [
+        "Initializing SulkyOS Kernel...",
+        "Mounting /dev/nvme0n1...",
+        "Loading drivers: nvidiagpu, tpu, mlx...",
+        "Checking integrity of 'Cruel Standard'...",
+        "[OK] Cruel Standard Verified.",
+        "Establishing neural link...",
+        "Allocating heap memory...",
+        "Decompressing bio-modules...",
+        "Detecting user entropy...",
+        "System state: HAZARDOUS.",
+        "Breaking security lock...",
+        "Accessing Tangle Interface...",
+        "Executing: ./init_shell.sh"
+    ];
+
+    function runBoot() {
+        const interval = setInterval(() => {
+            // Randomize increment for "glitchy" feel
+            progress += Math.random() * 0.5;
+            
+            if (progress >= target) {
+                progress = target;
+                clearInterval(interval);
+                finalizeBoot();
+            }
+
+            // Update UI
+            bootBar.style.width = `${progress}%`;
+            bootPercent.textContent = `${progress.toFixed(2)}%`;
+
+            // Randomly log messages based on progress
+            if (Math.random() > 0.8 && bootLogs.length > 0) {
+                const msg = bootLogs.shift();
+                const p = document.createElement('div');
+                p.textContent = `> ${msg}`;
+                initLog.prepend(p);
+            }
+
+        }, 30);
+    }
+
+    function finalizeBoot() {
+        // The "Stop" moment
+        bootPercent.textContent = "37.00% [THRESHOLD]";
+        bootPercent.style.color = "var(--accent-red)";
+        
+        setTimeout(() => {
+            // Fade out boot screen
+            bootOverlay.style.opacity = '0';
+            bootOverlay.style.transition = 'opacity 0.5s ease-out';
+            
+            setTimeout(() => {
+                bootOverlay.style.display = 'none';
+                // Reveal main UI
+                mainContainer.style.opacity = '1';
+                statusBar.style.opacity = '1';
+                log('System boot completed at 37% threshold.', 'warn');
+            }, 500);
+        }, 800);
+    }
+
+    // Start Boot immediately
+    runBoot();
+
+
+    // --- Main Application Logic ---
     const viewportTitle = document.getElementById('viewport-title');
     const viewportContent = document.getElementById('viewport-content');
     const navItems = document.querySelectorAll('.nav-item');

@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Signature Boot Sequence -->
+    <div id="boot-overlay">
+        <div class="boot-content">
+            <div class="boot-logo">SULKY_OS // KERNEL_INIT</div>
+            <div class="boot-progress-container">
+                <div class="boot-bar" id="boot-bar"></div>
+            </div>
+            <div class="boot-text">LOADING: <span id="boot-percent">0.37%</span></div>
+            <div class="boot-log" id="init-log"></div>
+        </div>
+    </div>
+
     <div class="tangle-container">
         <!-- Zone A: The Registry (Sidebar) -->
         <div class="pane sidebar" id="zone-a">
