@@ -139,6 +139,17 @@ body {
 .node circle { stroke: #fff; stroke-width: 1.5px; transition: all 0.2s; }
 .link { stroke-opacity: 0.6; }
 
+/* Live Terminal */
+.terminal-view { font-family: 'JetBrains Mono', monospace; font-size: 14px; display: flex; flex-direction: column; min-height: 100%; }
+.terminal-output { flex-grow: 1; margin-bottom: 10px; }
+.cmd-line { display: flex; margin-bottom: 5px; }
+.cmd-prompt { color: var(--accent-green); margin-right: 10px; font-weight: bold; }
+.cmd-input-container { display: flex; align-items: center; width: 100%; }
+.cmd-input { background: transparent; border: none; color: var(--text-primary); font-family: inherit; font-size: inherit; flex-grow: 1; outline: none; }
+.cmd-response { margin-bottom: 15px; white-space: pre-wrap; color: var(--text-primary); }
+.cmd-error { color: var(--accent-red); }
+.cmd-success { color: var(--accent-blue); }
+
 /* Telemetry */
 .stats-grid { display: flex; gap: 20px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
 .stat-box { display: flex; flex-direction: column; gap: 5px; min-width: 120px; }

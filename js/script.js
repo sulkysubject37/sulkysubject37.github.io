@@ -69,6 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'network':
                 renderNetwork();
                 break;
+            case 'terminal':
+                renderTerminal();
+                break;
             case 'experience':
                 renderExperience();
                 break;
@@ -265,6 +268,104 @@ document.addEventListener('DOMContentLoaded', () => {
             d.fx = null;
             d.fy = null;
         }
+    }
+
+    function renderTerminal() {
+        const html = `
+            <div class="terminal-view" id="terminal-view">
+                <div class="terminal-output" id="terminal-output">
+                    <div class="cmd-response">Welcome to ArshadOS Shell v2.0.1\nType 'help' for available commands.</div>
+                </div>
+                <div class="cmd-line">
+                    <span class="cmd-prompt">user@arshad:~ $</span>
+                    <div class="cmd-input-container">
+                        <input type="text" class="cmd-input" id="cmd-input" autocomplete="off" autofocus>
+                    </div>
+                </div>
+            </div>
+        `;
+        viewportContent.innerHTML = html;
+
+        const input = document.getElementById('cmd-input');
+        const output = document.getElementById('terminal-output');
+
+        input.focus();
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                if (cmd) {
+                    executeCommand(cmd, output);
+                }
+                input.value = '';
+            }
+        });
+        
+        // Keep focus
+        document.getElementById('terminal-view').addEventListener('click', () => {
+             input.focus();
+        });
+    }
+
+    function executeCommand(cmd, output) {
+        // Echo command
+        const cmdNode = document.createElement('div');
+        cmdNode.className = 'cmd-line';
+        cmdNode.innerHTML = `<span class="cmd-prompt">user@arshad:~ $</span> <span>${cmd}</span>`;
+        output.appendChild(cmdNode);
+
+        // Process Command
+        let response = '';
+        let type = 'cmd-response';
+        const parts = cmd.split(' ');
+        const baseCmd = parts[0].toLowerCase();
+
+        switch(baseCmd) {
+            case 'help':
+                response = `Available commands:
+  help        Show this help message
+  ls          List projects and files
+  whoami      Display current user
+  cat [file]  Display file content (e.g., cat bio)
+  clear       Clear the terminal
+  sudo        Execute a command as superuser`;
+                break;
+            case 'ls':
+                response = `Projects:\n${portfolioData.projects.map(p => '  ' + p.title).join('\n')}\n\nFiles:\n  bio.txt\n  skills.json\n  contact.sh`;
+                break;
+            case 'whoami':
+                response = 'guest_user';
+                break;
+            case 'clear':
+                output.innerHTML = '';
+                return;
+            case 'sudo':
+                response = 'user is not in the sudoers file. This incident will be reported.';
+                type = 'cmd-error';
+                break;
+            case 'cat':
+                if (parts[1] === 'bio' || parts[1] === 'bio.txt') {
+                    response = portfolioData.about.bio;
+                } else if (parts[1] === 'skills' || parts[1] === 'skills.json') {
+                     response = JSON.stringify(portfolioData.skills, null, 2);
+                } else if (parts[1]) {
+                    response = `cat: ${parts[1]}: No such file or directory`;
+                    type = 'cmd-error';
+                } else {
+                    response = 'usage: cat [file]';
+                }
+                break;
+            default:
+                response = `bash: ${baseCmd}: command not found`;
+                type = 'cmd-error';
+        }
+
+        const respNode = document.createElement('div');
+        respNode.className = type;
+        respNode.innerText = response;
+        output.appendChild(respNode);
+        
+        // Auto-scroll
+        output.scrollTop = output.scrollHeight;
     }
 
     function renderExperience() {
