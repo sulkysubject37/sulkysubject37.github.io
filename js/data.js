@@ -105,9 +105,9 @@ const portfolioData = {
         },
         {
             title: "KORA",
-            tech: "Python, Spiking Neural Networks",
-            description: "Kinetic Ordered Regulatory Analysis. A pipeline for inferring Gene Regulatory Networks using Spiking Neural Networks from transcriptomic data.",
-            cruelDescription: "Training SNNs on CPU because neuromorphic hardware is expensive. Infers GRNs from spike timing. It's biologically plausible, which means it's incredibly hard to train compared to standard ANNs.",
+            tech: "Python, Swift, Spiking Neural Networks, CoreML",
+            description: "Kinetic Ordered Regulatory Analysis. Pipeline for inferring Gene Regulatory Networks (GRNs) from transcriptomic data. Includes a Swift application for inference and benchmarking.",
+            cruelDescription: "Training SNNs on CPU because neuromorphic hardware is expensive. Exported cohorts to CoreML for edge inference. Swift benchmarking proved 10x throughput on local hardware compared to cloud-based inference scripts.",
             link: "https://github.com/Sulkysubject37/kora"
         },
         {
@@ -182,7 +182,7 @@ const portfolioData = {
         }
     ],
     skills: [
-        "C++20", "R (CRAN)", "Python", "CMake", "Catch2",
+        "C++20", "R (CRAN)", "Python", "Swift", "Shell Scripting", "CMake", "Catch2",
         "MLX", "PyTorch", "GNN", "Bioinformatics",
         "Systems Biology", "Graph Theory", "TUI (FTXUI)",
         "Shiny", "FastAPI", "Docker", "Git", "SHAP"
