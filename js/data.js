@@ -55,6 +55,13 @@ const portfolioData = {
     ],
     projects: [
         {
+            title: "VECTORIA",
+            tech: "C++17, Assembly (SIMD), Python, Swift",
+            description: "Deterministic, inspectable computational kernel framework. Features arena-based memory, frozen IR graph, and full execution tracing.",
+            cruelDescription: "Enforces strict 'Reference-as-Truth' semantics. Bitwise intra-platform determinism verified by multi-op stress tests. Hand-tuned ARM64 NEON and AVX2 kernels because compilers aren't smart enough yet. 100% CI pass rate on Apple Silicon and Linux.",
+            link: "https://github.com/Sulkysubject37/vectoria"
+        },
+        {
             title: "jinxembler",
             tech: "C++20, Python, CMake",
             description: "High-performance de novo transcriptome assembler using 2-bit k-mer encoding and Tarjan's SCC algorithm. 100% precision on synthetic benchmarks.",
@@ -182,7 +189,7 @@ const portfolioData = {
         }
     ],
     skills: [
-        "C++20", "R (CRAN)", "Python", "Swift", "Shell Scripting", "CMake", "Catch2",
+        "C++20", "Assembly (SIMD)", "R (CRAN)", "Python", "Swift", "Shell Scripting", "CMake", "Catch2",
         "MLX", "PyTorch", "GNN", "Bioinformatics",
         "Systems Biology", "Graph Theory", "TUI (FTXUI)",
         "Shiny", "FastAPI", "Docker", "Git", "SHAP"
