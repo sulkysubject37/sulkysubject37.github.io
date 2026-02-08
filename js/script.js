@@ -187,11 +187,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = `
             <div class="man-page" style="height: 100%; display: flex; flex-direction: column;">
                 <div class="man-section" style="flex-grow: 1; display: flex; flex-direction: column;">
-                    <div class="section-title">RESUME_VIEWER [assets/Arshad_resume.pdf]</div>
+                    <div class="section-title">RESUME_VIEWER [assets/Arshad_Resume.pdf]</div>
                     <div style="margin-bottom: 10px;">
-                        <a href="assets/Arshad_resume.pdf" download style="color: var(--accent-green); text-decoration: none;">[EXTRACT_RESUME (DOWNLOAD)]</a>
+                        <a href="assets/Arshad_Resume.pdf" download style="color: var(--accent-green); text-decoration: none;">[EXTRACT_RESUME (DOWNLOAD)]</a>
                     </div>
-                    <iframe src="assets/Arshad_resume.pdf" style="width: 100%; flex-grow: 1; border: 1px solid var(--border-color); background: #fff;"></iframe>
+                    <iframe src="assets/Arshad_Resume.pdf" style="width: 100%; flex-grow: 1; border: 1px solid var(--border-color); background: #fff;"></iframe>
                 </div>
             </div>
         `;
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'extract':
                 if (parts[1] === 'resume') {
                     const link = document.createElement('a');
-                    link.href = 'assets/Arshad_resume.pdf';
+                    link.href = 'assets/Arshad_Resume.pdf';
                     link.download = 'Arshad_Resume.pdf';
                     link.click();
                     response = "Extracting Arshad_Resume.pdf...";
