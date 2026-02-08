@@ -214,6 +214,48 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Why Protein Networks Need a C++ Revolution: The Story Behind tangle",
+            date: "Dec 8, 2025",
+            summary: "A deep dive into why high-performance systems programming is essential for modern PPI network analysis and the engineering philosophy of tangle.",
+            link: "https://subconc.hashnode.dev/tangle"
+        },
+        {
+            title: "Detested Poets #1: Charles Bukowski, The Laureate of the Gutter",
+            date: "Nov 19, 2025",
+            summary: "The first entry in the 'Detested Poets' series, dissecting the controversial and overrated figure of Charles Bukowski.",
+            link: "https://subconc.hashnode.dev/charles-bukowski"
+        },
+        {
+            title: "Operation Subjects: A Bioinformatics Suite That Eats Its Own Jobs",
+            date: "Nov 15, 2025",
+            summary: "Solving the installation and dependency hell of bioinformatics tools with a robust, automated sequence analysis suite.",
+            link: "https://subconc.hashnode.dev/operation-subjects"
+        },
+        {
+            title: "Don't Follow the Trend: The Niche Contrarian Manifesto",
+            date: "Nov 14, 2025",
+            summary: "In a world of convergence and 'hot' topics, this manifesto argues for the power of niche expertise and algorithmic rigor.",
+            link: "https://subconc.hashnode.dev/niche-contrarian"
+        },
+        {
+            title: "MuseDNA: Composing a Symphony from the Code of Life",
+            date: "Nov 13, 2025",
+            summary: "Translating biological sequences into audible symphonies. A journey into DNA data storage and sonic information theory.",
+            link: "https://subconc.hashnode.dev/muse-dna"
+        },
+        {
+            title: "Deconstructing the Baroque Binary: An Analysis of Rosalía's 'Berghain'",
+            date: "Nov 12, 2025",
+            summary: "A conceptual and technical analysis of Rosalía's sonic borderlands, where flamenco meets industrial techno.",
+            link: "https://subconc.hashnode.dev/rosalia-berghain"
+        },
+        {
+            title: "The Ecstatic Conversation: How Jazz and Qawwali Speak the Same Musical Language",
+            date: "Nov 9, 2025",
+            summary: "Exploring the driving rhythms and soaring vocals that bridge the gap between South Asian Sufi music and American Jazz.",
+            link: "https://subconc.hashnode.dev/the-ecstatic-conversation-how-jazz-and-qawwali-speak-the-same-musical-language"
+        },
+        {
             title: "The Fractured Glass: Who Are You When No One is Watching?",
             date: "Sept 25, 2025",
             summary: "A poetic exploration of the self. When the crowd fades and the masks come off, who do we become? An inquiry into the quiet hypocrisy and the shadow self.",
