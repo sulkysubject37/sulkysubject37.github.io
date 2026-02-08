@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'experience':
                 renderExperience();
                 break;
+            case 'resume':
+                renderResume();
+                break;
             case 'blog':
                 renderBlog();
                 break;
@@ -178,6 +181,21 @@ document.addEventListener('DOMContentLoaded', () => {
             default:
                 viewportContent.innerHTML = '<div class="man-text text-red">Error: File not found.</div>';
         }
+    }
+
+    function renderResume() {
+        const html = `
+            <div class="man-page" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="man-section" style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <div class="section-title">RESUME_VIEWER [assets/Arshad_resume.pdf]</div>
+                    <div style="margin-bottom: 10px;">
+                        <a href="assets/Arshad_resume.pdf" download style="color: var(--accent-green); text-decoration: none;">[EXTRACT_RESUME (DOWNLOAD)]</a>
+                    </div>
+                    <iframe src="assets/Arshad_resume.pdf" style="width: 100%; flex-grow: 1; border: 1px solid var(--border-color); background: #fff;"></iframe>
+                </div>
+            </div>
+        `;
+        viewportContent.innerHTML = html;
     }
 
     function renderBlog() {
@@ -494,6 +512,8 @@ document.addEventListener('DOMContentLoaded', () => {
   skills         List professional & personal skills
   projects list  Show project index with summaries
   blog           List latest blog posts
+  view resume    Display resume on screen
+  extract resume Download resume (PDF)
   open [name]    Open project link in new tab
   contact        Display email and social protocols
   ls             List files in current directory
@@ -503,6 +523,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'about':
                 response = isCruelMode ? portfolioData.about.cruelBio : portfolioData.about.bio;
+                break;
+            case 'view':
+                if (parts[1] === 'resume') {
+                    renderView('resume');
+                    // Update sidebar active state
+                    navItems.forEach(n => n.classList.remove('active'));
+                    document.querySelector('[data-target="resume"]').classList.add('active');
+                    response = "Opening resume in viewport...";
+                    type = 'cmd-success';
+                } else {
+                    response = "usage: view resume";
+                }
+                break;
+            case 'extract':
+                if (parts[1] === 'resume') {
+                    const link = document.createElement('a');
+                    link.href = 'assets/Arshad_resume.pdf';
+                    link.download = 'Arshad_Resume.pdf';
+                    link.click();
+                    response = "Extracting Arshad_Resume.pdf...";
+                    type = 'cmd-success';
+                } else {
+                    response = "usage: extract resume";
+                }
                 break;
             case 'blog':
                 response = portfolioData.posts.map(p => `[${p.date}] ${p.title}`).join('\n');
