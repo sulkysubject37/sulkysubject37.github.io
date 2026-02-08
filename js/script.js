@@ -458,12 +458,51 @@ document.addEventListener('DOMContentLoaded', () => {
         switch(baseCmd) {
             case 'help':
                 response = `Available commands:
-  help        Show this help message
-  ls          List projects and files
-  whoami      Display current user
-  cat [file]  Display file content (e.g., cat bio)
-  clear       Clear the terminal
-  sudo        Execute a command as superuser`;
+  about          Show short bio
+  skills         List professional & personal skills
+  projects list  Show project index with summaries
+  open [name]    Open project link in new tab
+  contact        Display email and social protocols
+  ls             List files in current directory
+  whoami         Display current user session
+  clear          Clear the terminal screen
+  cat [file]     Display file content`;
+                break;
+            case 'about':
+                response = isCruelMode ? portfolioData.about.cruelBio : portfolioData.about.bio;
+                break;
+            case 'skills':
+                response = `PROFESSIONAL:\n${portfolioData.skills.join(', ')}\n\nPERSONAL:\nPhotography, Music Production, Linguistics (Multilingual)`;
+                break;
+            case 'projects':
+                if (parts[1] === 'list') {
+                    response = portfolioData.projects.map(p => `[${p.title}]\n  ${p.description}`).join('\n\n');
+                } else {
+                    response = "usage: projects list";
+                }
+                break;
+            case 'open':
+                const projName = parts.slice(1).join(' ').toLowerCase();
+                if (!projName) {
+                    response = "usage: open [project_name]";
+                } else {
+                    const project = portfolioData.projects.find(p => p.title.toLowerCase().includes(projName));
+                    if (project && project.link !== '#') {
+                        window.open(project.link, '_blank');
+                        response = `Opening ${project.title} in new tab...`;
+                        type = 'cmd-success';
+                    } else if (project) {
+                        response = `Project '${project.title}' has no external link available.`;
+                        type = 'cmd-error';
+                    } else {
+                        response = `Project '${projName}' not found. Use 'projects list' to see names.`;
+                        type = 'cmd-error';
+                    }
+                }
+                break;
+            case 'contact':
+                const s = portfolioData.about.social;
+                response = `EMAIL: ${portfolioData.about.email}\nGITHUB: ${s.github}\nLINKEDIN: ${s.linkedin}\nTWITTER: ${s.twitter}`;
                 break;
             case 'ls':
                 response = `Projects:\n${portfolioData.projects.map(p => '  ' + p.title).join('\n')}\n\nFiles:\n  bio.txt\n  skills.json\n  contact.sh`;
