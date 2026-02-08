@@ -212,6 +212,56 @@ const portfolioData = {
     interests: [
         "Systems Programming", "Network Biology", "Quantum Computing", "Algorithmic Rigor", "Open Source"
     ],
+    posts: [
+        {
+            title: "The Fractured Glass: Who Are You When No One is Watching?",
+            date: "Sept 25, 2025",
+            summary: "A poetic exploration of the self. When the crowd fades and the masks come off, who do we become? An inquiry into the quiet hypocrisy and the shadow self.",
+            link: "posts/2025-09-25_The-Fractured-Glass--Who-Are-You-When-No-One-is-Watching--1ef39cc3803c.html"
+        },
+        {
+            title: "The Finer Print: Death’s Curse on the Promise of Tomorrow",
+            date: "Sept 13, 2025",
+            summary: "What if the promise of delayed gratification is a lie? Exploring how mortality curses our pursuit of future solace and how to find meaning through process gratification.",
+            link: "posts/2025-09-13_The-Finer-Print--Death-s-Curse-on-the-Promise-of-Tomorrow-aa3018054709.html"
+        },
+        {
+            title: "We Are Not Apex Predators, We Are Apex 'Bullshitters'",
+            date: "Sept 5, 2025",
+            summary: "Justice isn’t a natural law; it’s a human invention. Explore why exploitation persists because we’ve perfected the art of justifying it.",
+            link: "posts/2025-09-05_We-Are-Not-Apex-Predators--We-Are-Apex--Bullshitters--b16440e672c2.html"
+        },
+        {
+            title: "The Power of Stupidity: Why It’s More Dangerous Than Evil",
+            date: "Aug 23, 2025",
+            summary: "Dietrich Bonhoeffer warned that stupidity is a greater threat than evil. Explore the psychology behind this force, from cognitive dissonance to modern manifestations.",
+            link: "posts/2025-08-23_The-Power-of-Stupidity--Why-It-s-More-Dangerous-Than-Evil-08af2c6a3d1c.html"
+        },
+        {
+            title: "The Duality of Existence: How Opposites Define Art, Psychology, and Literature",
+            date: "Aug 6, 2025",
+            summary: "Life’s most profound truths are found in balance. Exploring how visual and emotional contrasts reveal deeper truths in art and storytelling.",
+            link: "posts/2025-08-06_The-Duality-of-Existence--How-Opposites-Define-Art--Psychology--and-Literature-07234a468490.html"
+        },
+        {
+            title: "Are We Just Tools or Enemies? The Politician’s Dichotomy",
+            date: "May 3, 2025",
+            summary: "Nietzsche’s dissection of power feels eerily prescient today. Are we just pawns in power plays? Or can we reclaim our humanity?",
+            link: "posts/2025-05-03_Are-We-Just-Tools-or-Enemies--The-Politician-s-Dichotomy-and-Human-Agency-3bbacaa8ea37.html"
+        },
+        {
+            title: "Peter Cat Recording Co.: Decoding the Alchemists of Sound",
+            date: "Feb 3, 2025",
+            summary: "A journey through the genre-defying music of PCRC. Meet the band, their ghosts, and the code that cracks their chaos.",
+            link: "posts/2025-02-03_Peter-Cat-Recording-Co---940fba2ca86a.html"
+        },
+        {
+            title: "Automate Your Finances in 10 Minutes with Python",
+            date: "Jan 31, 2025",
+            summary: "Learn how to automate budgeting, bill payments, and expense tracking using Python and Plaid API integration.",
+            link: "posts/2025-01-31_Automate-Your-Finances-in-10-Minutes-with-Python--Track-Expenses--Pay-Bills---Save-Effortlessly-e8ad646f82bb.html"
+        }
+    ],
     quotes: [
         { text: "Systems must fail loudly and safely.", author: "The Cruel Standard" },
         { text: "Biology is a system of systems.", author: "Unknown" },

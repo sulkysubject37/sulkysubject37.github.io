@@ -166,6 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'experience':
                 renderExperience();
                 break;
+            case 'blog':
+                renderBlog();
+                break;
             case 'publications':
                 renderPublications();
                 break;
@@ -175,6 +178,33 @@ document.addEventListener('DOMContentLoaded', () => {
             default:
                 viewportContent.innerHTML = '<div class="man-text text-red">Error: File not found.</div>';
         }
+    }
+
+    function renderBlog() {
+        const html = `
+            <div class="man-page">
+                <div class="man-section">
+                    <div class="section-title">BLOG_ENTRIES (LATEST_FIRST)</div>
+                    <div class="blog-list">
+                        ${portfolioData.posts.map(post => `
+                            <div class="blog-entry" style="margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                                <div class="blog-date" style="color: var(--text-secondary); font-size: 12px; margin-bottom: 5px;">[${post.date}]</div>
+                                <div class="blog-title" style="color: var(--accent-blue); font-weight: bold; font-size: 18px; margin-bottom: 8px;">
+                                    <a href="${post.link}" target="_blank" style="color: inherit; text-decoration: none;">${post.title}</a>
+                                </div>
+                                <div class="blog-summary" style="color: var(--text-primary); font-size: 14px; line-height: 1.5;">
+                                    ${post.summary}
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <a href="${post.link}" target="_blank" style="color: var(--accent-green); text-decoration: none; font-size: 12px;">[READ_FULL_ARTICLE]</a>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        viewportContent.innerHTML = html;
     }
 
     function renderProfile() {
@@ -461,6 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
   about          Show short bio
   skills         List professional & personal skills
   projects list  Show project index with summaries
+  blog           List latest blog posts
   open [name]    Open project link in new tab
   contact        Display email and social protocols
   ls             List files in current directory
@@ -470,6 +501,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'about':
                 response = isCruelMode ? portfolioData.about.cruelBio : portfolioData.about.bio;
+                break;
+            case 'blog':
+                response = portfolioData.posts.map(p => `[${p.date}] ${p.title}`).join('\n');
                 break;
             case 'skills':
                 response = `PROFESSIONAL:\n${portfolioData.skills.join(', ')}\n\nPERSONAL:\nPhotography, Music Production, Linguistics (Multilingual)`;
