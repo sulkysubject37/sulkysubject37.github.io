@@ -90,11 +90,18 @@ const portfolioData = {
             link: "https://github.com/Sulkysubject37/cruel-gemma"
         },
         {
-            title: "annotaR",
-            tech: "R, CRAN",
-            description: "Statistical R package for automated genomic annotation and interval management. Successfully submitted to CRAN.",
-            cruelDescription: "Survived CRAN's manual review process (almost). Solves the 'one-off error' hell of genomic intervals. It's basically a wrapper around GRanges but with sane defaults so users don't have to read 50 pages of Bioconductor docs.",
-            link: "https://github.com/Sulkysubject37/annotaR"
+            title: "resLIK (R Package)",
+            tech: "R, RLCS, Systems Safety",
+            description: "Implements the Representation-Level Control Surfaces (RLCS) paradigm for ensuring the reliability of autonomous systems and AI models. It provides three deterministic sensors: Residual Likelihood (ResLik), Temporal Consistency Sensor (TCS), and Agreement Sensor.",
+            cruelDescription: "Implements RLCS invariants because 'trust me' isn't a safety protocol. Uses ResLik and TCS to catch distribution shifts before they kill the system. It's not 'anomaly detection', it's 'statistical governance'. PROCEED, DEFER, or ABSTAIN; there is no 'maybe'.",
+            link: "https://sulkysubject37.r-universe.dev/resLIK"
+        },
+        {
+            title: "annotaR: Tidy, Integrated Gene Annotation",
+            tech: "R, CRAN, R-Universe",
+            description: "A framework for intuitive, multi-source gene and protein annotation, with a focus on integrating functional genomics with disease and drug data for translational insights.",
+            cruelDescription: "Survived CRAN's manual review process (mostly). Solves the 'one-off error' hell of genomic intervals. It's a wrapper around GRanges but with sane defaults so biologists don't have to read 50 pages of Bioconductor docs.",
+            link: "https://sulkysubject37.r-universe.dev/annotaR"
         },
         {
             title: "GAI Analyzer",
@@ -163,8 +170,8 @@ const portfolioData = {
             title: "BioMoR: R package for bioinformatics modeling",
             tech: "R, Autoencoders, Random Forest",
             description: "Bioinformatics Modeling with Recursion and Autoencoder-Based Ensemble using recursive transformer-inspired architectures.",
-            cruelDescription: "Experimental R package. recursive transformers on gene data. It's weird, it's distinct, and it mostly works.",
-            link: "#"
+            cruelDescription: "Recursive transformers for gene data because linear models are too naive for biology. It forces structural priors onto latent representations. Available on R-Universe for those who want to see where bioinformatics meets information theory.",
+            link: "https://sulkysubject37.r-universe.dev/BioMoR"
         },
         {
             title: "Chemical–Biological Dynamics Modeling",

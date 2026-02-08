@@ -87,6 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let currentView = 'profile';
     let isCruelMode = false;
+    let projectSearchQuery = '';
+    let activeTechFilter = 'ALL';
     const startTime = new Date();
 
     const modeSwitch = document.getElementById('mode-switch');
@@ -125,6 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update Active State
             navItems.forEach(n => n.classList.remove('active'));
             item.classList.add('active');
+
+            // Reset filters when switching to projects
+            if (item.dataset.target === 'projects') {
+                projectSearchQuery = '';
+                activeTechFilter = 'ALL';
+            }
 
             // Render Content
             const target = item.dataset.target;
@@ -208,7 +216,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderProjects() {
-        const rows = portfolioData.projects.map(proj => {
+        // Extract unique tech tags
+        const allTech = new Set();
+        portfolioData.projects.forEach(p => {
+            p.tech.split(',').forEach(t => allTech.add(t.trim()));
+        });
+        const topTech = ['ALL', 'C++', 'R', 'Python', 'Swift', 'AI', 'Bioinformatics']; // Curated list or dynamic
+
+        const filteredProjects = portfolioData.projects.filter(proj => {
+            const matchesSearch = proj.title.toLowerCase().includes(projectSearchQuery.toLowerCase()) || 
+                                proj.tech.toLowerCase().includes(projectSearchQuery.toLowerCase()) ||
+                                proj.description.toLowerCase().includes(projectSearchQuery.toLowerCase());
+            
+            const matchesFilter = activeTechFilter === 'ALL' || proj.tech.includes(activeTechFilter);
+            
+            return matchesSearch && matchesFilter;
+        });
+
+        const rows = filteredProjects.map(proj => {
             const desc = isCruelMode ? (proj.cruelDescription || proj.description) : proj.description;
             const descClass = isCruelMode && proj.cruelDescription ? 'text-red' : 'text-primary';
             
@@ -224,7 +249,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = `
             <div class="man-page">
                  <div class="man-section">
-                    <div class="section-title">PROJECT_INDEX</div>
+                    <div class="section-title">PROJECT_INDEX [${filteredProjects.length}/${portfolioData.projects.length}]</div>
+                    
+                    <div class="project-controls">
+                        <input type="text" class="search-input" id="project-search" placeholder="SEARCH_PROJECTS..." value="${projectSearchQuery}">
+                        <div class="filter-tags">
+                            ${topTech.map(tech => `
+                                <span class="filter-tag ${activeTechFilter === tech ? 'active' : ''}" data-tech="${tech}">${tech}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -235,13 +270,31 @@ document.addEventListener('DOMContentLoaded', () => {
                             </tr>
                         </thead>
                         <tbody>
-                            ${rows}
+                            ${rows || '<tr><td colspan="4" style="text-align:center; padding: 20px;">NO_RESULTS_FOUND</td></tr>'}
                         </tbody>
                     </table>
                 </div>
             </div>
         `;
         viewportContent.innerHTML = html;
+
+        // Attach listeners
+        const searchInput = document.getElementById('project-search');
+        searchInput.focus();
+        // Move cursor to end
+        searchInput.setSelectionRange(projectSearchQuery.length, projectSearchQuery.length);
+
+        searchInput.addEventListener('input', (e) => {
+            projectSearchQuery = e.target.value;
+            renderProjects();
+        });
+
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                activeTechFilter = tag.dataset.tech;
+                renderProjects();
+            });
+        });
     }
 
     function renderNetwork() {
