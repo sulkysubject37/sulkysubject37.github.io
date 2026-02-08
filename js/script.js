@@ -474,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'skills':
                 response = `PROFESSIONAL:\n${portfolioData.skills.join(', ')}\n\nPERSONAL:\nPhotography, Music Production, Linguistics (Multilingual)`;
                 break;
+            case 'project':
             case 'projects':
                 if (parts[1] === 'list') {
                     response = portfolioData.projects.map(p => `[${p.title}]\n  ${p.description}`).join('\n\n');
