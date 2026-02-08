@@ -290,19 +290,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
 
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>NAME</th>
-                                <th>STACK</th>
-                                <th>DESCRIPTION</th>
-                                <th>ACTION</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rows || '<tr><td colspan="4" style="text-align:center; padding: 20px;">NO_RESULTS_FOUND</td></tr>'}
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>NAME</th>
+                                    <th>STACK</th>
+                                    <th>DESCRIPTION</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows || '<tr><td colspan="4" style="text-align:center; padding: 20px;">NO_RESULTS_FOUND</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         `;
