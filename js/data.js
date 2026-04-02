@@ -214,6 +214,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Hope: A Socioeconomic Loss",
+            date: "Apr 2, 2026",
+            summary: "A cold, structural analysis of hope as a systemic miscalibration. Dissecting the socioeconomic and theological costs of expectation without kinetic execution.",
+            link: "posts/2026-04-02_Hope-A-Socioeconomic-Loss.html"
+        },
+        {
             title: "Why Protein Networks Need a C++ Revolution: The Story Behind tangle",
             date: "Dec 8, 2025",
             summary: "A deep dive into why high-performance systems programming is essential for modern PPI network analysis and the engineering philosophy of tangle.",
