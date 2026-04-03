@@ -166,22 +166,16 @@ The real metaphor is the cliff. You walk toward the edge in the dark. You do not
 [SECTION: debt]
 Hope is not neutral. It borrows against a future that may never arrive, and it does so without collateral, without interest disclosure, without the decency of a due date.
 
-The poor stay poor partly because hope is cheap and abundant. It costs nothing to hope. And things that cost nothing are overconsumed. Systems; political, social, economic; are designed to harvest the surplus hope of those without power and convert it into continued compliance. You hope for a better government. You hope for a fair wage. You hope for justice. And in the hoping, the system keeps running.
+The poor stay poor partly because hope is cheap and abundant. It costs nothing to hope. And things that cost nothing are overconsumed. Systems; political, social, economic; are designed to harvest the surplus hope of those without power and convert it into continued compliance.
 
-Palestine is not a distant abstraction in this argument; it is the most precise illustration of it. A people whose hope has outlasted every institution that was supposed to serve them. The judiciary. The civic framework. International bodies. All of it corrupted, dismantled, or simply absent. And still; hope persists. Not because it is working. But because the alternative feels unbearable.
-
-That is not the strength of hope. That is its cruelty. Hope stays even when it has no business staying. It does not respect evidence. It does not respond to loss. It lingers past the point of reason; and in that lingering, keeps people attached to a system that has already decided against them.
-
-Nietzsche did not call hope evil as a provocation. He called it evil because it functions as a mechanism of prolonged suffering. Zeus did not give mankind hope as a blessing. He gave it as a leash. A reason to continue bearing what would otherwise be unbearable; not because the unbearable becomes bearable, but because hope convinces you it might, someday, not yet, just a little longer.
+Palestine is not a distant abstraction in this argument; it is the most precise illustration of it. A people whose hope has outlasted every institution that was supposed to serve them. The judiciary. The civic framework. International bodies. All of it corrupted, dismantled, or simply absent.
 
 [SECTION: almost]
 Hope is not the problem of the hopeless. The hopeless have already let go. They are done. They have moved; downward, inward, somewhere; but they have moved.
 
 Hope is the problem of the almost-great.
 
-The ones who almost built it. Almost launched it. Almost said the thing that needed saying. The ones who had the moment, felt it, and then; waited. Hoped a little longer. Acted a little too late. Not because they lacked courage. Because hope told them there was still time. There is always, apparently, still time.
-
-There is also a darker current running beneath this; the tendency to mythologize suffering as the price of achievement. You did not need the breakdown to write the book. You did not need the loss to understand love. You did not need the failure to build wisdom. These are retroactive narratives we construct because suffering happened and we need it to mean something. The suffering was not a prerequisite. It was just a cost. And when you carry that logic forward; when you hope that the suffering will eventually produce something worthy; you are not building resilience. You are rationalizing a wound.
+The ones who almost built it. Almost launched it. Almost said the thing that needed saying. The ones who had the moment, felt it, and then; waited. Hoped a little longer. Acted a little too late.
 
 [SECTION: vulnerability]
 Emotional suppression is its own catastrophe. When you do not allow yourself to feel the weight of what has not worked; when you dress grief in the language of hope and call it faith; you do not process the loss. You store it. It compounds. It leaks into every subsequent decision with a quiet, unacknowledged pressure.
@@ -194,14 +188,6 @@ The Urdu poets understood something the self-help industry refuses to admit: tha
 Hope is a socioeconomic loss. Structurally.
 
 It costs you present action. It substitutes for strategy. It keeps broken systems operational by supplying the one resource the powerless have in excess and the powerful need most; patience. Compliance dressed as faith. Waiting dressed as resilience.
-
-The return on hope is not promised. The cost of hope is immediate. That is, by any reasonable accounting, a loss.
-
-Having hope is the half part of being hopeful. The other half is acting not to be dependent on hope.
-
-The tipping point; the one you feel but cannot name; is not found in the hoping. It is found in the moment you stop calculating what hope might return and simply move. Into the dark. Toward the edge. Not because you know the ground is there.
-
-But because standing still was never actually an option.
 
 Alas; hope is a conflict. And conflicts, by nature, do not resolve cleanly. They resolve in action, in consequence, in the cold clarity that only arrives after you have walked far enough to see where you actually are.
 
@@ -263,6 +249,7 @@ That is not hope. That is reckoning.
   };
 
   function render() {
+    if (!Pretext) return;
     surface.innerHTML = '';
     const blocks = source.split(/\[SECTION: (.*?)\]/);
     let currentY = 100;
@@ -331,10 +318,12 @@ That is not hope. That is reckoning.
     ctx.lineWidth = 1;
 
     const time = Date.now() * 0.002;
+    // Singularity
     ctx.beginPath();
     ctx.arc(width/2, 400, 150 + Math.sin(time)*20, 0, Math.PI*2);
     ctx.stroke();
 
+    // Cliff
     ctx.beginPath();
     ctx.moveTo(width * 0.6, 1200);
     for(let y = 1200; y < 2000; y += 10) {
@@ -342,7 +331,6 @@ That is not hope. That is reckoning.
     }
     ctx.lineTo(width, 2000);
     ctx.lineTo(width, 1200);
-    ctx.closePath();
     ctx.stroke();
 
     requestAnimationFrame(drawBackground);
@@ -351,7 +339,7 @@ That is not hope. That is reckoning.
   function scrollToSection(id) {
     window.scrollTo({ top: sections[id], behavior: 'smooth' });
     document.querySelectorAll('.registry-item').forEach(el => {
-      el.classList.toggle('active', el.innerText.toLowerCase().includes(id));
+      el.classList.toggle('active', el.getAttribute('onclick').includes(id));
     });
   }
 
@@ -360,8 +348,10 @@ That is not hope. That is reckoning.
     mouseCoords.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(e.clientY).padStart(3,'0')}`;
   });
 
-  resize();
-  drawBackground();
+  window.onload = () => {
+    resize();
+    drawBackground();
+  };
 </script>
 
 </body>

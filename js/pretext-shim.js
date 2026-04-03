@@ -1,7 +1,6 @@
 /**
- * SulkyOS: En-tangled (v3.0.1) - Pretext Shim
- * Minimal high-performance text measurement and layout engine.
- * Governed, Not Generated.
+ * SulkyOS: En-tangled (v3.0.1) - Pretext Pro Engine
+ * Advanced text measurement with Dynamic Occlusion & Flow.
  */
 
 const Pretext = (() => {
@@ -14,34 +13,74 @@ const Pretext = (() => {
             return ctx.measureText(text).width;
         },
 
-        // Breaks text into lines based on a max width without touching the DOM
-        layout: (text, maxWidth, font) => {
+        /**
+         * Layout text with exclusion zones (shapes).
+         * @param {string} text 
+         * @param {number} maxWidth 
+         * @param {string} font 
+         * @param {number} startY - Starting Y coordinate
+         * @param {number} lineHeight 
+         * @param {Function} exclusionFn - Returns [xStart, xEnd] forbidden for a given Y
+         */
+        layoutWithExclusion: (text, maxWidth, font, startY, lineHeight, exclusionFn) => {
             const words = text.split(' ');
             const lines = [];
-            let currentLine = words[0];
+            let currentLine = "";
+            let currentY = startY;
 
-            for (let i = 1; i < words.length; i++) {
-                const word = words[i];
-                const width = Pretext.measure(currentLine + " " + word, font);
-                if (width < maxWidth) {
-                    currentLine += " " + word;
-                } else {
-                    lines.push(currentLine);
-                    currentLine = word;
+            let i = 0;
+            while (i < words.length) {
+                const exclusion = exclusionFn(currentY); // [forbiddenXStart, forbiddenXEnd]
+                let availableRanges = [[0, maxWidth]];
+
+                if (exclusion) {
+                    const [exStart, exEnd] = exclusion;
+                    availableRanges = [];
+                    if (exStart > 0) availableRanges.push([0, exStart - 10]); // 10px padding
+                    if (exEnd < maxWidth) availableRanges.push([exEnd + 10, maxWidth]);
                 }
-            }
-            lines.push(currentLine);
-            return lines;
-        },
 
-        // "Shrink-wrap" finds the tightest width for a multiline block
-        shrinkWrap: (lines, font) => {
-            let maxW = 0;
-            lines.forEach(l => {
-                const w = Pretext.measure(l, font);
-                if (w > maxW) maxW = w;
-            });
-            return maxW;
+                // Try to fit words into the first available range
+                let fitted = false;
+                for (let range of availableRanges) {
+                    const [rStart, rEnd] = range;
+                    const rWidth = rEnd - rStart;
+                    
+                    let lineCandidate = words[i];
+                    let j = i + 1;
+                    
+                    if (Pretext.measure(lineCandidate, font) > rWidth) continue;
+
+                    while (j < words.length) {
+                        const nextWord = words[j];
+                        if (Pretext.measure(lineCandidate + " " + nextWord, font) <= rWidth) {
+                            lineCandidate += " " + nextWord;
+                            j++;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    lines.push({
+                        text: lineCandidate,
+                        x: rStart,
+                        y: currentY,
+                        width: Pretext.measure(lineCandidate, font)
+                    });
+                    
+                    i = j;
+                    fitted = true;
+                    break;
+                }
+
+                if (!fitted) {
+                    // Word too long for any range or no range available, skip Y
+                }
+                
+                currentY += lineHeight;
+            }
+
+            return { lines, endY: currentY };
         }
     };
 })();
