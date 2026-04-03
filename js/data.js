@@ -55,6 +55,20 @@ const portfolioData = {
     ],
     projects: [
         {
+            title: "SRF: Structured Recomputation Framework",
+            tech: "C++17, Python, CLI",
+            description: "Deterministic execution-level abstraction for memory-constrained dynamic programming. Reduces space complexity from O(NM) to O(N) using functional recomputation and locality-aware tiling. Verified for extreme-scale biological sequence alignment (1M bp).",
+            cruelDescription: "Eliminates the quadratic memory bottleneck (O(N^2)) by trading minimal compute cycles for spatial capacity. 99.999% memory savings on 1M bp sequences. Features a self-stabilizing regime-observation layer to maintain stability. Bit-exact determinism across macOS, Linux, and Windows because math shouldn't care about your OS.",
+            link: "https://github.com/Sulkysubject37/SRF"
+        },
+        {
+            title: "resED: Reliability Is a System Property",
+            tech: "C++17, Python, RLCS",
+            description: "Representation-Gated Encoder-Decoder architecture for governed AI. Externalizes reliability into a deterministic governance layer using the RLCS (Representation-Level Control Surface) and O(d) non-parametric sensors (ResLik, TCS, Agreement).",
+            cruelDescription: "Treats Transformers as 'untrusted' engines. Safety is enforced at the latent bottleneck via manifold monitoring. Achievement: 100% rejection of high-magnitude perturbations with a 99.6% acceptance rate for clean data. Features a reference-conditioned calibration layer to defeat the curse of dimensionality. Governed, not just generated.",
+            link: "https://github.com/Sulkysubject37/resED"
+        },
+        {
             title: "VECTORIA",
             tech: "C++17, Assembly (SIMD), Python, Swift",
             description: "Deterministic, inspectable computational kernel framework. Features arena-based memory, frozen IR graph, and full execution tracing.",
@@ -202,6 +216,9 @@ const portfolioData = {
         "Shiny", "FastAPI", "Docker", "Git", "SHAP"
     ],
     publications: [
+        "Arshad, M. (2026). Structural Recomputation Framework: A Deterministic Execution Abstraction for Memory-Constrained Dynamic Programming in Bioinformatics. Research Square (Preprint). DOI: 10.21203/rs.3.rs-9034420/v1. (Under review: Algorithms for Molecular Biology, Springer Nature).",
+        "Arshad, M. (Under Review). Reliability Is a System Property. IEEE Transactions on Neural Networks and Learning Systems (TNNLS).",
+        "Arshad, M. D. (2026). The Predictor's Gospel: Gnosticism and Newcomb's Paradox. PhilPapers. Link: https://philarchive.org/rec/ARSTPG",
         "Arshad, M. (In Prep). Deconvolving PPI Networks using Graph Variational Autoencoders. PLOS Computational Biology.",
         "Arshad, M. (Submitted). annotaR: Automated Annotation for Genomic Intervals. CRAN.",
         "Arshad, M., Mal, C., Das, S., & Bhattacharyya, D. (2024). The potential of the NLRC4 inflammasome as a cancer biomarker: A pan-cancer investigation. Human Gene, 42(8). DOI:10.1016/j.humgen.2024.201351",
