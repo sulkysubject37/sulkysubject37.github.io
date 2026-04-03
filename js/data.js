@@ -216,15 +216,16 @@ const portfolioData = {
         "Shiny", "FastAPI", "Docker", "Git", "SHAP"
     ],
     publications: [
-        "Arshad, M. (2026). Structural Recomputation Framework: A Deterministic Execution Abstraction for Memory-Constrained Dynamic Programming in Bioinformatics. Research Square (Preprint). DOI: 10.21203/rs.3.rs-9034420/v1. (Under review: Algorithms for Molecular Biology, Springer Nature).",
-        "Arshad, M. (Under Review). Reliability Is a System Property. IEEE Transactions on Neural Networks and Learning Systems (TNNLS).",
-        "Arshad, M. D. (2026). The Predictor's Gospel: Gnosticism and Newcomb's Paradox. PhilPapers. Link: https://philarchive.org/rec/ARSTPG",
-        "Arshad, M. (In Prep). Deconvolving PPI Networks using Graph Variational Autoencoders. PLOS Computational Biology.",
-        "Arshad, M. (Submitted). annotaR: Automated Annotation for Genomic Intervals. CRAN.",
         "Arshad, M., Mal, C., Das, S., & Bhattacharyya, D. (2024). The potential of the NLRC4 inflammasome as a cancer biomarker: A pan-cancer investigation. Human Gene, 42(8). DOI:10.1016/j.humgen.2024.201351",
+        "Arshad, M. D. (2026). The Predictor's Gospel: Gnosticism and Newcomb's Paradox. PhilPapers. Link: https://philarchive.org/rec/ARSTPG",
+        "Arshad, M. (2026). Structural Recomputation Framework: A Deterministic Execution Abstraction for Memory-Constrained Dynamic Programming in Bioinformatics. Research Square (Preprint). DOI: 10.21203/rs.3.rs-9034420/v1.",
+        "Arshad, M. (Under Review). Reliability Is a System Property. IEEE Transactions on Neural Networks and Learning Systems (TNNLS).",
+        "Arshad, M. (Under Review). Structural Recomputation Framework. Algorithms for Molecular Biology (Springer Nature).",
         "Arshad, M., & Mal, C. (Under review). MIKU: A multi-modal integrated knowledge-guided unified model for Alzheimer’s disease prediction. 3 Biotech.",
         "Arshad, M., & Md, S. A. (Under review). Deep learning in Huntington’s disease: Advances in prediction, biomarkers, and progression modeling. Journal of Huntington’s Disease.",
-        "Arshad, M. (In submission). SINDy-MUSE: An interpretable dynamics and structure modeling . IEEE/ACM"
+        "Arshad, M. (In submission). SINDy-MUSE: An interpretable dynamics and structure modeling . IEEE/ACM",
+        "Arshad, M. (In Prep). Deconvolving PPI Networks using Graph Variational Autoencoders. PLOS Computational Biology.",
+        "Arshad, M. (Submitted). annotaR: Automated Annotation for Genomic Intervals. CRAN."
     ],
     interests: [
         "Systems Programming", "Network Biology", "Quantum Computing", "Algorithmic Rigor", "Open Source"
