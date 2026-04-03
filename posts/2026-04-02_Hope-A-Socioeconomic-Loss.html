@@ -15,12 +15,11 @@
       --accent: #a08060;
       --accent-cold: #607080;
       --line: #2a2622;
-      --quote-bg: #141210;
-      --highlight: rgba(160, 128, 96, 0.15);
+      --highlight: rgba(160, 128, 96, 0.1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; scroll-behavior: smooth; }
+    html { font-size: 16px; scroll-behavior: smooth; background: var(--bg); }
     body {
       background: var(--bg);
       color: var(--text);
@@ -29,125 +28,76 @@
       overflow-x: hidden;
     }
 
-    /* KERNEL SCANLINES */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.1;
-    }
-
     .tangle-grid {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 280px 1fr;
       min-height: 100vh;
     }
 
-    /* ZONE ALPHA: THE REGISTRY */
-    .zone-alpha {
+    /* SIDEBAR (TOC) */
+    .sidebar {
       background: var(--surface);
       border-right: 1px solid var(--line);
-      padding: 2rem;
+      padding: 2.5rem 1.5rem;
       position: sticky;
       top: 0;
       height: 100vh;
       display: flex;
       flex-direction: column;
       font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.75rem;
       z-index: 100;
     }
 
-    .registry-header { color: var(--text-bright); margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; letter-spacing: 0.1em; }
-    .registry-item { margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s ease; opacity: 0.5; }
-    .registry-item:hover { color: var(--accent); opacity: 1; transform: translateX(5px); }
-    .registry-item.active { color: var(--accent-cold); opacity: 1; font-weight: bold; border-left: 2px solid var(--accent-cold); padding-left: 10px; }
+    .sidebar-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1.5rem; }
+    .toc-item { font-size: 0.75rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s ease; color: var(--text-dim); display: flex; align-items: flex-start; gap: 0.5rem; }
+    .toc-item:hover { color: var(--accent); transform: translateX(4px); }
+    .toc-item.active { color: var(--text-bright); border-left: 2px solid var(--accent); padding-left: 8px; }
+    .toc-item .hex { opacity: 0.4; font-size: 0.6rem; margin-top: 2px; }
 
-    .telemetry-log { margin-top: auto; border-top: 1px solid var(--line); padding-top: 1rem; font-size: 0.6rem; color: var(--text-dim); }
+    /* CONTENT AREA */
+    .viewport { position: relative; background: var(--bg); min-height: 100vh; }
+    
+    #canvas-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.2; }
+    #text-surface { position: relative; z-index: 2; width: 100%; padding: 0 10%; }
 
-    /* ZONE BETA: THE FLOW SURFACE */
-    .zone-beta {
-      position: relative;
-      background: var(--bg);
-      overflow: hidden;
-    }
+    .line { position: absolute; white-space: pre; font-size: 1.15rem; transition: opacity 0.4s ease; will-change: transform; }
+    .line.header { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 900; color: var(--text-bright); }
+    .line.metadata { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--accent-cold); }
+    .line.section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.3em; }
 
-    #render-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-      opacity: 0.3;
-    }
-
-    #render-surface {
-      position: relative;
-      z-index: 2;
-      padding: 4rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .line {
-      position: absolute;
-      white-space: pre;
-      will-change: transform;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      font-size: 1.15rem;
-    }
-
-    .line.header { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--text-bright); font-weight: 900; }
-    .line.metadata { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-dim); }
-    .line.italic { font-style: italic; }
-    .line.accent { color: var(--accent); }
-
-    /* COORDINATE OVERLAY */
-    .coords {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      color: var(--accent-cold);
-      z-index: 1001;
-    }
+    /* TELEMETRY OVERLAY */
+    .telemetry-box { position: fixed; bottom: 20px; left: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim); z-index: 1000; background: rgba(17,17,17,0.8); padding: 5px 10px; border: 1px solid var(--line); }
   </style>
 </head>
 <body>
 
 <div class="tangle-grid">
-  <aside class="zone-alpha">
-    <div class="registry-header">~/TOPOLOGY</div>
-    <div class="registry-item active" onclick="scrollToSection('opening')">[0x0] SINGULARITY</div>
-    <div class="registry-item" onclick="scrollToSection('cliff')">[0x1] THE_CLIFF</div>
-    <div class="registry-item" onclick="scrollToSection('debt')">[0x2] DEBT_MACHINERY</div>
-    <div class="registry-item" onclick="scrollToSection('almost')">[0x3] STASIS_FIELD</div>
-    <div class="registry-item" onclick="scrollToSection('vulnerability')">[0x4] FRAGILE_GLASS</div>
-    <div class="registry-item" onclick="scrollToSection('verdict')">[0x7] RECKONING</div>
+  <aside class="sidebar">
+    <div class="sidebar-label">~/topo/registry</div>
+    <div class="toc-item active" data-id="opening"><span class="hex">0x0</span> SINGULARITY</div>
+    <div class="toc-item" data-id="cliff"><span class="hex">0x1</span> THE_CLIFF</div>
+    <div class="toc-item" data-id="debt"><span class="hex">0x2</span> DEBT_MACHINERY</div>
+    <div class="toc-item" data-id="almost"><span class="hex">0x3</span> STASIS_FIELD</div>
+    <div class="toc-item" data-id="vulnerability"><span class="hex">0x4</span> FRAGILE_GLASS</div>
+    <div class="toc-item" data-id="creator"><span class="hex">0x5</span> THE_CREATOR</div>
+    <div class="toc-item" data-id="verdict"><span class="hex">0x7</span> RECKONING</div>
 
-    <div class="telemetry-log" id="telemetry">
-      <div>KERNEL: SULKY_OS_3.0.1</div>
-      <div>CORE: PRETEXT_OCCLUSION_V3</div>
-      <div id="line-count">LINES: 0</div>
+    <div style="margin-top: auto; font-family: 'IBM Plex Mono'; font-size: 0.6rem; color: var(--text-dim);">
+      SULKY_OS // EN-TANGLED V3.0.1<br>
+      STATUS: NOMINAL<br>
+      ALIAS: SulkySubject37
     </div>
   </aside>
 
-  <main class="zone-beta">
-    <canvas id="render-canvas"></canvas>
-    <div id="render-surface"></div>
+  <main class="viewport">
+    <canvas id="canvas-layer"></canvas>
+    <div id="text-surface"></div>
   </main>
 </div>
 
-<div class="coords" id="mouse-coords">X: 000 | Y: 000</div>
+<div class="telemetry-box" id="telemetry">X: 000 | Y: 000 | L: 000</div>
 
-<template id="source-data">
+<template id="prose-content">
 [SECTION: opening]
 [TYPE: header] Hope: A Socioeconomic Loss
 [TYPE: metadata] 2026.04.02 | ~12 min read | SulkySubject37
@@ -159,32 +109,41 @@ Let's not dress it up. Hope is a transaction in which only one party shows up. Y
 And yet we hold it; desperately, proudly; as though it were an asset. As though to hope were to already be halfway there. It is not. It is to stand at the edge of a cliff in the dark, walking forward, not knowing whether the ground continues or simply ends.
 
 [SECTION: cliff]
+[TYPE: section-label] i. THE CLIFF ANALOGY
 The tragedy of hope is not that it fails. It is that it does not tell you when it has. You do not know whether you fell or were saved until after; until the consequence arrives and makes itself known. That is the honest, brutal truth about hope that most people refuse to sit with. We want hope to feel like a safety net. We design metaphors of light at the end of tunnels, dawn after darkness, shores after storms. These are comfortable lies.
 
 The real metaphor is the cliff. You walk toward the edge in the dark. You do not know if you have fallen or if the ground held you; not unless the consequence is there to tell you. And often, by the time it is, you have already given everything the walking required.
 
 [SECTION: debt]
+[TYPE: section-label] ii. THE DEBT TRAP
 Hope is not neutral. It borrows against a future that may never arrive, and it does so without collateral, without interest disclosure, without the decency of a due date.
 
-The poor stay poor partly because hope is cheap and abundant. It costs nothing to hope. And things that cost nothing are overconsumed. Systems; political, social, economic; are designed to harvest the surplus hope of those without power and convert it into continued compliance.
+The poor stay poor partly because hope is cheap and abundant. It costs nothing to hope. And things that cost nothing are overconsumed. Systems; political, social, economic; are designed to harvest the surplus hope of those without power and convert it into continued compliance. You hope for a better government. You hope for a fair wage. You hope for justice. And in the hoping, the system keeps running.
 
-Palestine is not a distant abstraction in this argument; it is the most precise illustration of it. A people whose hope has outlasted every institution that was supposed to serve them. The judiciary. The civic framework. International bodies. All of it corrupted, dismantled, or simply absent.
+Palestine is not a distant abstraction in this argument; it is the most precise illustration of it. A people whose hope has outlasted every institution that was supposed to serve them. The judiciary. The civic framework. International bodies. All of it corrupted, dismantled, or simply absent. And still; hope persists. Not because it is working. But because the alternative feels unbearable.
 
 [SECTION: almost]
+[TYPE: section-label] iii. ALMOST-GREAT
 Hope is not the problem of the hopeless. The hopeless have already let go. They are done. They have moved; downward, inward, somewhere; but they have moved.
 
 Hope is the problem of the almost-great.
 
-The ones who almost built it. Almost launched it. Almost said the thing that needed saying. The ones who had the moment, felt it, and then; waited. Hoped a little longer. Acted a little too late.
+The ones who almost built it. Almost launched it. Almost said the thing that needed saying. The ones who had the moment, felt it, and then; waited. Hoped a little longer. Acted a little too late. Not because they lacked courage. Because hope told them there was still time. There is always, apparently, still time.
 
 [SECTION: vulnerability]
+[TYPE: section-label] iv. VULNERABILITY
 Emotional suppression is its own catastrophe. When you do not allow yourself to feel the weight of what has not worked; when you dress grief in the language of hope and call it faith; you do not process the loss. You store it. It compounds. It leaks into every subsequent decision with a quiet, unacknowledged pressure.
 
 The courage is not in hoping. The courage is in being present to the actual situation; with all its ugliness, all its uncertainty; and acting anyway. Not because you hope it will work. But because the action is yours to take, outcome aside.
 
-The Urdu poets understood something the self-help industry refuses to admit: that attachment to a faithless thing; whether a person, a system, or a future; produces suffering that is both real and preventable. The line between hope and wabasta hona (attachment) is thin. And most of us have long crossed it without noticing.
+[SECTION: creator]
+[TYPE: section-label] v. THE CREATOR
+There is a theological reading of hope that redeems it; partially; and it is the one that demands the most from you. Hope comprises state, knowledge and deed. Knowledge is the cause which produces the state and the state decrees the deed.
+
+The Creator does not ask for your hope. He asks for your tawakkul; trust after full effort. Trust that releases the outcome. Not hope that delays the effort while waiting for a sign.
 
 [SECTION: verdict]
+[TYPE: section-label] vii. THE VERDICT
 Hope is a socioeconomic loss. Structurally.
 
 It costs you present action. It substitutes for strategy. It keeps broken systems operational by supplying the one resource the powerless have in excess and the powerful need most; patience. Compliance dressed as faith. Waiting dressed as resilience.
@@ -196,162 +155,126 @@ That is not hope. That is reckoning.
 
 <script src="../js/pretext-shim.js"></script>
 <script>
-  const surface = document.getElementById('render-surface');
-  const canvas = document.getElementById('render-canvas');
+  const surface = document.getElementById('text-surface');
+  const canvas = document.getElementById('canvas-layer');
   const ctx = canvas.getContext('2d');
-  const mouseCoords = document.getElementById('mouse-coords');
-  const source = document.getElementById('source-data').innerHTML.trim();
+  const telemetry = document.getElementById('telemetry');
+  const source = document.getElementById('prose-content').innerHTML.trim();
   
   let width, height;
-  const FONT = '1.15rem "EB Garamond", serif';
-  const LINE_HEIGHT = 30;
-  const sections = {};
+  const FONT_BODY = '1.15rem "EB Garamond", serif';
+  const LINE_HEIGHT = 32;
+  const sectionMap = {};
 
-  function resize() {
-    width = canvas.width = window.innerWidth - 300;
-    height = canvas.height = Math.max(window.innerHeight, 5000);
+  function init() {
+    width = canvas.width = window.innerWidth - 280;
+    height = canvas.height = 10000; // Overestimated height for scroll
     render();
   }
 
-  // --- DYNAMIC OCCLUSION SHAPES ---
-  const shapes = {
-    opening: (y) => {
-      const centerX = width / 2;
-      const centerY = 400;
-      const radius = 150 + Math.sin(Date.now() * 0.002) * 20;
-      const dist = Math.abs(y - centerY);
-      if (dist < radius) {
-        const xOffset = Math.sqrt(radius**2 - dist**2);
-        return [centerX - xOffset, centerX + xOffset];
+  // Occlusion logic: return [xStart, xEnd] forbidden zone
+  function getExclusion(y) {
+    // 1. Singularity at top
+    if (y > 200 && y < 800) {
+      const centerY = 500;
+      const radius = 180 + Math.sin(Date.now() * 0.001) * 10;
+      const d = Math.abs(y - centerY);
+      if (d < radius) {
+        const span = Math.sqrt(radius**2 - d**2);
+        return [(width/2) - span, (width/2) + span];
       }
-      return null;
-    },
-    cliff: (y) => {
-      const startY = 1200;
-      const endY = 2000;
-      if (y > startY && y < endY) {
-        const base = width * 0.6;
-        const jitter = Math.sin(y * 0.05) * 30 + Math.cos(y * 0.1) * 10;
-        return [base + jitter, width];
-      }
-      return null;
-    },
-    debt: (y) => {
-      const centerY = 2600;
-      const radius = 200;
-      const dist = Math.abs(y - centerY);
-      if (dist < radius) {
-        const x = 150 + Math.sin(Date.now() * 0.001) * 50;
-        return [x, x + 300];
-      }
-      return null;
     }
-  };
+    // 2. The Cliff (jagged right edge)
+    if (y > 1500 && y < 3000) {
+      return [width * 0.7 + Math.sin(y*0.02)*40, width];
+    }
+    return null;
+  }
 
   function render() {
-    if (!Pretext) return;
     surface.innerHTML = '';
     const blocks = source.split(/\[SECTION: (.*?)\]/);
     let currentY = 100;
 
     for (let i = 1; i < blocks.length; i += 2) {
-      const sectionName = blocks[i];
+      const sectionID = blocks[i].trim();
       const content = blocks[i+1].trim();
-      const lines = content.split('\n');
-      
-      sections[sectionName] = currentY;
+      sectionMap[sectionID] = currentY;
 
-      lines.forEach(block => {
+      content.split('\n').forEach(block => {
         if (!block.trim()) { currentY += LINE_HEIGHT; return; }
-        
-        let type = '';
+
+        let type = 'body';
         let text = block;
         if (block.startsWith('[TYPE:')) {
-          const match = block.match(/\[TYPE: (.*?)\] (.*)/);
-          if (match) {
-            type = match[1];
-            text = match[2];
-          } else if (block.includes('space')) {
-            currentY += 60; return;
-          }
+          const m = block.match(/\[TYPE: (.*?)\] (.*)/);
+          if (m) { type = m[1]; text = m[2]; }
+          else if (block.includes('space')) { currentY += 80; return; }
         }
 
-        const font = type === 'header' ? '900 3rem "Playfair Display"' : FONT;
-        const lh = type === 'header' ? 60 : LINE_HEIGHT;
+        const font = (type === 'header') ? '900 3.2rem "Playfair Display"' : 
+                     (type === 'section-label') ? 'bold 0.7rem "IBM Plex Mono"' : FONT_BODY;
+        const lh = (type === 'header') ? 70 : LINE_HEIGHT;
 
-        const result = Pretext.layoutWithExclusion(
-          text, 
-          width - 100, 
-          font, 
-          currentY, 
-          lh, 
-          (y) => shapes[sectionName] ? shapes[sectionName](y) : null
-        );
+        const layout = Pretext.layoutWithExclusion(text, width * 0.8, font, currentY, lh, 
+          (type === 'header' || type === 'metadata' || type === 'section-label') ? null : getExclusion);
 
-        result.lines.forEach(l => {
+        layout.lines.forEach(l => {
           const el = document.createElement('div');
           el.className = `line ${type}`;
           el.textContent = l.text;
           el.style.top = `${l.y}px`;
-          el.style.left = `${l.x}px`;
-          el.style.opacity = 0;
-          el.style.transform = 'translateY(10px)';
+          el.style.left = `${l.x + (width * 0.1)}px`; // Center offset
+          el.style.font = font;
           surface.appendChild(el);
-          
-          requestAnimationFrame(() => {
-            el.style.opacity = 1;
-            el.style.transform = 'translateY(0)';
-          });
         });
 
-        currentY = result.endY + (type === 'header' ? 20 : 10);
+        currentY = layout.endY + 10;
       });
-      currentY += 100;
+      currentY += 150; // Section break
     }
-    
-    document.getElementById('line-count').textContent = `LINES: ${surface.children.length}`;
+    surface.style.height = `${currentY + 500}px`;
   }
 
-  function drawBackground() {
+  function drawVisuals() {
     ctx.clearRect(0, 0, width, height);
     ctx.strokeStyle = '#2a2622';
     ctx.lineWidth = 1;
 
-    const time = Date.now() * 0.002;
-    // Singularity
+    // Singularity Wireframe
+    const time = Date.now() * 0.001;
     ctx.beginPath();
-    ctx.arc(width/2, 400, 150 + Math.sin(time)*20, 0, Math.PI*2);
+    ctx.arc(width/2, 500, 180 + Math.sin(time)*10, 0, Math.PI*2);
     ctx.stroke();
 
-    // Cliff
+    // Cliff Line
     ctx.beginPath();
-    ctx.moveTo(width * 0.6, 1200);
-    for(let y = 1200; y < 2000; y += 10) {
-      ctx.lineTo(width * 0.6 + Math.sin(y*0.05)*30 + Math.cos(y*0.1)*10, y);
+    ctx.moveTo(width * 0.7, 1500);
+    for(let y=1500; y<3000; y+=10) {
+      ctx.lineTo(width * 0.7 + Math.sin(y*0.02)*40, y);
     }
-    ctx.lineTo(width, 2000);
-    ctx.lineTo(width, 1200);
     ctx.stroke();
 
-    requestAnimationFrame(drawBackground);
+    requestAnimationFrame(drawVisuals);
   }
 
-  function scrollToSection(id) {
-    window.scrollTo({ top: sections[id], behavior: 'smooth' });
-    document.querySelectorAll('.registry-item').forEach(el => {
-      el.classList.toggle('active', el.getAttribute('onclick').includes(id));
-    });
-  }
-
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', (e) => {
-    mouseCoords.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(e.clientY).padStart(3,'0')}`;
+  // --- TOC ENGINE ---
+  document.querySelectorAll('.toc-item').forEach(item => {
+    item.onclick = () => {
+      const id = item.dataset.id;
+      window.scrollTo({ top: sectionMap[id], behavior: 'smooth' });
+      document.querySelectorAll('.toc-item').forEach(el => el.classList.remove('active'));
+      item.classList.add('active');
+    };
   });
 
-  window.onload = () => {
-    resize();
-    drawBackground();
+  window.onmousemove = (e) => {
+    telemetry.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(Math.round(window.scrollY + e.clientY)).padStart(3,'0')} | L: ${surface.children.length}`;
   };
+
+  window.onresize = init;
+  window.onload = init;
+  drawVisuals();
 </script>
 
 </body>

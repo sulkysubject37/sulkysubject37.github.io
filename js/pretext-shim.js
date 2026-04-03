@@ -13,44 +13,37 @@ const Pretext = (() => {
             return ctx.measureText(text).width;
         },
 
-        /**
-         * Layout text with exclusion zones (shapes).
-         * @param {string} text 
-         * @param {number} maxWidth 
-         * @param {string} font 
-         * @param {number} startY - Starting Y coordinate
-         * @param {number} lineHeight 
-         * @param {Function} exclusionFn - Returns [xStart, xEnd] forbidden for a given Y
-         */
         layoutWithExclusion: (text, maxWidth, font, startY, lineHeight, exclusionFn) => {
             const words = text.split(' ');
             const lines = [];
-            let currentLine = "";
             let currentY = startY;
-
             let i = 0;
-            while (i < words.length) {
-                const exclusion = exclusionFn(currentY); // [forbiddenXStart, forbiddenXEnd]
+            let safetyCounter = 0;
+
+            while (i < words.length && safetyCounter < 10000) {
+                safetyCounter++;
+                const exclusion = exclusionFn ? exclusionFn(currentY) : null;
                 let availableRanges = [[0, maxWidth]];
 
                 if (exclusion) {
                     const [exStart, exEnd] = exclusion;
                     availableRanges = [];
-                    if (exStart > 0) availableRanges.push([0, exStart - 10]); // 10px padding
-                    if (exEnd < maxWidth) availableRanges.push([exEnd + 10, maxWidth]);
+                    // Padding of 20px around shapes
+                    if (exStart > 40) availableRanges.push([0, exStart - 20]);
+                    if (exEnd < maxWidth - 40) availableRanges.push([exEnd + 20, maxWidth]);
                 }
 
-                // Try to fit words into the first available range
                 let fitted = false;
                 for (let range of availableRanges) {
                     const [rStart, rEnd] = range;
                     const rWidth = rEnd - rStart;
                     
+                    if (i >= words.length) break;
                     let lineCandidate = words[i];
-                    let j = i + 1;
                     
                     if (Pretext.measure(lineCandidate, font) > rWidth) continue;
 
+                    let j = i + 1;
                     while (j < words.length) {
                         const nextWord = words[j];
                         if (Pretext.measure(lineCandidate + " " + nextWord, font) <= rWidth) {
@@ -73,11 +66,13 @@ const Pretext = (() => {
                     break;
                 }
 
-                if (!fitted) {
-                    // Word too long for any range or no range available, skip Y
-                }
-                
+                // Move to next line whether we fitted text or not
                 currentY += lineHeight;
+                
+                // If we hit a total dead zone where no words fit for 100 lines, skip the word
+                if (!fitted && safetyCounter % 100 === 0) {
+                    i++; 
+                }
             }
 
             return { lines, endY: currentY };
