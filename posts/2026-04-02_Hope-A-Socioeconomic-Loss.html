@@ -29,27 +29,25 @@
       overflow-x: hidden;
     }
 
-    /* SCANLINE OVERLAY */
+    /* KERNEL SCANLINES */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 4px, 3px 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+      background-size: 100% 4px;
       pointer-events: none;
       z-index: 1000;
-      opacity: 0.15;
+      opacity: 0.1;
     }
 
     .tangle-grid {
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 300px 1fr;
       min-height: 100vh;
-      border-left: 1px solid var(--line);
-      border-right: 1px solid var(--line);
     }
 
-    /* ZONE ALPHA: THE REGISTRY (SIDEBAR) */
+    /* ZONE ALPHA: THE REGISTRY */
     .zone-alpha {
       background: var(--surface);
       border-right: 1px solid var(--line);
@@ -61,150 +59,99 @@
       flex-direction: column;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.75rem;
-      overflow-y: auto;
+      z-index: 100;
     }
 
     .registry-header { color: var(--text-bright); margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; letter-spacing: 0.1em; }
-    .registry-item { margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 0.5rem; }
-    .registry-item:hover { color: var(--accent); transform: translateX(5px); }
-    .registry-item.active { color: var(--accent-cold); font-weight: bold; }
-    .registry-item .hex { opacity: 0.3; font-size: 0.6rem; }
+    .registry-item { margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s ease; opacity: 0.5; }
+    .registry-item:hover { color: var(--accent); opacity: 1; transform: translateX(5px); }
+    .registry-item.active { color: var(--accent-cold); opacity: 1; font-weight: bold; border-left: 2px solid var(--accent-cold); padding-left: 10px; }
 
-    .telemetry-log { margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--line); font-size: 0.65rem; color: var(--text-dim); }
-    .log-entry { margin-bottom: 0.4rem; line-height: 1.2; }
+    .telemetry-log { margin-top: auto; border-top: 1px solid var(--line); padding-top: 1rem; font-size: 0.6rem; color: var(--text-dim); }
 
-    /* ZONE BETA: THE RENDER SURFACE */
+    /* ZONE BETA: THE FLOW SURFACE */
     .zone-beta {
       position: relative;
       background: var(--bg);
-      padding-bottom: 20rem; /* Space for scroll */
+      overflow: hidden;
     }
 
-    .sticky-header {
-      position: sticky;
+    #render-canvas {
+      position: absolute;
       top: 0;
-      z-index: 50;
-      background: rgba(13, 13, 13, 0.9);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-      padding: 2rem 4rem;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.3;
     }
-
-    h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--text-bright); margin-bottom: 0.5rem; }
-    .header-metadata { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 2rem; }
 
     #render-surface {
       position: relative;
-      margin: 4rem;
-      min-height: 2000px;
+      z-index: 2;
+      padding: 4rem;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
     .line {
       position: absolute;
       white-space: pre;
       will-change: transform;
-      transition: color 0.3s ease, background 0.3s ease;
-      cursor: crosshair;
-      padding: 0 4px;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      font-size: 1.15rem;
     }
 
-    .line:hover { 
-      color: var(--text-bright); 
-      background: var(--highlight);
-    }
+    .line.header { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--text-bright); font-weight: 900; }
+    .line.metadata { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--text-dim); }
+    .line.italic { font-style: italic; }
+    .line.accent { color: var(--accent); }
 
-    /* LINE TELEMETRY TOOLTIP */
-    .line:hover::after {
-      content: attr(data-telemetry);
-      position: absolute;
-      right: -220px;
-      top: 0;
-      width: 200px;
-      background: var(--surface);
-      border: 1px solid var(--accent);
-      padding: 0.5rem;
+    /* COORDINATE OVERLAY */
+    .coords {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.6rem;
-      color: var(--accent);
-      z-index: 100;
-      pointer-events: none;
-    }
-
-    /* INTERACTIVE VISUALS */
-    .visual-block {
-      margin: 4rem 0;
-      border: 1px solid var(--line);
-      background: var(--surface);
-      padding: 2rem;
-      transition: border-color 0.3s ease;
-    }
-    .visual-block:hover { border-color: var(--accent); }
-
-    .roman-section-label {
-      position: absolute;
-      left: -60px;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7rem;
       color: var(--accent-cold);
-      transform: rotate(-90deg);
-      white-space: nowrap;
-    }
-
-    blockquote {
-      background: var(--quote-bg);
-      border-left: 2px solid var(--accent);
-      padding: 2rem;
-      margin: 3rem 0;
-      font-style: italic;
-    }
-
-    .urdu-container {
-      border: 1px solid var(--line);
-      padding: 2rem;
-      text-align: center;
-      margin: 3rem 0;
+      z-index: 1001;
     }
   </style>
 </head>
 <body>
 
 <div class="tangle-grid">
-  <!-- REGISTRY & TELEMETRY -->
   <aside class="zone-alpha">
-    <div class="registry-header">~/REGISTRY/HEADERS</div>
-    <div class="registry-item" data-target="opening"><span class="hex">[0x00]</span> OPENING</div>
-    <div class="registry-item" data-target="cliff"><span class="hex">[0x01]</span> THE_CLIFF</div>
-    <div class="registry-item" data-target="debt"><span class="hex">[0x02]</span> DEBT_TRAP</div>
-    <div class="registry-item" data-target="almost"><span class="hex">[0x03]</span> ALMOST_GREAT</div>
-    <div class="registry-item" data-target="vulnerability"><span class="hex">[0x04]</span> VULNERABILITY</div>
-    <div class="registry-item" data-target="creator"><span class="hex">[0x05]</span> THE_CREATOR</div>
-    <div class="registry-item" data-target="defence"><span class="hex">[0x06]</span> THE_DEFENCE</div>
-    <div class="registry-item" data-target="verdict"><span class="hex">[0x07]</span> THE_VERDICT</div>
+    <div class="registry-header">~/TOPOLOGY</div>
+    <div class="registry-item active" onclick="scrollToSection('opening')">[0x0] SINGULARITY</div>
+    <div class="registry-item" onclick="scrollToSection('cliff')">[0x1] THE_CLIFF</div>
+    <div class="registry-item" onclick="scrollToSection('debt')">[0x2] DEBT_MACHINERY</div>
+    <div class="registry-item" onclick="scrollToSection('almost')">[0x3] STASIS_FIELD</div>
+    <div class="registry-item" onclick="scrollToSection('vulnerability')">[0x4] FRAGILE_GLASS</div>
+    <div class="registry-item" onclick="scrollToSection('verdict')">[0x7] RECKONING</div>
 
     <div class="telemetry-log" id="telemetry">
-      <div class="log-entry">SULKY_OS // EN-TANGLED v3.0.1</div>
-      <div class="log-entry">KERNEL: PRETEXT_V3_READY</div>
+      <div>KERNEL: SULKY_OS_3.0.1</div>
+      <div>CORE: PRETEXT_OCCLUSION_V3</div>
+      <div id="line-count">LINES: 0</div>
     </div>
   </aside>
 
-  <!-- RENDER SURFACE -->
   <main class="zone-beta">
-    <div class="sticky-header">
-      <h1>Hope: <em>A Socioeconomic Loss</em></h1>
-      <div class="header-metadata">
-        <span>2026.04.02</span>
-        <span>~12 min read</span>
-        <span>SulkySUbject37</span>
-      </div>
-    </div>
-
+    <canvas id="render-canvas"></canvas>
     <div id="render-surface"></div>
   </main>
 </div>
 
-<!-- DATA SOURCE -->
-<template id="prose-source">
+<div class="coords" id="mouse-coords">X: 000 | Y: 000</div>
+
+<template id="source-data">
 [SECTION: opening]
+[TYPE: header] Hope: A Socioeconomic Loss
+[TYPE: metadata] 2026.04.02 | ~12 min read | SulkySubject37
+[TYPE: space]
 Hope is not comfort. It is not a soft thing that sits quietly beside you. It is a cost you pay in the present; in full; for a return that has not been promised, signed, or guaranteed by anyone.
 
 Let's not dress it up. Hope is a transaction in which only one party shows up. You bring your time, your energy, your emotional capital, your suspended action; and on the other end sits nothing but possibility. Not probability. Possibility. The market does not reward possibility. It rewards movement.
@@ -212,17 +159,11 @@ Let's not dress it up. Hope is a transaction in which only one party shows up. Y
 And yet we hold it; desperately, proudly; as though it were an asset. As though to hope were to already be halfway there. It is not. It is to stand at the edge of a cliff in the dark, walking forward, not knowing whether the ground continues or simply ends.
 
 [SECTION: cliff]
-[LABEL: i.]
 The tragedy of hope is not that it fails. It is that it does not tell you when it has. You do not know whether you fell or were saved until after; until the consequence arrives and makes itself known. That is the honest, brutal truth about hope that most people refuse to sit with. We want hope to feel like a safety net. We design metaphors of light at the end of tunnels, dawn after darkness, shores after storms. These are comfortable lies.
 
 The real metaphor is the cliff. You walk toward the edge in the dark. You do not know if you have fallen or if the ground held you; not unless the consequence is there to tell you. And often, by the time it is, you have already given everything the walking required.
 
-[PULL: "Hope is causation, correlation and consequence altogether; it's vague. It's okay to be hopeful. But being hopeful ain't enough."]
-
-Economically speaking, this is a leveraged bet with no disclosed terms. You are long on a position that may never close. Every unit of time spent hoping is a unit of time not spent building, not spent acting, not spent being ruthlessly present to what is; rather than what could be.
-
 [SECTION: debt]
-[LABEL: ii.]
 Hope is not neutral. It borrows against a future that may never arrive, and it does so without collateral, without interest disclosure, without the decency of a due date.
 
 The poor stay poor partly because hope is cheap and abundant. It costs nothing to hope. And things that cost nothing are overconsumed. Systems; political, social, economic; are designed to harvest the surplus hope of those without power and convert it into continued compliance. You hope for a better government. You hope for a fair wage. You hope for justice. And in the hoping, the system keeps running.
@@ -231,12 +172,9 @@ Palestine is not a distant abstraction in this argument; it is the most precise 
 
 That is not the strength of hope. That is its cruelty. Hope stays even when it has no business staying. It does not respect evidence. It does not respond to loss. It lingers past the point of reason; and in that lingering, keeps people attached to a system that has already decided against them.
 
-[QUOTE: "Pandora brought the box containing evils and opened it. It was the gift of the gods to men, a gift of most enticing appearance externally and called the 'box of happiness.' Thereupon all the evils flew out. One evil only did not fly out of the box. Hence he looks upon the one evil still remaining as the greatest source of happiness; it is hope. Zeus intended that man, notwithstanding the evils oppressing him, should continue to live and not rid himself of life, but keep on making himself miserable."; Friedrich Nietzsche; Human, All Too Human, Aphorism 71 (1878)]
-
 Nietzsche did not call hope evil as a provocation. He called it evil because it functions as a mechanism of prolonged suffering. Zeus did not give mankind hope as a blessing. He gave it as a leash. A reason to continue bearing what would otherwise be unbearable; not because the unbearable becomes bearable, but because hope convinces you it might, someday, not yet, just a little longer.
 
 [SECTION: almost]
-[LABEL: iii.]
 Hope is not the problem of the hopeless. The hopeless have already let go. They are done. They have moved; downward, inward, somewhere; but they have moved.
 
 Hope is the problem of the almost-great.
@@ -246,48 +184,14 @@ The ones who almost built it. Almost launched it. Almost said the thing that nee
 There is also a darker current running beneath this; the tendency to mythologize suffering as the price of achievement. You did not need the breakdown to write the book. You did not need the loss to understand love. You did not need the failure to build wisdom. These are retroactive narratives we construct because suffering happened and we need it to mean something. The suffering was not a prerequisite. It was just a cost. And when you carry that logic forward; when you hope that the suffering will eventually produce something worthy; you are not building resilience. You are rationalizing a wound.
 
 [SECTION: vulnerability]
-[LABEL: iv.]
-There is a version of the hope conversation that gets confused with emotional openness; as though to be hopeful is to be vulnerable, and to reject hope is to suppress feeling. This is a false equivalence, and it costs people.
-
 Emotional suppression is its own catastrophe. When you do not allow yourself to feel the weight of what has not worked; when you dress grief in the language of hope and call it faith; you do not process the loss. You store it. It compounds. It leaks into every subsequent decision with a quiet, unacknowledged pressure.
 
 The courage is not in hoping. The courage is in being present to the actual situation; with all its ugliness, all its uncertainty; and acting anyway. Not because you hope it will work. But because the action is yours to take, outcome aside.
 
-[URDU: सारे आज़ारों से بڑھ کر عشق کا آزار ہے | آفتوں میں جان و دل کا ڈالنا بے کار ہے | بے وفا سے دل لگا کر کیا کوئی پھل پائے ہے; The affliction of love surpasses all other afflictions. It is futile to surrender the heart and soul to calamity. What can anyone gain by loving someone faithless?]
-
 The Urdu poets understood something the self-help industry refuses to admit: that attachment to a faithless thing; whether a person, a system, or a future; produces suffering that is both real and preventable. The line between hope and wabasta hona (attachment) is thin. And most of us have long crossed it without noticing.
 
-[SECTION: creator]
-[LABEL: v.]
-There is a theological reading of hope that redeems it; partially; and it is the one that demands the most from you.
-
-[QUOTE: "Hope comprises state, knowledge and deed. Knowledge is the cause which produces the state and the state decrees the deed... if the existence of something in the future occurs to your mind and prevails over your heart, and if it is something desired, with pleasure and relief of heart resulting from the expectation of it; that relief is hope."; Imam Al-Ghazali; On Hope and Fear, Ihya Ulum al-Din (1106)]
-
-Al-Ghazali's framework is precise: hope is not a feeling alone. It is a triad; state, knowledge, deed. The deed is not optional. It is decreed by the state that knowledge produces. Hope without deed, in this framework, is incomplete. It is a broken circuit.
-
-And this is exactly the distinction that matters theologically. The Creator does not ask for your hope. He asks for your tawakkul; trust after full effort. Trust that releases the outcome. Not hope that delays the effort while waiting for a sign.
-
-Hope, in the way most people practice it, is the thing between tawakkul and action; a liminal space where intention lives without ever quite becoming deed. It makes you hold on. It makes you wait. And in waiting, it can; quietly, gradually; make you doubt the very Provider you are waiting for, because the return has not arrived on your schedule.
-
-That is hope's deepest cost. Not the economic one. The spiritual one. The way it turns waiting into doubt and doubt into a slow erosion of the relationship between you and the One who does not operate on your timeline.
-
-[SECTION: defence]
-[LABEL: vi.]
-George Herbert wrote, in 1633:
-
-[QUOTE: "In hope of thee my heart | Pickt here and there a crumb, would not die; | But constant to his part | When as my fears foretold this, did reply, | A slender thread a gentle guest will tie."; George Herbert; The Glimpse (1633)]
-
-It is beautiful. The heart that picks crumbs rather than dies; there is something in that image that resists the argument being made here. The slender thread that holds a man alive. The faith that something, however thin, remains.
-
-And I will not dismiss it entirely. There is a version of hope that is not passive; that is the bare refusal to stop. Not optimism. Not expectation. Just continuation. The heart that does not die.
-
-But Herbert was writing from faith; from the specific orientation of a man who had already surrendered the outcome. The thread is not hope in the secular sense. It is trust. It is the cord between the creature and the Creator, not the cord between the self and a desired result.
-
-Most people do not hope the way Herbert hoped. Most people hope the way a market speculates; attached to an outcome, measuring every movement against it, suffering when it does not arrive, doubling down when it delays.
-
 [SECTION: verdict]
-[LABEL: vii.]
-Hope is a socioeconomic loss. Not metaphorically. Structurally.
+Hope is a socioeconomic loss. Structurally.
 
 It costs you present action. It substitutes for strategy. It keeps broken systems operational by supplying the one resource the powerless have in excess and the powerful need most; patience. Compliance dressed as faith. Waiting dressed as resilience.
 
@@ -306,134 +210,158 @@ That is not hope. That is reckoning.
 
 <script src="../js/pretext-shim.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const surface = document.getElementById('render-surface');
-    const source = document.getElementById('prose-source').innerHTML.trim();
-    const telemetry = document.getElementById('telemetry');
-    const registryItems = document.querySelectorAll('.registry-item');
-    
-    const FONT_BODY = '1.15rem "EB Garamond", serif';
-    const FONT_PULL = 'italic 1.6rem "Playfair Display", serif';
-    const FONT_LABEL = 'bold 0.7rem "IBM Plex Mono", monospace';
-    const MAX_WIDTH = surface.offsetWidth;
-    const LINE_HEIGHT = 32;
+  const surface = document.getElementById('render-surface');
+  const canvas = document.getElementById('render-canvas');
+  const ctx = canvas.getContext('2d');
+  const mouseCoords = document.getElementById('mouse-coords');
+  const source = document.getElementById('source-data').innerHTML.trim();
+  
+  let width, height;
+  const FONT = '1.15rem "EB Garamond", serif';
+  const LINE_HEIGHT = 30;
+  const sections = {};
 
-    const sectionOffsets = {};
+  function resize() {
+    width = canvas.width = window.innerWidth - 300;
+    height = canvas.height = Math.max(window.innerHeight, 5000);
+    render();
+  }
 
-    function log(msg) {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        div.innerHTML = `<span class="log-timestamp">[${new Date().toLocaleTimeString().split(' ')[0]}]</span> ${msg}`;
-        telemetry.appendChild(div);
-        telemetry.scrollTop = telemetry.scrollHeight;
+  // --- DYNAMIC OCCLUSION SHAPES ---
+  const shapes = {
+    opening: (y) => {
+      const centerX = width / 2;
+      const centerY = 400;
+      const radius = 150 + Math.sin(Date.now() * 0.002) * 20;
+      const dist = Math.abs(y - centerY);
+      if (dist < radius) {
+        const xOffset = Math.sqrt(radius**2 - dist**2);
+        return [centerX - xOffset, centerX + xOffset];
+      }
+      return null;
+    },
+    cliff: (y) => {
+      const startY = 1200;
+      const endY = 2000;
+      if (y > startY && y < endY) {
+        const base = width * 0.6;
+        const jitter = Math.sin(y * 0.05) * 30 + Math.cos(y * 0.1) * 10;
+        return [base + jitter, width];
+      }
+      return null;
+    },
+    debt: (y) => {
+      const centerY = 2600;
+      const radius = 200;
+      const dist = Math.abs(y - centerY);
+      if (dist < radius) {
+        const x = 150 + Math.sin(Date.now() * 0.001) * 50;
+        return [x, x + 300];
+      }
+      return null;
     }
+  };
 
-    function renderRegistryView() {
-        const blocks = source.split(/\[SECTION: (.*?)\]/);
-        let currentY = 0;
+  function render() {
+    surface.innerHTML = '';
+    const blocks = source.split(/\[SECTION: (.*?)\]/);
+    let currentY = 100;
 
-        for (let i = 1; i < blocks.length; i += 2) {
-            const sectionName = blocks[i];
-            const content = blocks[i+1].trim();
-            
-            sectionOffsets[sectionName] = currentY;
-            log(`MAPPING_NODE: ${sectionName.toUpperCase()} @ ${currentY}px`);
+    for (let i = 1; i < blocks.length; i += 2) {
+      const sectionName = blocks[i];
+      const content = blocks[i+1].trim();
+      const lines = content.split('\n');
+      
+      sections[sectionName] = currentY;
 
-            const lines = content.split('\n');
-            lines.forEach(block => {
-                if (!block.trim()) {
-                    currentY += LINE_HEIGHT;
-                    return;
-                }
-
-                // Handle Label Metadata
-                if (block.startsWith('[LABEL:')) {
-                    const label = block.match(/\[LABEL: (.*?)\]/)[1];
-                    const el = document.createElement('div');
-                    el.className = 'roman-section-label';
-                    el.textContent = label;
-                    el.style.top = `${currentY + 20}px`;
-                    surface.appendChild(el);
-                    return;
-                }
-
-                // Handle Pull Quote
-                if (block.startsWith('[PULL:')) {
-                    const quote = block.match(/\[PULL: "(.*?)"\]/)[1];
-                    const pLines = Pretext.layout(quote, MAX_WIDTH, FONT_PULL);
-                    currentY += LINE_HEIGHT;
-                    pLines.forEach(l => {
-                        createLine(l, currentY, FONT_PULL, 'accent-bright');
-                        currentY += 45;
-                    });
-                    currentY += LINE_HEIGHT;
-                    return;
-                }
-
-                // Handle Standard Block Quote
-                if (block.startsWith('[QUOTE:')) {
-                    const [text, author, date] = block.match(/\[QUOTE: "(.*?)"; (.*?); (.*?)\]/).slice(1);
-                    createLine(`"${text}"`, currentY, FONT_BODY, 'italic');
-                    currentY += LINE_HEIGHT * 2.5;
-                    createLine(`- ${author} (${date})`, currentY, FONT_LABEL, 'dim');
-                    currentY += LINE_HEIGHT * 2;
-                    return;
-                }
-
-                // Handle Urdu Block
-                if (block.startsWith('[URDU:')) {
-                  const [urdu, translation] = block.match(/\[URDU: (.*?); (.*?)\]/).slice(1);
-                  currentY += LINE_HEIGHT;
-                  createLine(urdu, currentY, FONT_BODY, 'accent-cold');
-                  currentY += LINE_HEIGHT * 1.5;
-                  createLine(translation, currentY, FONT_LABEL, 'dim');
-                  currentY += LINE_HEIGHT * 2;
-                  return;
-                }
-
-                // Default Paragraph
-                const pLines = Pretext.layout(block, MAX_WIDTH, FONT_BODY);
-                pLines.forEach(l => {
-                    createLine(l, currentY, FONT_BODY);
-                    currentY += LINE_HEIGHT;
-                });
-                currentY += LINE_HEIGHT;
-            });
+      lines.forEach(block => {
+        if (!block.trim()) { currentY += LINE_HEIGHT; return; }
+        
+        let type = '';
+        let text = block;
+        if (block.startsWith('[TYPE:')) {
+          const match = block.match(/\[TYPE: (.*?)\] (.*)/);
+          if (match) {
+            type = match[1];
+            text = match[2];
+          } else if (block.includes('space')) {
+            currentY += 60; return;
+          }
         }
-        
-        surface.style.height = `${currentY}px`;
-        log(`GRID_CALIBRATED: Z_INDEX_MAX=2000`);
-    }
 
-    function createLine(text, y, font, type = '') {
-        const el = document.createElement('div');
-        el.className = `line ${type}`;
-        el.textContent = text;
-        el.style.top = `${y}px`;
-        el.style.font = font;
-        
-        const width = Pretext.measure(text, font);
-        el.setAttribute('data-telemetry', `WIDTH: ${Math.round(width)}px\nY_OFFSET: ${y}\nENGINE: PRETEXT_V3`);
-        
-        surface.appendChild(el);
-    }
+        const font = type === 'header' ? '900 3rem "Playfair Display"' : FONT;
+        const lh = type === 'header' ? 60 : LINE_HEIGHT;
 
-    // Interactive ToC Navigation
-    registryItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const target = item.dataset.target;
-            const offset = sectionOffsets[target];
-            window.scrollTo({ top: offset + 200, behavior: 'smooth' });
-            
-            registryItems.forEach(r => r.classList.remove('active'));
-            item.classList.add('active');
-            log(`NAVIGATING_TO: ${target.toUpperCase()}`);
+        const result = Pretext.layoutWithExclusion(
+          text, 
+          width - 100, 
+          font, 
+          currentY, 
+          lh, 
+          (y) => shapes[sectionName] ? shapes[sectionName](y) : null
+        );
+
+        result.lines.forEach(l => {
+          const el = document.createElement('div');
+          el.className = `line ${type}`;
+          el.textContent = l.text;
+          el.style.top = `${l.y}px`;
+          el.style.left = `${l.x}px`;
+          el.style.opacity = 0;
+          el.style.transform = 'translateY(10px)';
+          surface.appendChild(el);
+          
+          requestAnimationFrame(() => {
+            el.style.opacity = 1;
+            el.style.transform = 'translateY(0)';
+          });
         });
-    });
 
-    renderRegistryView();
-    log(`SULKY_OS // EN-TANGLED: RENDER_SUCCESS`);
+        currentY = result.endY + (type === 'header' ? 20 : 10);
+      });
+      currentY += 100;
+    }
+    
+    document.getElementById('line-count').textContent = `LINES: ${surface.children.length}`;
+  }
+
+  function drawBackground() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = '#2a2622';
+    ctx.lineWidth = 1;
+
+    const time = Date.now() * 0.002;
+    ctx.beginPath();
+    ctx.arc(width/2, 400, 150 + Math.sin(time)*20, 0, Math.PI*2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(width * 0.6, 1200);
+    for(let y = 1200; y < 2000; y += 10) {
+      ctx.lineTo(width * 0.6 + Math.sin(y*0.05)*30 + Math.cos(y*0.1)*10, y);
+    }
+    ctx.lineTo(width, 2000);
+    ctx.lineTo(width, 1200);
+    ctx.closePath();
+    ctx.stroke();
+
+    requestAnimationFrame(drawBackground);
+  }
+
+  function scrollToSection(id) {
+    window.scrollTo({ top: sections[id], behavior: 'smooth' });
+    document.querySelectorAll('.registry-item').forEach(el => {
+      el.classList.toggle('active', el.innerText.toLowerCase().includes(id));
+    });
+  }
+
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', (e) => {
+    mouseCoords.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(e.clientY).padStart(3,'0')}`;
   });
+
+  resize();
+  drawBackground();
 </script>
 
 </body>
