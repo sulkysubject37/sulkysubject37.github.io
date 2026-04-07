@@ -232,6 +232,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Narrative Slop",
+            date: "Apr 7, 2026",
+            summary: "On abstraction, surplus feeling, and the scarcity of a self. A structural analysis of the failure modes in contemporary synthesis and personal narrative.",
+            link: "posts/2026-04-07_Narrative-Slop.html"
+        },
+        {
             title: "Hope: A Socioeconomic Loss",
             date: "Apr 2, 2026",
             summary: "A cold, structural analysis of hope as a systemic miscalibration. Dissecting the socioeconomic and theological costs of expectation without kinetic execution.",
