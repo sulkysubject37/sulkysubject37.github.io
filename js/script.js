@@ -27,8 +27,9 @@ const SulkyOS = {
         const messages = [
             "INIT_KERNEL: SULKY_OS v3.0.1",
             "CHECKING_FILESYSTEM... OK",
-            "MOUNTING_REGISTRY: 0x00 -> 0x07",
+            "MOUNTING_REGISTRY: 0x00 -> 0x08",
             "LOADING_GRAPH_ENGINE: D3.force",
+            "COMPILING_PROSE_SHIM: Pretext 2.0",
             "DECODING_BIO_METADATA: resED // VECTORIA // tangle",
             "SYSTEM_READY: ENJOY_THE_ENTANGLEMENT"
         ];
@@ -55,7 +56,7 @@ const SulkyOS = {
         }, 150);
     },
 
-    // --- LAYER 0: THE GRAPH ENGINE ---
+    // --- LAYER 0: THE BACKGROUND GRAPH ---
     setupGraph() {
         const canvas = document.getElementById('graph-canvas');
         const context = canvas.getContext('2d');
@@ -90,7 +91,7 @@ const SulkyOS = {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 
                 context.beginPath();
-                context.strokeStyle = "#1a1a1808"; // Very faint
+                context.strokeStyle = "#1a1a1815"; // Visible but background
                 links.forEach(d => {
                     context.moveTo(d.source.x, d.source.y);
                     context.lineTo(d.target.x, d.target.y);
@@ -99,12 +100,12 @@ const SulkyOS = {
 
                 nodes.forEach(d => {
                     context.beginPath();
-                    context.fillStyle = d.group === 'core' ? "#60708011" : "#1a1a180a";
-                    context.arc(d.x, d.y, 2, 0, 2 * Math.PI);
+                    context.fillStyle = d.group === 'core' ? "#60708044" : "#1a1a1822";
+                    context.arc(d.x, d.y, 2.5, 0, 2 * Math.PI);
                     context.fill();
 
-                    context.font = "8px IBM Plex Mono";
-                    context.fillStyle = "#1a1a1805";
+                    context.font = "9px IBM Plex Mono";
+                    context.fillStyle = "#1a1a1833";
                     context.fillText(d.label, d.x + 10, d.y + 3);
                 });
             });
@@ -132,7 +133,7 @@ const SulkyOS = {
 [TYPE: header] ${portfolioData.about.name}
 [TYPE: metadata] ${portfolioData.about.title} // ${portfolioData.about.location}
 [TYPE: space]
-${portfolioData.about.bio}
+[TYPE: body-text] ${portfolioData.about.bio}
 [TYPE: space]
 [TYPE: section-label] CRUEL_STANDARD_MANIFESTO
 [TYPE: data-node] ${portfolioData.about.cruelBio}
@@ -143,7 +144,7 @@ ${portfolioData.about.bio}
                 prose += `
 [TYPE: section-label] ${p.title}
 [TYPE: metadata] ${p.tech} // LINK: ${p.link}
-${p.description}
+[TYPE: body-text] ${p.description}
 [TYPE: data-node] ${p.cruelDescription}
 [TYPE: space]
                 `;
@@ -154,7 +155,7 @@ ${p.description}
                 prose += `
 [TYPE: section-label] ${e.duration} // ${e.role}
 [TYPE: metadata] COMPANY: ${e.company}
-${e.description}
+[TYPE: body-text] ${e.description}
 [TYPE: space]
                 `;
             });
@@ -164,7 +165,7 @@ ${e.description}
                 prose += `
 [TYPE: section-label] ${e.duration} // ${e.degree}
 [TYPE: metadata] INSTITUTION: ${e.institution}
-${e.details}
+[TYPE: body-text] ${e.details}
 [TYPE: space]
                 `;
             });
@@ -179,7 +180,7 @@ ${e.details}
             portfolioData.posts.forEach(p => {
                 prose += `
 [TYPE: section-label] ${p.date} // ${p.title}
-${p.summary}
+[TYPE: body-text] ${p.summary}
 [TYPE: metadata] SOURCE: ${p.link}
 [TYPE: space]
                 `;
@@ -205,6 +206,15 @@ ${p.summary}
 [TYPE: body-text] TWITTER: ${portfolioData.about.social.twitter}
 [TYPE: body-text] HASHNODE: ${portfolioData.about.social.blog}
             `;
+        } else if (section === 'network') {
+            prose = `
+[TYPE: header] NETWORK.gml
+[TYPE: section-label] SYSTEMS_BIOLOGY_GRAPH
+[TYPE: body-text] Interactive knowledge graph of projects, skills, and technical dependencies. Drag to explore nodes.
+            `;
+            this.renderProse(surface, prose);
+            this.renderInteractiveNetwork(surface);
+            return;
         }
 
         this.renderProse(surface, prose);
@@ -222,17 +232,94 @@ ${p.summary}
                 const match = trimmed.match(/\[TYPE:\s*([^\]]+)\](?:\s*(.*))?/);
                 if (match) {
                     type = match[1].toLowerCase();
-                    text = match[2] || ''; // Handle tags without trailing text
+                    text = match[2] || '';
                 }
             }
 
             const el = document.createElement('div');
             el.className = type;
-            // Only add text if it's not a space/metadata only tag
             if (type !== 'space') {
                 el.innerHTML = text;
             }
             container.appendChild(el);
+        });
+    },
+
+    renderInteractiveNetwork(container) {
+        const netDiv = document.createElement('div');
+        netDiv.id = 'interactive-network';
+        container.appendChild(netDiv);
+
+        const width = netDiv.offsetWidth;
+        const height = 600;
+
+        const svg = d3.select("#interactive-network").append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            }));
+
+        const g = svg.append("g");
+
+        const nodes = [
+            { id: 'me', label: 'MD. ARSHAD', group: 'core', val: 10 },
+            ...portfolioData.projects.map(p => ({ id: p.title, label: p.title, group: 'project', val: 6 })),
+            ...portfolioData.skills.map(s => ({ id: s, label: s, group: 'skill', val: 4 }))
+        ];
+
+        const links = [];
+        portfolioData.projects.forEach(p => {
+            links.push({ source: 'me', target: p.title });
+            p.tech.split(', ').forEach(t => {
+                if (nodes.find(n => n.id === t)) links.push({ source: p.title, target: t });
+            });
+        });
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        const link = g.append("g")
+            .attr("stroke", "#1a1a1822")
+            .selectAll("line")
+            .data(links)
+            .join("line");
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .join("g")
+            .call(d3.drag()
+                .on("start", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x; d.fy = d.y;
+                })
+                .on("drag", (event, d) => { d.fx = event.x; d.fy = event.y; })
+                .on("end", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null; d.fy = null;
+                }));
+
+        node.append("circle")
+            .attr("r", d => d.val)
+            .attr("fill", d => d.group === 'core' ? "#607080" : "#1a1a18");
+
+        node.append("text")
+            .text(d => d.label)
+            .attr("x", 12)
+            .attr("y", 4)
+            .attr("font-family", "IBM Plex Mono")
+            .attr("font-size", "10px")
+            .attr("fill", "#666");
+
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
         });
     },
 
