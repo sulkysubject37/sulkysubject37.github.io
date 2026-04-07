@@ -68,6 +68,26 @@ body {
     border-bottom: 1px solid var(--line);
 }
 
+.system-status { font-size: 0.65rem; color: var(--text-dim); padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.status-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; gap: 10px; }
+.status-row .val { color: var(--accent); font-weight: 500; }
+
+/* DATA GRID (For Skills/Education) */
+.data-grid {
+    position: absolute;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    width: 85%;
+    left: 7.5%;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 0.5rem;
+}
+.grid-label { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+.grid-val { color: var(--text); }
+
 .nav-tree { flex: 1; }
 .nav-item {
     font-size: 0.75rem;

@@ -77,7 +77,7 @@ const SulkyOS = {
                     context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
                     context.fill();
                 });
-                this.state.nodes = nodes; // Save for exclusion logic
+                this.state.nodes = nodes;
             });
 
         window.addEventListener('resize', () => { 
@@ -111,11 +111,7 @@ const SulkyOS = {
 [TYPE: space]
 ${portfolioData.about.bio}
 [TYPE: space]
-[TYPE: section-label] EDUCATION_RECORD
-${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institution}\n${e.details}`).join('\n\n')}
-[TYPE: space]
-[TYPE: section-label] CRUEL_STANDARD_MANIFESTO
-[TYPE: data-node] ${portfolioData.about.cruelBio}
+${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYPE: data-node] ${portfolioData.about.cruelBio}` : ''}
             `;
         } else if (section === 'projects') {
             source = "[TYPE: header] PROJECTS.bin\n";
@@ -129,27 +125,45 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
             });
         } else if (section === 'education') {
             source = "[TYPE: header] EDUCATION.edu\n";
+            this.renderArchitecturalProse(surface, source);
             portfolioData.education.forEach(e => {
-                source += `[TYPE: section-label] ${e.duration} // ${e.degree}\n[TYPE: metadata] ${e.institution}\n${e.details}\n[TYPE: space]\n`;
+                this.renderDataGrid(surface, [
+                    { label: "Duration", val: e.duration },
+                    { label: "Degree", val: e.degree },
+                    { label: "Institution", val: e.institution },
+                    { label: "Details", val: e.details }
+                ]);
             });
+            return;
         } else if (section === 'skills') {
-            source = `[TYPE: header] SKILLS.sys\n[TYPE: section-label] STACK_INVENTORY\n${portfolioData.skills.join(' // ')}\n[TYPE: space]\n[TYPE: section-label] INTEREST_VECTOR\n${portfolioData.interests.join(' // ')}`;
+            source = `[TYPE: header] SKILLS.sys\n`;
+            this.renderArchitecturalProse(surface, source);
+            this.renderDataGrid(surface, [
+                { label: "Stack", val: portfolioData.skills.join(" // ") },
+                { label: "Interests", val: portfolioData.interests.join(" // ") }
+            ]);
+            return;
         } else if (section === 'blog') {
             source = "[TYPE: header] BLOG.log\n";
             portfolioData.posts.forEach(p => {
-                source += `[TYPE: section-label] ${p.date} // ${p.title}\n${p.summary}\n[TYPE: metadata] LINK: ${p.link}\n[TYPE: space]\n`;
+                source += `[TYPE: section-label] ${p.date} // ${p.title}\n${p.summary}\n[TYPE: metadata] LINK: <a href="${p.link}" style="color:inherit" target="_blank">READ_ENTRY</a>\n[TYPE: space]\n`;
             });
         } else if (section === 'publications') {
             source = "[TYPE: header] PUBLICATIONS.bib\n";
             portfolioData.publications.forEach(pub => source += `[TYPE: section-label] BIB_ENTRY\n${pub}\n[TYPE: space]\n`);
         } else if (section === 'contact') {
-            source = `[TYPE: header] CONTACT.sh\n[TYPE: section-label] CHANNELS\nEMAIL: ${portfolioData.about.email}\nGITHUB: ${portfolioData.about.social.github}\nLINKEDIN: ${portfolioData.about.social.linkedin}\nTWITTER: ${portfolioData.about.social.twitter}`;
+            source = `[TYPE: header] CONTACT.sh\n`;
+            this.renderArchitecturalProse(surface, source);
+            this.renderDataGrid(surface, [
+                { label: "Email", val: portfolioData.about.email },
+                { label: "Github", val: portfolioData.about.social.github },
+                { label: "Linkedin", val: portfolioData.about.social.linkedin },
+                { label: "Twitter", val: portfolioData.about.social.twitter }
+            ]);
+            return;
         } else if (section === 'terminal') {
             this.injectTerminal(surface);
             return;
-        } else if (section === 'network') {
-            source = "[TYPE: header] NETWORK.gml\n[TYPE: section-label] INTERACTIVE_KNOWLEDGE_GRAPH";
-            this.renderInteractiveNetwork(surface);
         }
 
         this.renderArchitecturalProse(surface, source);
@@ -157,7 +171,7 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
 
     renderArchitecturalProse(container, source) {
         const viewportWidth = container.offsetWidth;
-        let currentY = 100;
+        let currentY = container.children.length > 0 ? container.lastChild.offsetTop + container.lastChild.offsetHeight + 20 : 100;
         const LINE_HEIGHT = 28;
 
         source.trim().split('\n').forEach(block => {
@@ -177,10 +191,8 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
                          (type === 'metadata' || type === 'section-label' || type === 'data-node') ? '0.7rem "IBM Plex Mono"' : '1.1rem "EB Garamond"';
             const lh = type === 'header' ? 60 : LINE_HEIGHT;
 
-            // CLIFF LOGIC: Text wraps around exclusion zones (e.g., center of graph)
             const result = Pretext.layoutWithExclusion(text, viewportWidth * 0.85, font, currentY, lh, (y) => {
-                // If in center of screen vertically, create an exclusion circle for the 'me' node
-                const centerY = container.offsetHeight / 2;
+                const centerY = 500; // Simulated center
                 const dist = Math.abs(y - centerY);
                 if (dist < 150) {
                     const span = Math.sqrt(150**2 - dist**2);
@@ -192,7 +204,7 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
             result.lines.forEach(l => {
                 const el = document.createElement('div');
                 el.className = `line ${type}`;
-                el.textContent = l.text;
+                el.innerHTML = l.text;
                 el.style.top = `${l.y}px`;
                 el.style.left = `${l.x + (viewportWidth * 0.075)}px`;
                 el.style.font = font;
@@ -200,7 +212,20 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
             });
             currentY = result.endY + 10;
         });
-        container.style.height = `${currentY + 300}px`;
+        container.style.height = `${Math.max(container.offsetHeight, currentY + 300)}px`;
+    },
+
+    renderDataGrid(container, items) {
+        let currentY = container.children.length > 0 ? parseInt(container.lastChild.style.top) + 60 : 150;
+        items.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'data-grid';
+            el.style.top = `${currentY}px`;
+            el.innerHTML = `<div class="grid-label">${item.label}</div><div class="grid-val">${item.val}</div>`;
+            container.appendChild(el);
+            currentY += 60; // Approximate height
+        });
+        container.style.height = `${currentY + 200}px`;
     },
 
     injectTerminal(container) {
@@ -212,21 +237,17 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
         const input = document.getElementById('term-in');
         input.onkeydown = (e) => {
             if (e.key === 'Enter') {
-                const cmd = input.value.trim();
+                const cmd = input.value.trim().toLowerCase();
                 const out = document.getElementById('term-out');
                 out.innerHTML += `<br>> ${cmd}`;
                 if (cmd === 'ls') out.innerHTML += `<br>profile.man projects.bin skills.sys`;
-                else if (cmd === 'help') out.innerHTML += `<br>ls, mode, clear`;
+                else if (cmd === 'help') out.innerHTML += `<br>ls, mode, clear, whoami`;
+                else if (cmd === 'whoami') out.innerHTML += `<br>SulkySubject37 // System Engineer`;
+                else if (cmd === 'mode') { this.toggleMode(); out.innerHTML += `<br>MODE SHIFTED`; }
                 else if (cmd === 'clear') out.innerHTML = '';
                 input.value = '';
             }
         };
-    },
-
-    renderInteractiveNetwork(container) {
-        const netDiv = document.createElement('div'); netDiv.id = 'interactive-network'; netDiv.style.top = '250px'; container.appendChild(netDiv);
-        const svg = d3.select("#interactive-network").append("svg").attr("width", "100%").attr("height", 500);
-        // (Simplified interactive graph logic here...)
     },
 
     setupEventListeners() {
@@ -249,7 +270,9 @@ ${portfolioData.education.map(e => `${e.duration} // ${e.degree} // ${e.institut
     },
 
     updateClock() {
-        setInterval(() => { document.getElementById('uptime-clock').textContent = new Date().toTimeString().split(' ')[0]; }, 1000);
+        setInterval(() => { 
+            document.getElementById('uptime-clock').textContent = new Date().toTimeString().split(' ')[0]; 
+        }, 1000);
     }
 };
 
