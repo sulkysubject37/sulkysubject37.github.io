@@ -27,7 +27,7 @@ const SulkyOS = {
         const messages = [
             "INIT_KERNEL: SULKY_OS v3.0.1",
             "CHECKING_FILESYSTEM... OK",
-            "MOUNTING_REGISTRY: posts/ js/ assets/",
+            "MOUNTING_REGISTRY: 0x00 -> 0x07",
             "LOADING_GRAPH_ENGINE: D3.force",
             "COMPILING_PROSE_SHIM: Pretext 2.0",
             "DECODING_BIO_METADATA: resED // VECTORIA // tangle",
@@ -54,7 +54,7 @@ const SulkyOS = {
                     }, 500);
                 }, 1000);
             }
-        }, 300);
+        }, 200);
     },
 
     // --- LAYER 0: THE GRAPH ENGINE ---
@@ -63,8 +63,11 @@ const SulkyOS = {
         const context = canvas.getContext('2d');
         const container = document.getElementById('graph-container');
         
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+        const updateSize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        updateSize();
 
         // Create nodes from portfolioData
         const nodes = [
@@ -85,38 +88,36 @@ const SulkyOS = {
         });
 
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-            .force("charge", d3.forceManyBody().strength(-300))
-            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(180))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2))
             .on("tick", () => {
-                context.clearRect(0, 0, width, height);
+                context.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw links
                 context.beginPath();
-                context.strokeStyle = "#1a1a1822";
+                context.strokeStyle = "#1a1a1811";
                 links.forEach(d => {
                     context.moveTo(d.source.x, d.source.y);
                     context.lineTo(d.target.x, d.target.y);
                 });
                 context.stroke();
 
-                // Draw nodes
                 nodes.forEach(d => {
                     context.beginPath();
-                    context.fillStyle = d.group === 'core' ? "#607080" : "#1a1a1844";
-                    context.arc(d.x, d.y, 4, 0, 2 * Math.PI);
+                    context.fillStyle = d.group === 'core' ? "#607080" : "#1a1a1822";
+                    context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
                     context.fill();
 
-                    context.font = "10px IBM Plex Mono";
-                    context.fillStyle = "#1a1a1822";
+                    context.font = "9px IBM Plex Mono";
+                    context.fillStyle = "#1a1a1811";
                     context.fillText(d.label, d.x + 8, d.y + 4);
                 });
             });
 
         window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            simulation.force("center", d3.forceCenter(width / 2, height / 2));
+            updateSize();
+            simulation.force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2));
+            simulation.alpha(0.3).restart();
         });
     },
 
@@ -129,8 +130,10 @@ const SulkyOS = {
 
         this.logEvent(`TRAVERSING_GRAPH: 0x0 -> ${section}`);
 
+        let prose = "";
+
         if (section === 'profile') {
-            this.renderProse(surface, `
+            prose = `
 [TYPE: header] ${portfolioData.about.name}
 [TYPE: metadata] ${portfolioData.about.title} // ${portfolioData.about.location}
 [TYPE: space]
@@ -138,30 +141,79 @@ ${portfolioData.about.bio}
 [TYPE: space]
 [TYPE: section-label] CRUEL_STANDARD_MANIFESTO
 ${portfolioData.about.cruelBio}
-            `);
+            `;
         } else if (section === 'projects') {
-            let prose = "[TYPE: header] PROJECTS.bin\n";
+            prose = "[TYPE: header] PROJECTS.bin\n";
             portfolioData.projects.forEach(p => {
                 prose += `
 [TYPE: section-label] ${p.title}
-[TYPE: metadata] ${p.tech}
+[TYPE: metadata] ${p.tech} // LINK: ${p.link}
+${p.description}
+[TYPE: space]
 ${p.cruelDescription}
 [TYPE: space]
                 `;
             });
-            this.renderProse(surface, prose);
+        } else if (section === 'experience') {
+            prose = "[TYPE: header] EXPERIENCE.log\n";
+            portfolioData.experience.forEach(e => {
+                prose += `
+[TYPE: section-label] ${e.duration} // ${e.role}
+[TYPE: metadata] COMPANY: ${e.company}
+${e.description}
+[TYPE: space]
+                `;
+            });
+        } else if (section === 'education') {
+            prose = "[TYPE: header] EDUCATION.edu\n";
+            portfolioData.education.forEach(e => {
+                prose += `
+[TYPE: section-label] ${e.duration} // ${e.degree}
+[TYPE: metadata] INSTITUTION: ${e.institution}
+${e.details}
+[TYPE: space]
+                `;
+            });
+        } else if (section === 'skills') {
+            prose = "[TYPE: header] SKILLS.sys\n";
+            prose += "[TYPE: section-label] STACK_INVENTORY\n";
+            prose += portfolioData.skills.join(" // ") + "\n";
+            prose += "[TYPE: space]\n[TYPE: section-label] INTEREST_VECTOR\n";
+            prose += portfolioData.interests.join(" // ") + "\n";
         } else if (section === 'blog') {
-            let prose = "[TYPE: header] BLOG.log\n";
+            prose = "[TYPE: header] BLOG.log\n";
             portfolioData.posts.forEach(p => {
                 prose += `
 [TYPE: section-label] ${p.date} // ${p.title}
 ${p.summary}
-[TYPE: metadata] LINK: ${p.link}
+[TYPE: metadata] SOURCE: ${p.link}
 [TYPE: space]
                 `;
             });
-            this.renderProse(surface, prose);
+        } else if (section === 'publications') {
+            prose = "[TYPE: header] PUBLICATIONS.bib\n";
+            portfolioData.publications.forEach(pub => {
+                prose += `
+[TYPE: section-label] BIB_ENTRY
+${pub}
+[TYPE: space]
+                `;
+            });
+        } else if (section === 'contact') {
+            prose = `
+[TYPE: header] CONTACT.sh
+[TYPE: section-label] COMMUNICATION_CHANNELS
+[TYPE: metadata] EMAIL: ${portfolioData.about.email}
+[TYPE: space]
+[TYPE: section-label] SOCIAL_NODES
+GITHUB: ${portfolioData.about.social.github}
+LINKEDIN: ${portfolioData.about.social.linkedin}
+TWITTER: ${portfolioData.about.social.twitter}
+HASHNODE: ${portfolioData.about.social.blog}
+            `;
         }
+
+        this.renderProse(surface, prose);
     },
 
     renderProse(container, source) {
@@ -169,7 +221,7 @@ ${p.summary}
         let currentY = 0;
 
         source.trim().split('\n').forEach(block => {
-            if (!block.trim()) { currentY += 32; return; }
+            if (!block.trim()) { currentY += 24; return; }
 
             let type = 'body';
             let text = block;
@@ -178,13 +230,13 @@ ${p.summary}
                 if (match) { type = match[1]; text = match[2]; }
             }
 
-            const font = type === 'header' ? '900 3.5rem Playfair Display' : 
-                         type === 'metadata' ? '0.75rem IBM Plex Mono' : 
-                         type === 'section-label' ? 'bold 0.7rem IBM Plex Mono' : '1.15rem EB Garamond';
-            const lh = type === 'header' ? 70 : 32;
+            const font = type === 'header' ? '900 3rem Playfair Display' : 
+                         type === 'metadata' ? '0.7rem IBM Plex Mono' : 
+                         type === 'section-label' ? 'bold 0.7rem IBM Plex Mono' : '1.1rem EB Garamond';
+            const lh = type === 'header' ? 60 : 28;
 
-            // Simplified Pretext logic
-            const result = Pretext.layoutWithExclusion(text, width * 0.8, font, currentY, lh, null);
+            // Strict alignment logic: no exclusion for system pages
+            const result = Pretext.layoutWithExclusion(text, width * 0.9, font, currentY, lh, null);
             
             result.lines.forEach(l => {
                 const el = document.createElement('div');
@@ -195,8 +247,11 @@ ${p.summary}
                 el.style.font = font;
                 container.appendChild(el);
             });
-            currentY = result.endY + 10;
+            currentY = result.endY + 8;
         });
+
+        // Set scroll height to ensure all content is reachable
+        container.style.height = `${currentY + 200}px`;
     },
 
     // --- UTILS ---
@@ -206,12 +261,15 @@ ${p.summary}
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
                 this.injectContent(item.dataset.target);
+                // Reset scroll
+                document.getElementById('text-surface').scrollTop = 0;
             };
         });
 
         window.onmousemove = (e) => {
             const telemetry = document.getElementById('coord-telemetry');
-            telemetry.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(Math.round(window.scrollY + e.clientY)).padStart(3,'0')}`;
+            const surface = document.getElementById('text-surface');
+            telemetry.textContent = `X: ${String(e.clientX).padStart(3,'0')} | Y: ${String(Math.round(surface.scrollTop + e.clientY)).padStart(3,'0')}`;
         };
     },
 
