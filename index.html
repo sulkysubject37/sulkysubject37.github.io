@@ -4,20 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SULKY_OS // v3.0 // The Entangled Kernel</title>
-    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=3.0.1">
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Playfair+Display:wght@900&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=3.0.2">
 </head>
 <body>
 
-    <!-- LAYER 0: THE GRAPH -->
     <div id="graph-container">
         <canvas id="graph-canvas"></canvas>
     </div>
 
-    <!-- LAYER 1: THE UI (BRUTALIST) -->
     <div class="kernel-layout">
         
-        <!-- ZONE A: THE REGISTRY -->
         <aside class="registry">
             <div class="registry-header">~/REGISTRY</div>
             <nav class="nav-tree" id="registry-nav">
@@ -27,60 +24,68 @@
                 <div class="nav-item" data-target="education">0x03 // EDUCATION.edu</div>
                 <div class="nav-item" data-target="skills">0x04 // SKILLS.sys</div>
                 <div class="nav-item" data-target="blog">0x05 // BLOG.log</div>
-                <div class="nav-item" data-target="terminal">0x06 // TERMINAL.sh</div>
-                <div class="nav-item" data-target="publications">0x07 // PUBLICATIONS.bib</div>
-                <div class="nav-item" data-target="contact">0x08 // CONTACT.sh</div>
-                <div class="nav-item" data-target="network">0x09 // NETWORK.gml</div>
+                <div class="nav-item" data-target="publications">0x06 // PUBLICATIONS.bib</div>
+                <div class="nav-item" data-target="contact">0x07 // CONTACT.sh</div>
+                <div class="nav-item" data-target="network">0x08 // NETWORK.gml</div>
+                <div class="nav-item" data-target="terminal">0x09 // TERMINAL.sh</div>
             </nav>
+
             <div class="mode-control">
                 <button id="mode-toggle" class="mode-btn">[ SHIFT_TO_CRUEL ]</button>
             </div>
+
             <div class="system-status">
-                <div class="status-row"><span class="label">KERNEL</span><span class="val">v3.0.1_STABLE</span></div>
-                <div class="status-row"><span class="label">UPTIME</span><span class="val" id="uptime-clock">00:00:00</span></div>
+                <div class="status-row">
+                    <span class="label">KERNEL</span>
+                    <span class="val">v3.0.2_STABLE</span>
+                </div>
+                <div class="status-row">
+                    <span class="label">UPTIME</span>
+                    <span class="val" id="uptime-clock">00:00:00</span>
+                </div>
             </div>
         </aside>
 
-        <!-- ZONE B: THE VIEWPORT -->
         <main class="viewport">
             <div class="viewport-header">
                 <span id="active-path">~/profile.man</span>
-                <span class="window-controls">[ MIN ] [ MAX ] [ X ]</span>
+                <span class="window-controls">[ 0x37 ]</span>
             </div>
             <div id="text-surface">
-                <!-- Architectural Prose injected here -->
+                <!-- ALL CONTENT IS RENDERED LINE-BY-LINE VIA JS -->
             </div>
         </main>
 
-        <!-- ZONE C: THE TELEMETRY -->
         <footer class="telemetry">
             <div class="log-stream" id="log-feed">
-                <div class="log-entry">[00:00:01] KERNEL_INIT: SUCCESS</div>
+                <div class="log-entry">
+                    <span class="log-ts">[00:00:01]</span>
+                    <span class="log-msg">KERNEL_BOOT_SUCCESS</span>
+                </div>
             </div>
             <div class="coord-display" id="coord-telemetry">X: 000 | Y: 000</div>
         </footer>
 
     </div>
 
-    <!-- BOOT OVERLAY -->
     <div id="boot-overlay">
         <div class="boot-content">
             <pre class="boot-ascii">
    _____ _    _ _      _  ____     __   ____   _____ 
   / ____| |  | | |    | |/ /\ \   / /  / __ \ / ____|
  | (___ | |  | | |    | ' /  \ \_/ /  | |  | | (___  
-  \___ \| |  | | |    |  <    \   /   | |  | |\___ \ 
+  \___ \| |  | | |    |  &lt;    \   /   | |  | |\___ \ 
   ____) | |__| | |____| . \    | |    | |__| |____) |
  |_____/ \____/|______|_|\_\   |_|     \____/|_____/ 
             </pre>
             <div class="boot-bar-container"><div class="boot-bar" id="boot-progress"></div></div>
-            <div class="boot-log" id="boot-log"></div>
+            <div id="boot-log" style="font-family: 'IBM Plex Mono'; font-size: 10px; color: #888;"></div>
         </div>
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/pretext-shim.js"></script>
-    <script src="js/script.js?v=3.0.1"></script>
+    <script src="js/script.js?v=3.0.2"></script>
 </body>
 </html>

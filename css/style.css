@@ -6,7 +6,8 @@
     --accent: #607080;
     --line: #1a1a18;
     --mono: 'IBM Plex Mono', monospace;
-    --serif: 'IM Fell English', Georgia, serif;
+    --serif: 'EB Garamond', Georgia, serif;
+    --display: 'Playfair Display', serif;
 }
 
 body.cruel-mode {
@@ -26,19 +27,20 @@ body {
     font-family: var(--serif);
     min-height: 100vh;
     overflow: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
     -webkit-font-smoothing: antialiased;
 }
 
-/* BACKGROUND GRAPH */
+/* LAYER 0: THE GRAPH */
 #graph-container {
     position: fixed;
     inset: 0;
     z-index: 1;
-    opacity: 0.25;
+    opacity: 0.3;
     pointer-events: none;
 }
 
-/* MAIN LAYOUT */
+/* KERNEL LAYOUT */
 .kernel-layout {
     position: relative;
     z-index: 10;
@@ -57,6 +59,7 @@ body {
     flex-direction: column;
     padding: 2.5rem 1.5rem;
     font-family: var(--mono);
+    text-transform: uppercase;
 }
 
 .registry-header {
@@ -77,9 +80,24 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    transition: all 0.2s ease;
 }
 .nav-item:hover, .nav-item.active { color: var(--text); }
 .nav-item.active::before { content: '➜'; color: var(--accent); }
+
+.mode-control { margin-bottom: 2rem; }
+.mode-btn {
+    width: 100%;
+    padding: 0.6rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    text-transform: uppercase;
+}
+body.cruel-mode .mode-btn { background: var(--text); color: var(--bg); font-weight: 700; }
 
 .system-status {
     font-size: 0.65rem;
@@ -107,50 +125,31 @@ body {
     padding: 0 1.5rem;
     font-family: var(--mono);
     font-size: 0.7rem;
+    text-transform: uppercase;
     color: var(--text-dim);
     background: var(--bg);
-    z-index: 20;
 }
 
 #text-surface {
     flex: 1;
     overflow-y: auto;
     position: relative;
-    padding: 5rem 10% 10rem;
     scroll-behavior: smooth;
+    width: 100%;
 }
 
-/* ARCHITECTURAL CONTENT */
-.prose-block { margin-bottom: 3rem; position: relative; }
-.line { position: absolute; white-space: pre; transition: opacity 0.3s ease; }
-
-.header { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.1; }
-.metadata { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 1rem; }
-.section-label { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
-
-/* DATA GRID (Professional Alignment) */
-.data-table {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    margin-bottom: 2rem;
+/* BIT-EXACT PROSE LINES */
+.line {
+    position: absolute;
+    white-space: pre;
+    font-size: 1.15rem;
     line-height: 1.6;
 }
-.data-key { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-.data-val { color: var(--text); }
-
-.cruel-node {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--accent);
-    background: rgba(0,0,0,0.03);
-    padding: 1.2rem;
-    border-left: 2px solid var(--accent);
-    margin: 1.5rem 0;
-}
-body.cruel-mode .cruel-node { background: rgba(0,255,65,0.05); }
+.line.header { font-family: var(--display); font-size: 3.5rem; font-weight: 900; line-height: 1.1; color: var(--text); }
+.line.metadata { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); }
+.line.section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.25em; text-transform: uppercase; font-weight: 700; }
+.line.data-node { font-family: var(--mono); font-size: 0.85rem; background: rgba(0,0,0,0.03); color: var(--accent); }
+body.cruel-mode .line.data-node { background: rgba(0,255,65,0.05); }
 
 /* ZONE C: THE TELEMETRY */
 .telemetry {
@@ -166,23 +165,27 @@ body.cruel-mode .cruel-node { background: rgba(0,255,65,0.05); }
 }
 
 .log-stream { display: flex; gap: 2.5rem; overflow: hidden; }
-.log-entry { display: flex; gap: 1rem; flex-shrink: 0; }
-.log-ts { color: var(--text-dim); width: 75px; }
+.log-entry { display: flex; gap: 1rem; align-items: center; }
+.log-ts { color: var(--text-dim); width: 75px; flex-shrink: 0; }
 .log-msg { color: var(--text); }
 
-/* TERMINAL */
-.terminal-block {
-    background: #000;
-    color: #00ff41;
-    font-family: var(--mono);
-    padding: 2rem;
-    border-radius: 4px;
-    height: 400px;
+.coord-display { color: var(--accent); }
+
+/* BOOT */
+#boot-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 10000;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
 }
-.term-out { flex: 1; overflow-y: auto; margin-bottom: 1rem; }
-#term-input { background: none; border: none; color: inherit; font-family: inherit; width: 100%; outline: none; }
+.boot-content { width: 600px; text-align: center; }
+.boot-ascii { font-size: 8px; line-height: 1.1; margin-bottom: 2rem; }
+.boot-bar-container { height: 2px; background: #ddd; margin-bottom: 1rem; }
+.boot-bar { height: 100%; background: var(--text); width: 0%; transition: width 0.1s linear; }
 
 @media (max-width: 800px) {
     .kernel-layout { grid-template-columns: 1fr; }
