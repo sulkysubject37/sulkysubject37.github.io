@@ -29,12 +29,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* LAYER 0: THE GRAPH */
+/* BACKGROUND GRAPH */
 #graph-container {
     position: fixed;
     inset: 0;
     z-index: 1;
-    opacity: 0.3;
+    opacity: 0.25;
     pointer-events: none;
 }
 
@@ -49,13 +49,13 @@ body {
     width: 100vw;
 }
 
-/* ZONE A: THE REGISTRY (Fixed Sidebar) */
+/* ZONE A: THE REGISTRY */
 .registry {
     background: var(--bg);
     border-right: 1px solid var(--line);
     display: flex;
     flex-direction: column;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem;
     font-family: var(--mono);
 }
 
@@ -68,26 +68,6 @@ body {
     border-bottom: 1px solid var(--line);
 }
 
-.system-status { font-size: 0.65rem; color: var(--text-dim); padding-top: 1.5rem; border-top: 1px solid var(--line); }
-.status-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; gap: 10px; }
-.status-row .val { color: var(--accent); font-weight: 500; }
-
-/* DATA GRID (For Skills/Education) */
-.data-grid {
-    position: absolute;
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 1rem;
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    width: 85%;
-    left: 7.5%;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    padding-bottom: 0.5rem;
-}
-.grid-label { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-.grid-val { color: var(--text); }
-
 .nav-tree { flex: 1; }
 .nav-item {
     font-size: 0.75rem;
@@ -97,26 +77,27 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    transition: all 0.2s ease;
 }
 .nav-item:hover, .nav-item.active { color: var(--text); }
 .nav-item.active::before { content: '➜'; color: var(--accent); }
 
-.mode-control { margin-bottom: 2rem; }
-.mode-btn {
-    width: 100%;
-    padding: 0.6rem;
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--line);
-    cursor: pointer;
+.system-status {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
 }
-body.cruel-mode .mode-btn { background: var(--text); color: var(--bg); }
 
-/* ZONE B: THE VIEWPORT (Prose Engine) */
-.viewport { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.status-row .label { color: var(--text-dim); }
+.status-row .val { color: var(--accent); font-weight: 500; }
+
+/* ZONE B: THE VIEWPORT */
+.viewport { display: flex; flex-direction: column; overflow: hidden; }
 .viewport-header {
     height: 40px;
     border-bottom: 1px solid var(--line);
@@ -127,29 +108,51 @@ body.cruel-mode .mode-btn { background: var(--text); color: var(--bg); }
     font-family: var(--mono);
     font-size: 0.7rem;
     color: var(--text-dim);
+    background: var(--bg);
+    z-index: 20;
 }
 
 #text-surface {
     flex: 1;
     overflow-y: auto;
     position: relative;
-    padding: 0; /* Handled by JS layout */
+    padding: 5rem 10% 10rem;
+    scroll-behavior: smooth;
 }
 
-/* ARCHITECTURAL PROSE LINES */
-.line {
-    position: absolute;
-    white-space: pre;
-    font-size: 1.1rem;
+/* ARCHITECTURAL CONTENT */
+.prose-block { margin-bottom: 3rem; position: relative; }
+.line { position: absolute; white-space: pre; transition: opacity 0.3s ease; }
+
+.header { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 900; margin-bottom: 1.5rem; line-height: 1.1; }
+.metadata { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 1rem; }
+.section-label { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+
+/* DATA GRID (Professional Alignment) */
+.data-table {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
     line-height: 1.6;
 }
-.line.header { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--text); }
-.line.metadata { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); }
-.line.section-label { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.2em; text-transform: uppercase; }
-.line.data-node { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); background: rgba(0,0,0,0.03); }
-body.cruel-mode .line.data-node { background: rgba(0,255,65,0.05); }
+.data-key { color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+.data-val { color: var(--text); }
 
-/* ZONE C: THE TELEMETRY (Footer Log) */
+.cruel-node {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    background: rgba(0,0,0,0.03);
+    padding: 1.2rem;
+    border-left: 2px solid var(--accent);
+    margin: 1.5rem 0;
+}
+body.cruel-mode .cruel-node { background: rgba(0,255,65,0.05); }
+
+/* ZONE C: THE TELEMETRY */
 .telemetry {
     grid-column: 1 / span 2;
     background: var(--bg);
@@ -160,40 +163,26 @@ body.cruel-mode .line.data-node { background: rgba(0,255,65,0.05); }
     padding: 0 1.5rem;
     font-family: var(--mono);
     font-size: 0.65rem;
-    overflow: hidden;
 }
 
-.log-stream {
-    display: flex;
-    gap: 2rem;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.log-entry { display: flex; gap: 0.8rem; }
-.timestamp { color: var(--text-dim); width: 70px; flex-shrink: 0; }
+.log-stream { display: flex; gap: 2.5rem; overflow: hidden; }
+.log-entry { display: flex; gap: 1rem; flex-shrink: 0; }
+.log-ts { color: var(--text-dim); width: 75px; }
 .log-msg { color: var(--text); }
 
-/* TERMINAL & INTERACTIVE */
+/* TERMINAL */
 .terminal-block {
-    position: absolute;
     background: #000;
     color: #00ff41;
     font-family: var(--mono);
-    padding: 1.5rem;
-    width: 80%;
-    left: 10%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    padding: 2rem;
+    border-radius: 4px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
 }
-
-.blog-card-wrap {
-    position: absolute;
-    border: 1px solid var(--line);
-    padding: 1rem;
-    width: 300px;
-}
-
-#interactive-network { position: absolute; width: 90%; left: 5%; height: 500px; border: 1px solid var(--line); }
+.term-out { flex: 1; overflow-y: auto; margin-bottom: 1rem; }
+#term-input { background: none; border: none; color: inherit; font-family: inherit; width: 100%; outline: none; }
 
 @media (max-width: 800px) {
     .kernel-layout { grid-template-columns: 1fr; }

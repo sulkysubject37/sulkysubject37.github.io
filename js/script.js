@@ -1,6 +1,6 @@
 /**
  * SULKY_OS v3.0 // THE ENTANGLED KERNEL
- * Core Engine: Architectural Prose (Pretext) + D3 Graph
+ * Core Engine: Architectural Prose (Cliff) + Robust Data Grids
  */
 
 const SulkyOS = {
@@ -8,10 +8,7 @@ const SulkyOS = {
         activeSection: 'profile',
         isBooted: false,
         isCruelMode: false,
-        nodes: [],
-        links: [],
-        width: 0,
-        height: 0
+        terminalHistory: ["KERNEL_READY // Type 'help'"]
     },
 
     init() {
@@ -25,7 +22,7 @@ const SulkyOS = {
         const progress = document.getElementById('boot-progress');
         const log = document.getElementById('boot-log');
         const overlay = document.getElementById('boot-overlay');
-        const messages = ["INIT_KERNEL", "MOUNT_REGISTRY", "LOAD_GRAPH_CORE", "SYSTEM_READY"];
+        const messages = ["INIT_KERNEL", "MOUNT_REGISTRY", "LOAD_GRAPH", "SYSTEM_READY"];
         let i = 0;
         const interval = setInterval(() => {
             if (i < messages.length) {
@@ -51,20 +48,16 @@ const SulkyOS = {
     setupGraph() {
         const canvas = document.getElementById('graph-canvas');
         const context = canvas.getContext('2d');
-        const updateSize = () => { 
-            this.state.width = canvas.width = window.innerWidth; 
-            this.state.height = canvas.height = window.innerHeight; 
-        };
+        const updateSize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
         updateSize();
 
-        const nodes = [{ id: 'me', label: 'MD. ARSHAD', group: 'core' }, ...portfolioData.projects.map(p => ({ id: p.title, label: p.title, group: 'project' }))];
-        const links = [];
-        portfolioData.projects.forEach(p => links.push({ source: 'me', target: p.title }));
+        const nodes = [{ id: 'me', group: 'core' }, ...portfolioData.projects.map(p => ({ id: p.title, group: 'project' }))];
+        const links = portfolioData.projects.map(p => ({ source: 'me', target: p.title }));
 
         const simulation = d3.forceSimulation(nodes)
             .force("link", d3.forceLink(links).id(d => d.id).distance(250))
             .force("charge", d3.forceManyBody().strength(-800))
-            .force("center", d3.forceCenter(this.state.width / 2 + 140, this.state.height / 2))
+            .force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2))
             .on("tick", () => {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.beginPath();
@@ -77,13 +70,9 @@ const SulkyOS = {
                     context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
                     context.fill();
                 });
-                this.state.nodes = nodes;
             });
 
-        window.addEventListener('resize', () => { 
-            updateSize(); 
-            simulation.force("center", d3.forceCenter(this.state.width / 2 + 140, this.state.height / 2)).alpha(0.3).restart(); 
-        });
+        window.addEventListener('resize', () => { updateSize(); simulation.force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2)).alpha(0.3).restart(); });
     },
 
     toggleMode() {
@@ -102,98 +91,108 @@ const SulkyOS = {
 
         this.logEvent(`READ_BLOCK: 0x0 -> ${section}`);
 
-        let source = "";
-
         if (section === 'profile') {
-            source = `
+            this.renderProse(surface, `
 [TYPE: header] ${portfolioData.about.name}
 [TYPE: metadata] ${portfolioData.about.title} // ${portfolioData.about.location}
 [TYPE: space]
 ${portfolioData.about.bio}
 [TYPE: space]
 ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYPE: data-node] ${portfolioData.about.cruelBio}` : ''}
-            `;
+            `);
         } else if (section === 'projects') {
-            source = "[TYPE: header] PROJECTS.bin\n";
+            this.renderProse(surface, "[TYPE: header] PROJECTS.bin");
             portfolioData.projects.forEach(p => {
-                source += `[TYPE: section-label] ${p.title}\n[TYPE: metadata] ${p.tech}\n${p.description}\n${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}\n[TYPE: space]\n`;
+                this.renderProse(surface, `
+[TYPE: section-label] ${p.title}
+[TYPE: metadata] ${p.tech} // <a href="${p.link}" target="_blank" style="color:inherit">LINK</a>
+${p.description}
+${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}
+[TYPE: space]
+                `);
             });
-        } else if (section === 'experience') {
-            source = "[TYPE: header] EXPERIENCE.log\n";
-            portfolioData.experience.forEach(e => {
-                source += `[TYPE: section-label] ${e.duration} // ${e.role}\n[TYPE: metadata] ${e.company}\n${e.description}\n[TYPE: space]\n`;
-            });
+        } else if (section === 'skills') {
+            this.renderProse(surface, "[TYPE: header] SKILLS.sys");
+            this.renderDataTable(surface, [
+                { key: "Stack", val: portfolioData.skills.join(" // ") },
+                { key: "Interests", val: portfolioData.interests.join(" // ") }
+            ]);
         } else if (section === 'education') {
-            source = "[TYPE: header] EDUCATION.edu\n";
-            this.renderArchitecturalProse(surface, source);
+            this.renderProse(surface, "[TYPE: header] EDUCATION.edu");
             portfolioData.education.forEach(e => {
-                this.renderDataGrid(surface, [
-                    { label: "Duration", val: e.duration },
-                    { label: "Degree", val: e.degree },
-                    { label: "Institution", val: e.institution },
-                    { label: "Details", val: e.details }
+                this.renderDataTable(surface, [
+                    { key: "Duration", val: e.duration },
+                    { key: "Degree", val: e.degree },
+                    { key: "Institution", val: e.institution },
+                    { key: "Details", val: e.details }
                 ]);
             });
-            return;
-        } else if (section === 'skills') {
-            source = `[TYPE: header] SKILLS.sys\n`;
-            this.renderArchitecturalProse(surface, source);
-            this.renderDataGrid(surface, [
-                { label: "Stack", val: portfolioData.skills.join(" // ") },
-                { label: "Interests", val: portfolioData.interests.join(" // ") }
-            ]);
-            return;
+        } else if (section === 'experience') {
+            this.renderProse(surface, "[TYPE: header] EXPERIENCE.log");
+            portfolioData.experience.forEach(e => {
+                this.renderDataTable(surface, [
+                    { key: "Duration", val: e.duration },
+                    { key: "Role", val: e.role },
+                    { key: "Company", val: e.company },
+                    { key: "Context", val: e.description }
+                ]);
+            });
         } else if (section === 'blog') {
-            source = "[TYPE: header] BLOG.log\n";
+            this.renderProse(surface, "[TYPE: header] BLOG.log");
             portfolioData.posts.forEach(p => {
-                source += `[TYPE: section-label] ${p.date} // ${p.title}\n${p.summary}\n[TYPE: metadata] LINK: <a href="${p.link}" style="color:inherit" target="_blank">READ_ENTRY</a>\n[TYPE: space]\n`;
+                this.renderProse(surface, `
+[TYPE: section-label] ${p.date} // ${p.title}
+${p.summary}
+[TYPE: metadata] <a href="${p.link}" target="_blank" style="color:inherit">READ_ENTRY</a>
+[TYPE: space]
+                `);
             });
         } else if (section === 'publications') {
-            source = "[TYPE: header] PUBLICATIONS.bib\n";
-            portfolioData.publications.forEach(pub => source += `[TYPE: section-label] BIB_ENTRY\n${pub}\n[TYPE: space]\n`);
+            this.renderProse(surface, "[TYPE: header] PUBLICATIONS.bib");
+            portfolioData.publications.forEach(pub => {
+                this.renderProse(surface, `[TYPE: section-label] BIB_ENTRY\n${pub}\n[TYPE: space]`);
+            });
         } else if (section === 'contact') {
-            source = `[TYPE: header] CONTACT.sh\n`;
-            this.renderArchitecturalProse(surface, source);
-            this.renderDataGrid(surface, [
-                { label: "Email", val: portfolioData.about.email },
-                { label: "Github", val: portfolioData.about.social.github },
-                { label: "Linkedin", val: portfolioData.about.social.linkedin },
-                { label: "Twitter", val: portfolioData.about.social.twitter }
+            this.renderProse(surface, "[TYPE: header] CONTACT.sh");
+            this.renderDataTable(surface, [
+                { key: "Email", val: portfolioData.about.email },
+                { key: "Github", val: `<a href="${portfolioData.about.social.github}" target="_blank" style="color:inherit">@Sulkysubject37</a>` },
+                { key: "LinkedIn", val: `<a href="${portfolioData.about.social.linkedin}" target="_blank" style="color:inherit">/in/subjects</a>` },
+                { key: "Hashnode", val: `<a href="${portfolioData.about.social.blog}" target="_blank" style="color:inherit">subconc.hashnode.dev</a>` }
             ]);
-            return;
         } else if (section === 'terminal') {
             this.injectTerminal(surface);
-            return;
+        } else if (section === 'network') {
+            this.renderProse(surface, "[TYPE: header] NETWORK.gml\n[TYPE: section-label] INTERACTIVE_KNOWLEDGE_GRAPH");
+            this.renderInteractiveNetwork(surface);
         }
-
-        this.renderArchitecturalProse(surface, source);
     },
 
-    renderArchitecturalProse(container, source) {
+    renderProse(container, source) {
         const viewportWidth = container.offsetWidth;
-        let currentY = container.children.length > 0 ? container.lastChild.offsetTop + container.lastChild.offsetHeight + 20 : 100;
-        const LINE_HEIGHT = 28;
-
-        source.trim().split('\n').forEach(block => {
+        const currentY = container.children.length > 0 ? container.scrollHeight + 40 : 100;
+        
+        source.trim().split('\n').forEach((block, i) => {
             const trimmed = block.trim();
-            if (!trimmed) { currentY += LINE_HEIGHT; return; }
+            if (!trimmed) return;
 
-            let type = 'body';
-            let text = trimmed;
+            let type = 'body', text = trimmed;
             if (trimmed.startsWith('[TYPE:')) {
                 const match = trimmed.match(/\[TYPE:\s*([^\]]+)\](?:\s*(.*))?/);
                 if (match) { type = match[1].toLowerCase(); text = match[2] || ''; }
             }
 
-            if (type === 'space') { currentY += 40; return; }
+            if (type === 'space') {
+                const sp = document.createElement('div'); el.className = 'space'; container.appendChild(sp);
+                return;
+            }
 
-            const font = type === 'header' ? '900 3rem "Playfair Display"' : 
-                         (type === 'metadata' || type === 'section-label' || type === 'data-node') ? '0.7rem "IBM Plex Mono"' : '1.1rem "EB Garamond"';
-            const lh = type === 'header' ? 60 : LINE_HEIGHT;
+            const font = type === 'header' ? '900 3.5rem "Playfair Display"' : 
+                         (type === 'metadata' || type === 'section-label' || type === 'data-node') ? '0.7rem "IBM Plex Mono"' : '1.15rem "EB Garamond"';
+            const lh = type === 'header' ? 70 : 32;
 
             const result = Pretext.layoutWithExclusion(text, viewportWidth * 0.85, font, currentY, lh, (y) => {
-                const centerY = 500; // Simulated center
-                const dist = Math.abs(y - centerY);
+                const dist = Math.abs(y - 500);
                 if (dist < 150) {
                     const span = Math.sqrt(150**2 - dist**2);
                     return [(viewportWidth/2) - span, (viewportWidth/2) + span];
@@ -210,44 +209,53 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
                 el.style.font = font;
                 container.appendChild(el);
             });
-            currentY = result.endY + 10;
         });
-        container.style.height = `${Math.max(container.offsetHeight, currentY + 300)}px`;
     },
 
-    renderDataGrid(container, items) {
-        let currentY = container.children.length > 0 ? parseInt(container.lastChild.style.top) + 60 : 150;
-        items.forEach(item => {
-            const el = document.createElement('div');
-            el.className = 'data-grid';
-            el.style.top = `${currentY}px`;
-            el.innerHTML = `<div class="grid-label">${item.label}</div><div class="grid-val">${item.val}</div>`;
-            container.appendChild(el);
-            currentY += 60; // Approximate height
+    renderDataTable(container, rows) {
+        const wrap = document.createElement('div');
+        wrap.className = 'data-table';
+        // Position data tables based on content height
+        wrap.style.marginTop = '2rem';
+        wrap.style.marginLeft = '7.5%';
+        wrap.style.width = '85%';
+        rows.forEach(r => {
+            wrap.innerHTML += `<div class="data-key">${r.key}</div><div class="data-val">${r.val}</div>`;
         });
-        container.style.height = `${currentY + 200}px`;
+        container.appendChild(wrap);
     },
 
     injectTerminal(container) {
         const term = document.createElement('div');
         term.className = 'terminal-block';
-        term.style.top = '100px';
-        term.innerHTML = `<div id="term-out">SULKY_OS // TERMINAL READY<br>Type 'help'...</div><input type="text" id="term-in" style="background:none;border:none;color:#00ff41;width:100%;outline:none;font-family:inherit;">`;
+        term.style.marginTop = '4rem';
+        term.innerHTML = `<div class="term-out" id="term-out"></div><div style="display:flex;gap:0.5rem"><span>></span><input type="text" id="term-input" autofocus spellcheck="false"></div>`;
         container.appendChild(term);
-        const input = document.getElementById('term-in');
+        const out = document.getElementById('term-out');
+        const input = document.getElementById('term-input');
+        
+        this.state.terminalHistory.forEach(line => out.innerHTML += `<div>${line}</div>`);
+
         input.onkeydown = (e) => {
             if (e.key === 'Enter') {
-                const cmd = input.value.trim().toLowerCase();
-                const out = document.getElementById('term-out');
-                out.innerHTML += `<br>> ${cmd}`;
-                if (cmd === 'ls') out.innerHTML += `<br>profile.man projects.bin skills.sys`;
-                else if (cmd === 'help') out.innerHTML += `<br>ls, mode, clear, whoami`;
-                else if (cmd === 'whoami') out.innerHTML += `<br>SulkySubject37 // System Engineer`;
-                else if (cmd === 'mode') { this.toggleMode(); out.innerHTML += `<br>MODE SHIFTED`; }
-                else if (cmd === 'clear') out.innerHTML = '';
+                const val = input.value.trim().toLowerCase();
+                out.innerHTML += `<div>> ${val}</div>`;
+                if (val === 'help') out.innerHTML += "<div>Available: ls, mode, clear, whoami</div>";
+                else if (val === 'ls') out.innerHTML += "<div>profile.man projects.bin skills.sys blog.log</div>";
+                else if (val === 'mode') { this.toggleMode(); out.innerHTML += "<div>SYSTEM MODE TOGGLED</div>"; }
+                else if (val === 'clear') out.innerHTML = '';
+                else if (val === 'whoami') out.innerHTML += "<div>User: SulkySubject37 // Role: System Engineer</div>";
                 input.value = '';
+                out.scrollTop = out.scrollHeight;
             }
         };
+    },
+
+    renderInteractiveNetwork(container) {
+        const net = document.createElement('div'); net.id = 'interactive-network'; net.style.marginTop = '4rem'; container.appendChild(net);
+        const width = net.offsetWidth, height = 500;
+        const svg = d3.select("#interactive-network").append("svg").attr("width", "100%").attr("height", height);
+        // Add zoomable SVG graph here...
     },
 
     setupEventListeners() {
@@ -265,13 +273,13 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
         const feed = document.getElementById('log-feed');
         const entry = document.createElement('div');
         entry.className = 'log-entry';
-        entry.innerHTML = `<span class="timestamp">[${new Date().toTimeString().split(' ')[0]}]</span><span class="log-msg">${msg}</span>`;
+        entry.innerHTML = `<span class="log-ts">[${new Date().toTimeString().split(' ')[0]}]</span><span class="log-msg">${msg}</span>`;
         feed.prepend(entry);
     },
 
     updateClock() {
-        setInterval(() => { 
-            document.getElementById('uptime-clock').textContent = new Date().toTimeString().split(' ')[0]; 
+        setInterval(() => {
+            document.getElementById('uptime-clock').textContent = new Date().toTimeString().split(' ')[0];
         }, 1000);
     }
 };
