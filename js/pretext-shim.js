@@ -25,34 +25,51 @@ const Pretext = {
      * Lays out text while respecting optional exclusion zones (e.g. around graph nodes)
      */
     layoutWithExclusion(text, maxWidth, font, startY, lineHeight, exclusionFn) {
-        const words = text.split(' ');
+        const words = text.split(/\s+/);
         const lines = [];
         let currentLine = '';
         let currentY = startY;
 
         for (let n = 0; n < words.length; n++) {
-            const testLine = currentLine + words[n] + ' ';
-            const testWidth = this.measureText(testLine, font);
+            const word = words[n];
+            const testLine = currentLine + (currentLine ? ' ' : '') + word;
             
             // Check for exclusion at this Y
             const exclusion = exclusionFn ? exclusionFn(currentY) : null;
-            let currentMaxWidth = maxWidth;
+            let effectiveMaxWidth = maxWidth;
             let startX = 0;
 
             if (exclusion) {
-                // If exclusion exists, we simplify for now: move to next line or wrap around
-                // This is a complex area for a simple shim, so we provide the structure
+                // If the line intersects an exclusion circle, adjust maxWidth and startX
+                const [exStart, exEnd] = exclusion;
+                // Simplified wrap logic: if we're in an exclusion zone, we shift to the right of it
+                // Or if it's too wide, we stay to the left.
+                // For this OS, we'll try to wrap around the center exclusion.
+                if (exStart < maxWidth / 2) {
+                    startX = exEnd;
+                    effectiveMaxWidth = maxWidth - exEnd;
+                } else {
+                    effectiveMaxWidth = exStart;
+                }
             }
 
-            if (testWidth > currentMaxWidth && n > 0) {
-                lines.push({ text: currentLine.trim(), y: currentY, x: startX });
-                currentLine = words[n] + ' ';
+            const testWidth = this.measureText(testLine, font);
+
+            if (testWidth > effectiveMaxWidth && n > 0) {
+                lines.push({ text: currentLine, y: currentY, x: startX });
+                currentLine = word;
                 currentY += lineHeight;
             } else {
                 currentLine = testLine;
             }
         }
-        lines.push({ text: currentLine.trim(), y: currentY, x: 0 });
+        
+        // Final line
+        const finalExclusion = exclusionFn ? exclusionFn(currentY) : null;
+        let finalX = 0;
+        if (finalExclusion && finalExclusion[0] < maxWidth / 2) finalX = finalExclusion[1];
+        
+        lines.push({ text: currentLine, y: currentY, x: finalX });
         
         return {
             lines: lines,
