@@ -200,7 +200,7 @@ body.cruel-mode .blog-card:hover { background: rgba(0, 255, 65, 0.05); }
 }
 .read-btn:hover { background: var(--line); color: var(--bg); }
 
-/* TERMINAL VIEW */
+/* INTERACTIVE TERMINAL */
 .terminal-block {
     background: #000;
     color: #00ff41;
@@ -211,8 +211,37 @@ body.cruel-mode .blog-card:hover { background: rgba(0, 255, 65, 0.05); }
     line-height: 1.5;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     margin: 2rem 0;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
 }
-.terminal-prompt { color: #fff; margin-bottom: 1rem; }
+
+.terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.terminal-line { margin-bottom: 0.4rem; }
+.terminal-line.cmd { color: #fff; }
+.terminal-line.cmd::before { content: 'sulky@kernel:~$ '; color: #888; }
+
+.terminal-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.terminal-input-wrap::before { content: 'sulky@kernel:~$'; color: #888; }
+
+#term-input {
+    background: transparent;
+    border: none;
+    color: #00ff41;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    flex: 1;
+    outline: none;
+}
 
 /* ZONE C: THE TELEMETRY */
 .telemetry {
@@ -227,6 +256,9 @@ body.cruel-mode .blog-card:hover { background: rgba(0, 255, 65, 0.05); }
     font-size: 0.65rem;
     color: var(--text-dim);
 }
+
+.log-entry { display: flex; gap: 1rem; margin-right: 2rem; }
+.timestamp { flex-shrink: 0; width: 75px; }
 
 #interactive-network { width: 100%; height: 600px; border: 1px solid var(--line); margin-top: 2rem; opacity: 0.8; }
 

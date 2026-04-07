@@ -7,8 +7,10 @@ const SulkyOS = {
         activeSection: 'profile',
         isBooted: false,
         isCruelMode: false,
-        nodes: [],
-        links: []
+        terminalHistory: [
+            "SULKY_OS v3.0.1_STABLE",
+            "Type 'help' for available commands."
+        ]
     },
 
     init() {
@@ -122,19 +124,7 @@ ${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}
                 surface.appendChild(card);
             });
         } else if (section === 'terminal') {
-            surface.innerHTML = `
-                <div class="header">TERMINAL.sh</div>
-                <div class="terminal-block">
-                    <div class="terminal-prompt">sulky@kernel:~$ list --projects</div>
-                    <div class="body-text" style="font-family:var(--mono); font-size:0.8rem; color:#00ff41;">
-                        ${portfolioData.projects.map(p => `> 0x${Math.random().toString(16).slice(2,6)}: ${p.title}`).join('<br>')}
-                    </div>
-                    <div class="terminal-prompt" style="margin-top:2rem;">sulky@kernel:~$ status --system</div>
-                    <div class="body-text" style="font-family:var(--mono); font-size:0.8rem; color:#ffb000;">
-                        KERNEL: v3.0.1_STABLE<br>MODE: ${this.state.isCruelMode ? 'CRUEL' : 'NORMAL'}<br>UPTIME: ${document.getElementById('uptime-clock').textContent}
-                    </div>
-                </div>
-            `;
+            this.injectTerminal(surface);
         } else if (section === 'experience') {
             this.renderProse(surface, "[TYPE: header] EXPERIENCE.log");
             portfolioData.experience.forEach(e => {
@@ -146,7 +136,14 @@ ${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}
                 this.renderProse(surface, `[TYPE: section-label] ${e.duration} // ${e.degree}\n[TYPE: metadata] ${e.institution}\n[TYPE: body-text] ${e.details}\n[TYPE: space]`);
             });
         } else if (section === 'skills') {
-            this.renderProse(surface, "[TYPE: header] SKILLS.sys\n[TYPE: section-label] STACK_INVENTORY\n[TYPE: body-text] ${portfolioData.skills.join(' // ')}\n[TYPE: space]\n[TYPE: section-label] INTEREST_VECTOR\n[TYPE: body-text] ${portfolioData.interests.join(' // ')}");
+            this.renderProse(surface, `
+[TYPE: header] SKILLS.sys
+[TYPE: section-label] STACK_INVENTORY
+[TYPE: body-text] ${portfolioData.skills.join(' // ')}
+[TYPE: space]
+[TYPE: section-label] INTEREST_VECTOR
+[TYPE: body-text] ${portfolioData.interests.join(' // ')}
+            `);
         } else if (section === 'publications') {
             this.renderProse(surface, "[TYPE: header] PUBLICATIONS.bib");
             portfolioData.publications.forEach(pub => { this.renderProse(surface, `[TYPE: section-label] BIB_ENTRY\n[TYPE: body-text] ${pub}\n[TYPE: space]`); });
@@ -155,6 +152,61 @@ ${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}
         } else if (section === 'network') {
             this.renderProse(surface, "[TYPE: header] NETWORK.gml\n[TYPE: section-label] SYSTEMS_BIOLOGY_GRAPH");
             this.renderInteractiveNetwork(surface);
+        }
+    },
+
+    injectTerminal(container) {
+        const term = document.createElement('div');
+        term.className = 'terminal-block';
+        term.innerHTML = `
+            <div class="terminal-output" id="term-out"></div>
+            <div class="terminal-input-wrap">
+                <input type="text" id="term-input" spellcheck="false" autofocus>
+            </div>
+        `;
+        container.appendChild(term);
+
+        const input = document.getElementById('term-input');
+        const output = document.getElementById('term-out');
+
+        this.state.terminalHistory.forEach(line => this.addTerminalLine(output, line));
+
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim().toLowerCase();
+                this.addTerminalLine(output, cmd, true);
+                this.handleTerminalCommand(cmd, output);
+                input.value = '';
+                output.scrollTop = output.scrollHeight;
+            }
+        };
+        
+        term.onclick = () => input.focus();
+    },
+
+    addTerminalLine(container, text, isCmd = false) {
+        const line = document.createElement('div');
+        line.className = isCmd ? 'terminal-line cmd' : 'terminal-line';
+        line.textContent = text;
+        container.appendChild(line);
+    },
+
+    handleTerminalCommand(cmd, output) {
+        if (cmd === 'help') {
+            this.addTerminalLine(output, "Available: ls, clear, status, mode, whoami");
+        } else if (cmd === 'ls') {
+            this.addTerminalLine(output, "Files: profile.man, projects.bin, skills.sys, blog.log");
+        } else if (cmd === 'clear') {
+            output.innerHTML = '';
+        } else if (cmd === 'whoami') {
+            this.addTerminalLine(output, "User: SulkySubject37 // Role: System Engineer");
+        } else if (cmd === 'status') {
+            this.addTerminalLine(output, `Kernel: v3.0.1 // Mode: ${this.state.isCruelMode ? 'CRUEL' : 'NORMAL'}`);
+        } else if (cmd === 'mode') {
+            this.toggleMode();
+            this.addTerminalLine(output, `System shifted to ${this.state.isCruelMode ? 'CRUEL' : 'NORMAL'} mode.`);
+        } else if (cmd) {
+            this.addTerminalLine(output, `Command not found: ${cmd}`);
         }
     },
 
