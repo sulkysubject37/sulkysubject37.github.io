@@ -212,18 +212,26 @@ ${p.summary}
 
     renderProse(container, source) {
         source.trim().split('\n').forEach(block => {
-            if (!block.trim()) return;
+            const trimmed = block.trim();
+            if (!trimmed) return;
 
             let type = 'body-text';
-            let text = block;
-            if (block.startsWith('[TYPE:')) {
-                const match = block.match(/\[TYPE: (.*?)\] (.*)/);
-                if (match) { type = match[1]; text = match[2]; }
+            let text = trimmed;
+
+            if (trimmed.startsWith('[TYPE:')) {
+                const match = trimmed.match(/\[TYPE:\s*([^\]]+)\](?:\s*(.*))?/);
+                if (match) {
+                    type = match[1].toLowerCase();
+                    text = match[2] || ''; // Handle tags without trailing text
+                }
             }
 
             const el = document.createElement('div');
             el.className = type;
-            el.innerHTML = text;
+            // Only add text if it's not a space/metadata only tag
+            if (type !== 'space') {
+                el.innerHTML = text;
+            }
             container.appendChild(el);
         });
     },
