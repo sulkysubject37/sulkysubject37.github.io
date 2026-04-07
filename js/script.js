@@ -1,6 +1,6 @@
 /**
  * SULKY_OS v3.0 // THE ENTANGLED KERNEL
- * Core Engine: D3 Graph + Pretext Architectural Prose
+ * Core Engine: D3 Graph + Rigid Flow Architecture
  */
 
 const SulkyOS = {
@@ -29,9 +29,7 @@ const SulkyOS = {
             "CHECKING_FILESYSTEM... OK",
             "MOUNTING_REGISTRY: 0x00 -> 0x07",
             "LOADING_GRAPH_ENGINE: D3.force",
-            "COMPILING_PROSE_SHIM: Pretext 2.0",
             "DECODING_BIO_METADATA: resED // VECTORIA // tangle",
-            "LIQUIDATING_NARRATIVE_SLOP...",
             "SYSTEM_READY: ENJOY_THE_ENTANGLEMENT"
         ];
 
@@ -52,16 +50,15 @@ const SulkyOS = {
                         this.state.isBooted = true;
                         this.injectContent('profile');
                     }, 500);
-                }, 1000);
+                }, 800);
             }
-        }, 200);
+        }, 150);
     },
 
     // --- LAYER 0: THE GRAPH ENGINE ---
     setupGraph() {
         const canvas = document.getElementById('graph-canvas');
         const context = canvas.getContext('2d');
-        const container = document.getElementById('graph-container');
         
         const updateSize = () => {
             canvas.width = window.innerWidth;
@@ -69,33 +66,31 @@ const SulkyOS = {
         };
         updateSize();
 
-        // Create nodes from portfolioData
+        // High-density nodes for background texture
         const nodes = [
             { id: 'me', label: 'MD. ARSHAD', group: 'core' },
             ...portfolioData.projects.map(p => ({ id: p.title, label: p.title, group: 'project' })),
-            ...portfolioData.skills.map(s => ({ id: s, label: s, group: 'skill' }))
+            ...portfolioData.skills.map(s => ({ id: s, label: s, group: 'skill' })),
+            ...portfolioData.education.map(e => ({ id: e.degree, label: e.degree, group: 'edu' }))
         ];
 
-        // Create links
         const links = [];
         portfolioData.projects.forEach(p => {
             links.push({ source: 'me', target: p.title });
             p.tech.split(', ').forEach(t => {
-                if (nodes.find(n => n.id === t)) {
-                    links.push({ source: p.title, target: t });
-                }
+                if (nodes.find(n => n.id === t)) links.push({ source: p.title, target: t });
             });
         });
 
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(180))
-            .force("charge", d3.forceManyBody().strength(-400))
-            .force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(220))
+            .force("charge", d3.forceManyBody().strength(-600))
+            .force("center", d3.forceCenter(canvas.width / 2 + 100, canvas.height / 2))
             .on("tick", () => {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 
                 context.beginPath();
-                context.strokeStyle = "#1a1a1811";
+                context.strokeStyle = "#1a1a1808"; // Very faint
                 links.forEach(d => {
                     context.moveTo(d.source.x, d.source.y);
                     context.lineTo(d.target.x, d.target.y);
@@ -104,19 +99,19 @@ const SulkyOS = {
 
                 nodes.forEach(d => {
                     context.beginPath();
-                    context.fillStyle = d.group === 'core' ? "#607080" : "#1a1a1822";
-                    context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+                    context.fillStyle = d.group === 'core' ? "#60708011" : "#1a1a180a";
+                    context.arc(d.x, d.y, 2, 0, 2 * Math.PI);
                     context.fill();
 
-                    context.font = "9px IBM Plex Mono";
-                    context.fillStyle = "#1a1a1811";
-                    context.fillText(d.label, d.x + 8, d.y + 4);
+                    context.font = "8px IBM Plex Mono";
+                    context.fillStyle = "#1a1a1805";
+                    context.fillText(d.label, d.x + 10, d.y + 3);
                 });
             });
 
         window.addEventListener('resize', () => {
             updateSize();
-            simulation.force("center", d3.forceCenter(canvas.width / 2 + 140, canvas.height / 2));
+            simulation.force("center", d3.forceCenter(canvas.width / 2 + 100, canvas.height / 2));
             simulation.alpha(0.3).restart();
         });
     },
@@ -128,7 +123,7 @@ const SulkyOS = {
         surface.innerHTML = '';
         pathDisplay.textContent = `~/${section}.man`;
 
-        this.logEvent(`TRAVERSING_GRAPH: 0x0 -> ${section}`);
+        this.logEvent(`READING_BLOCK: 0x0 -> ${section}`);
 
         let prose = "";
 
@@ -140,7 +135,7 @@ const SulkyOS = {
 ${portfolioData.about.bio}
 [TYPE: space]
 [TYPE: section-label] CRUEL_STANDARD_MANIFESTO
-${portfolioData.about.cruelBio}
+[TYPE: data-node] ${portfolioData.about.cruelBio}
             `;
         } else if (section === 'projects') {
             prose = "[TYPE: header] PROJECTS.bin\n";
@@ -149,8 +144,7 @@ ${portfolioData.about.cruelBio}
 [TYPE: section-label] ${p.title}
 [TYPE: metadata] ${p.tech} // LINK: ${p.link}
 ${p.description}
-[TYPE: space]
-${p.cruelDescription}
+[TYPE: data-node] ${p.cruelDescription}
 [TYPE: space]
                 `;
             });
@@ -177,9 +171,9 @@ ${e.details}
         } else if (section === 'skills') {
             prose = "[TYPE: header] SKILLS.sys\n";
             prose += "[TYPE: section-label] STACK_INVENTORY\n";
-            prose += portfolioData.skills.join(" // ") + "\n";
+            prose += `[TYPE: body-text] ${portfolioData.skills.join(" // ")}\n`;
             prose += "[TYPE: space]\n[TYPE: section-label] INTEREST_VECTOR\n";
-            prose += portfolioData.interests.join(" // ") + "\n";
+            prose += `[TYPE: body-text] ${portfolioData.interests.join(" // ")}\n`;
         } else if (section === 'blog') {
             prose = "[TYPE: header] BLOG.log\n";
             portfolioData.posts.forEach(p => {
@@ -195,7 +189,7 @@ ${p.summary}
             portfolioData.publications.forEach(pub => {
                 prose += `
 [TYPE: section-label] BIB_ENTRY
-${pub}
+[TYPE: body-text] ${pub}
 [TYPE: space]
                 `;
             });
@@ -206,10 +200,10 @@ ${pub}
 [TYPE: metadata] EMAIL: ${portfolioData.about.email}
 [TYPE: space]
 [TYPE: section-label] SOCIAL_NODES
-GITHUB: ${portfolioData.about.social.github}
-LINKEDIN: ${portfolioData.about.social.linkedin}
-TWITTER: ${portfolioData.about.social.twitter}
-HASHNODE: ${portfolioData.about.social.blog}
+[TYPE: body-text] GITHUB: ${portfolioData.about.social.github}
+[TYPE: body-text] LINKEDIN: ${portfolioData.about.social.linkedin}
+[TYPE: body-text] TWITTER: ${portfolioData.about.social.twitter}
+[TYPE: body-text] HASHNODE: ${portfolioData.about.social.blog}
             `;
         }
 
@@ -217,41 +211,21 @@ HASHNODE: ${portfolioData.about.social.blog}
     },
 
     renderProse(container, source) {
-        const width = container.offsetWidth;
-        let currentY = 0;
-
         source.trim().split('\n').forEach(block => {
-            if (!block.trim()) { currentY += 24; return; }
+            if (!block.trim()) return;
 
-            let type = 'body';
+            let type = 'body-text';
             let text = block;
             if (block.startsWith('[TYPE:')) {
                 const match = block.match(/\[TYPE: (.*?)\] (.*)/);
                 if (match) { type = match[1]; text = match[2]; }
             }
 
-            const font = type === 'header' ? '900 3rem Playfair Display' : 
-                         type === 'metadata' ? '0.7rem IBM Plex Mono' : 
-                         type === 'section-label' ? 'bold 0.7rem IBM Plex Mono' : '1.1rem EB Garamond';
-            const lh = type === 'header' ? 60 : 28;
-
-            // Strict alignment logic: no exclusion for system pages
-            const result = Pretext.layoutWithExclusion(text, width * 0.9, font, currentY, lh, null);
-            
-            result.lines.forEach(l => {
-                const el = document.createElement('div');
-                el.className = `line ${type}`;
-                el.textContent = l.text;
-                el.style.top = `${l.y}px`;
-                el.style.left = `0px`;
-                el.style.font = font;
-                container.appendChild(el);
-            });
-            currentY = result.endY + 8;
+            const el = document.createElement('div');
+            el.className = type;
+            el.innerHTML = text;
+            container.appendChild(el);
         });
-
-        // Set scroll height to ensure all content is reachable
-        container.style.height = `${currentY + 200}px`;
     },
 
     // --- UTILS ---
@@ -261,7 +235,6 @@ HASHNODE: ${portfolioData.about.social.blog}
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
                 this.injectContent(item.dataset.target);
-                // Reset scroll
                 document.getElementById('text-surface').scrollTop = 0;
             };
         });

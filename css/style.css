@@ -134,47 +134,76 @@ body::after {
     font-size: 0.7rem;
     text-transform: uppercase;
     color: var(--text-dim);
-}
-
-.window-controls {
-    color: var(--accent);
+    z-index: 20;
 }
 
 #text-surface {
     flex: 1;
     overflow-y: auto;
-    padding: 4rem 10% 10rem;
+    padding: 5rem 12% 10rem;
     position: relative;
     scroll-behavior: smooth;
+    z-index: 15;
 }
 
-/* ARCHITECTURAL PROSE STYLING */
-.line {
-    position: absolute;
-    white-space: pre;
-    font-size: 1.15rem;
-    line-height: 1.6;
-    transition: opacity 0.5s ease;
+/* ARCHITECTURAL PROSE FLOW (Strict Alignment) */
+.prose-block {
+    margin-bottom: 2.5rem;
+    max-width: 800px;
+    position: relative;
 }
 
-.line.header {
+.header {
     font-family: var(--header);
     font-size: 3.5rem;
     font-weight: 900;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    color: var(--text);
 }
 
-.line.metadata {
+.metadata {
     font-family: var(--mono);
     font-size: 0.75rem;
     color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+    letter-spacing: 0.05em;
 }
 
-.line.section-label {
+.section-label {
     font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--text-dim);
-    letter-spacing: 0.2em;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
+.section-label::after { content: ''; flex: 1; height: 1px; background: #ddd; }
+
+.body-text {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+    color: var(--text);
+    text-align: justify;
+}
+
+.data-node {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.03);
+    border-left: 2px solid var(--accent);
+    padding: 1.2rem;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+}
+
+.space { height: 2rem; }
 
 /* ZONE C: THE TELEMETRY */
 .telemetry {
