@@ -232,6 +232,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Narrative Slop // Part II: The Zero-Auth Self",
+            date: "Apr 7, 2026",
+            summary: "A manual for the liquidation of narrative debt. Moving from the diagnosis of abstraction to the harsh execution of the refactor.",
+            link: "posts/2026-04-07_Narrative-Slop-Part-II.html"
+        },
+        {
             title: "Narrative Slop",
             date: "Apr 7, 2026",
             summary: "On abstraction, surplus feeling, and the scarcity of a self. A structural analysis of the failure modes in contemporary synthesis and personal narrative.",
