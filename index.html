@@ -3,135 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sulkysubject37 // Tangle Interface</title>
-    <link rel="stylesheet" href="css/style.css?v=2.2.1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SULKY_OS // v3.0 // The Entangled Kernel</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Playfair+Display:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=3.0.1">
 </head>
 <body>
-    <!-- Signature Boot Sequence -->
+
+    <!-- LAYER 0: THE GRAPH -->
+    <div id="graph-container">
+        <canvas id="graph-canvas"></canvas>
+    </div>
+
+    <!-- LAYER 1: THE UI (BRUTALIST) -->
+    <div class="kernel-layout">
+        
+        <!-- ZONE A: THE REGISTRY -->
+        <aside class="registry">
+            <div class="registry-header">~/REGISTRY</div>
+            <nav class="nav-tree" id="registry-nav">
+                <!-- Injected via JS -->
+                <div class="nav-item active" data-target="profile">0x00 // PROFILE.man</div>
+                <div class="nav-item" data-target="projects">0x01 // PROJECTS.bin</div>
+                <div class="nav-item" data-target="blog">0x02 // BLOG.log</div>
+                <div class="nav-item" data-target="network">0x03 // NETWORK.gml</div>
+            </nav>
+            <div class="system-status">
+                <div class="status-row"><span>KERNEL</span><span class="val">v3.0.1_STABLE</span></div>
+                <div class="status-row"><span>UPTIME</span><span class="val" id="uptime-clock">00:00:00</span></div>
+            </div>
+        </aside>
+
+        <!-- ZONE B: THE VIEWPORT -->
+        <main class="viewport">
+            <div class="viewport-header">
+                <span id="active-path">~/profile.man</span>
+                <span class="window-controls">[ MIN ] [ MAX ] [ X ]</span>
+            </div>
+            <div id="text-surface">
+                <!-- Architectural Prose injected here -->
+            </div>
+        </main>
+
+        <!-- ZONE C: THE TELEMETRY -->
+        <footer class="telemetry">
+            <div class="log-stream" id="log-feed">
+                <div class="log-entry">[00:00:01] KERNEL_INIT: SUCCESS</div>
+            </div>
+            <div class="coord-display" id="coord-telemetry">X: 000 | Y: 000</div>
+        </footer>
+
+    </div>
+
+    <!-- BOOT OVERLAY -->
     <div id="boot-overlay">
         <div class="boot-content">
-            <div class="boot-logo">SULKY_OS // KERNEL_INIT</div>
-            <div class="boot-progress-container">
-                <div class="boot-bar" id="boot-bar"></div>
-            </div>
-            <div class="boot-text">LOADING: <span id="boot-percent">0.37%</span></div>
-            <div class="boot-log" id="init-log"></div>
-        </div>
-    </div>
-
-    <div class="tangle-container">
-        <!-- Zone A: The Registry (Sidebar) -->
-        <div class="pane sidebar" id="zone-a">
-            <div class="pane-header">
-                <span class="pane-title">~/REGISTRY</span>
-                <span class="pane-status">[ONLINE]</span>
-            </div>
-            <div class="pane-content">
-                <ul class="nav-tree" id="nav-tree">
-                    <li class="nav-item active" data-target="profile">
-                        <span class="icon">➜</span> <span class="label">profile.man</span>
-                    </li>
-                    <li class="nav-item" data-target="projects">
-                        <span class="icon">➜</span> <span class="label">projects/</span>
-                    </li>
-                    <li class="nav-item" data-target="network">
-                        <span class="icon">➜</span> <span class="label">network.gml</span>
-                    </li>
-                    <li class="nav-item" data-target="terminal">
-                        <span class="icon">➜</span> <span class="label">terminal.sh</span>
-                    </li>
-                    <li class="nav-item" data-target="experience">
-                        <span class="icon">➜</span> <span class="label">experience.log</span>
-                    </li>
-                    <li class="nav-item" data-target="resume">
-                        <span class="icon">➜</span> <span class="label">resume.pdf</span>
-                    </li>
-                    <li class="nav-item" data-target="blog">
-                        <span class="icon">➜</span> <span class="label">blog.log</span>
-                    </li>
-                    <li class="nav-item" data-target="publications">
-                        <span class="icon">➜</span> <span class="label">publications.bib</span>
-                    </li>
-                    <li class="nav-item" data-target="contact">
-                        <span class="icon">➜</span> <span class="label">contact.sh</span>
-                    </li>
-                </ul>
-                <div class="system-info">
-                    <div class="info-row">
-                        <span class="label">KERNEL:</span>
-                        <span class="value">SulkyOS v2.1.6</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">UPTIME:</span>
-                        <span class="value" id="uptime">00:00:00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Zone B: The Viewport (Content) -->
-        <div class="pane viewport" id="zone-b">
-            <div class="pane-header">
-                <span class="pane-title" id="viewport-title">~/profile.man</span>
-                <span class="pane-controls">
-                    <span class="control">[MIN]</span>
-                    <span class="control">[MAX]</span>
-                    <span class="control">[X]</span>
-                </span>
-            </div>
-            <div class="pane-content" id="viewport-content">
-                <!-- Content injected via JS -->
-            </div>
-        </div>
-
-        <!-- Zone C: The Telemetry (Stats & Logs) -->
-        <div class="pane telemetry" id="zone-c">
-            <div class="pane-header">
-                <span class="pane-title">~/TELEMETRY</span>
-                <span class="pane-status">[LIVE]</span>
-            </div>
-            <div class="pane-content">
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <span class="stat-label">MEMORY</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 42%;"></div>
-                        </div>
-                        <span class="stat-value">64GB / LPDDR5</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">CRAN_PKG</span>
-                        <span class="stat-value text-green">SUBMITTED</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">R_UNIVERSE</span>
-                        <span class="stat-value text-green">LIVE</span>
-                    </div>
-                </div>
-                <div class="log-feed" id="log-feed">
-                    <div class="log-entry"><span class="timestamp">[00:00:01]</span> <span class="log-msg">Boot sequence initiated...</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer Status Bar -->
-    <div class="status-bar">
-        <div class="left-status">
-            <span class="status-item mode-toggle" id="mode-switch">
-                [ MODE: <span id="mode-indicator">NORMAL</span> ]
-            </span>
-            <span class="status-item">BRANCH: <span class="text-green">main</span></span>
-        </div>
-        <div class="right-status">
-            <span class="status-item">UTF-8</span>
-            <span class="status-item">Ln 1, Col 1</span>
+            <pre class="boot-ascii">
+   _____ _    _ _      _  ____     __   ____   _____ 
+  / ____| |  | | |    | |/ /\ \   / /  / __ \ / ____|
+ | (___ | |  | | |    | ' /  \ \_/ /  | |  | | (___  
+  \___ \| |  | | |    |  <    \   /   | |  | |\___ \ 
+  ____) | |__| | |____| . \    | |    | |__| |____) |
+ |_____/ \____/|______|_|\_\   |_|     \____/|_____/ 
+            </pre>
+            <div class="boot-bar-container"><div class="boot-bar" id="boot-progress"></div></div>
+            <div class="boot-log" id="boot-log"></div>
         </div>
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="js/data.js?v=4.0.3"></script>
-    <script src="js/script.js?v=4.0.3"></script>
+    <script src="js/data.js"></script>
+    <script src="js/pretext-shim.js"></script>
+    <script src="js/script.js?v=3.0.1"></script>
 </body>
 </html>
