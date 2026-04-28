@@ -35,7 +35,7 @@ pub const UIState = struct {
     }
 
     pub fn end(_: *UIState) void {
-        sgl.draw();
+        // sgl.draw() will be called manually inside the render pass in main.zig
     }
 
     pub fn text(self: *UIState, x: f32, y: f32, str: []const u8, color: Color) void {

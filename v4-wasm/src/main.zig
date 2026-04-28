@@ -13,6 +13,15 @@ const data_loader = @import("data_loader.zig");
 const font_ttf = @embedFile("assets/font.ttf");
 const portfolio_json = @embedFile("assets/data.json");
 
+// Minimal C-style print to avoid std.log/std.fmt triggers
+const c = @cImport({
+    @cInclude("stdio.h");
+});
+
+fn log_info(str: [:0]const u8) void {
+    _ = c.printf("%s\n", str.ptr);
+}
+
 const AppState = struct {
     atlas: font.FontAtlas,
     ui: ui.UIState,
@@ -32,6 +41,7 @@ const AppState = struct {
 var state: AppState = undefined;
 
 export fn init() void {
+    log_info("INIT: Starting SulkyOS...");
     sg.setup(.{
         .environment = sglue.environment(),
         .logger = .{ .func = sokol.log.func },
@@ -42,7 +52,10 @@ export fn init() void {
 
     const allocator = std.heap.page_allocator;
 
-    state.atlas = font.FontAtlas.init(font_ttf, 512, 512) catch unreachable;
+    state.atlas = font.FontAtlas.init(font_ttf, 1024, 1024) catch {
+        return;
+    };
+
     state.ui = .{
         .atlas = &state.atlas,
         .screen_width = 800,
@@ -51,16 +64,21 @@ export fn init() void {
         .mouse_y = 0,
     };
 
-    state.data = data_loader.load(allocator, portfolio_json) catch unreachable;
+    state.data = data_loader.load(allocator, portfolio_json) catch {
+        return;
+    };
 
-    // Build network graph from projects
     const node_count = state.data.value.projects.len + 1;
-    const links = allocator.alloc(physics.Link, state.data.value.projects.len) catch unreachable;
+    const links = allocator.alloc(physics.Link, state.data.value.projects.len) catch {
+        return;
+    };
     for (state.data.value.projects, 0..) |_, i| {
         links[i] = .{ .source = 0, .target = i + 1 };
     }
 
-    state.sim = physics.Simulation.init(allocator, node_count, links, 800, 600) catch unreachable;
+    state.sim = physics.Simulation.init(allocator, node_count, links, 800, 600) catch {
+        return;
+    };
 
     state.pass_action = .{};
     state.pass_action.colors[0] = .{
@@ -70,12 +88,12 @@ export fn init() void {
     
     state.terminal_len = 0;
     state.terminal_history_count = 0;
+    log_info("INIT: Complete");
 }
 
 export fn event(ev: [*c]const sapp.Event) void {
     if (ev.*.type == .CHAR and state.is_booted) {
         if (ev.*.char_code == 13) { // Enter
-            // Parse command
             const cmd = state.terminal_input[0..state.terminal_len];
             if (std.mem.eql(u8, cmd, "/cruel")) {
                 state.is_cruel_mode = !state.is_cruel_mode;
@@ -85,11 +103,6 @@ export fn event(ev: [*c]const sapp.Event) void {
                 } else {
                     state.pass_action.colors[0].clear_value = .{ .r = 0.05, .g = 0.05, .b = 0.05, .a = 1.0 };
                 }
-            }
-            // Add to history (simplified)
-            if (state.terminal_history_count < 10) {
-                @memcpy(state.terminal_history[state.terminal_history_count][0..state.terminal_len], cmd);
-                state.terminal_history_count += 1;
             }
             state.terminal_len = 0;
         } else if (ev.*.char_code == 8 or ev.*.char_code == 127) { // Backspace
@@ -119,7 +132,6 @@ export fn frame() void {
     const height = sapp.heightf();
     state.ui.begin(width, height);
 
-    // Draw Background Simulation
     const link_color = if (state.is_cruel_mode) ui.Color{ .r = 0.4, .g = 0.0, .b = 0.0, .a = 1.0 } else ui.Color{ .r = 0.2, .g = 0.2, .b = 0.2, .a = 1.0 };
     sgl.c4f(link_color.r, link_color.g, link_color.b, link_color.a);
     sgl.beginLines();
@@ -132,10 +144,8 @@ export fn frame() void {
     sgl.end();
 
     if (!state.is_booted) {
-        const boot_str = std.fmt.allocPrint(std.heap.page_allocator, "BOOTING SULKYOS... {d:0.1}%", .{state.boot_percent}) catch "BOOTING...";
-        state.ui.text(width / 2.0 - 150.0, height / 2.0, boot_str, .{ .r = 0.0, .g = 1.0, .b = 0.0, .a = 1.0 });
+        state.ui.text(width / 2.0 - 150.0, height / 2.0, "BOOTING SULKYOS...", .{ .r = 0.0, .g = 1.0, .b = 0.0, .a = 1.0 });
     } else {
-        // Main UI
         const accent_color = if (state.is_cruel_mode) ui.Color{ .r = 1.0, .g = 0.0, .b = 0.0, .a = 1.0 } else ui.Color{ .r = 0.5, .g = 0.8, .b = 1.0, .a = 1.0 };
         state.ui.text(20, 40, "SULKYOS v4.0.0 [STABLE]", accent_color);
         state.ui.text(20, 70, state.data.value.about.name, .{ .r = 1.0, .g = 1.0, .b = 1.0, .a = 1.0 });
@@ -144,7 +154,6 @@ export fn frame() void {
         const exclusion_fn = struct {
             fn func(y: f32) ui.Rect {
                 _ = y;
-                // Flow around the central node of the sim
                 return .{ .x = 400, .y = 200, .w = 150, .h = 150 };
             }
         }.func;
@@ -157,7 +166,6 @@ export fn frame() void {
             &exclusion_fn,
         );
 
-        // Projects
         state.ui.text(20, 450, "--- PROJECTS ---", .{ .r = 0.0, .g = 1.0, .b = 0.5, .a = 1.0 });
         var py: f32 = 480;
         for (state.data.value.projects) |proj| {
@@ -166,7 +174,6 @@ export fn frame() void {
             py += 25;
         }
 
-        // Blog
         const bx: f32 = width / 2.0 + 50.0;
         state.ui.text(bx, 450, "--- LOGS ---", .{ .r = 1.0, .g = 0.5, .b = 0.0, .a = 1.0 });
         var by: f32 = 480;
@@ -176,27 +183,6 @@ export fn frame() void {
             by += 25;
         }
 
-        // Architectural Shapes (Telemetry)
-        const telemetry_color = if (state.is_cruel_mode) ui.Color{ .r = 0.5, .g = 0.0, .b = 0.0, .a = 0.5 } else ui.Color{ .r = 0.3, .g = 0.3, .b = 0.3, .a = 0.5 };
-        sgl.c4f(telemetry_color.r, telemetry_color.g, telemetry_color.b, telemetry_color.a);
-        sgl.beginLines();
-        // Draw a grid-like structure in the corner
-        var gx: f32 = width - 150.0;
-        while (gx < width) : (gx += 10.0) {
-            sgl.v2f(gx, height - 150.0);
-            sgl.v2f(gx, height - 50.0);
-        }
-        var gy: f32 = height - 150.0;
-        while (gy < height - 50.0) : (gy += 10.0) {
-            sgl.v2f(width - 150.0, gy);
-            sgl.v2f(width - 50.0, gy);
-        }
-        sgl.end();
-
-        const time_str = std.fmt.allocPrint(std.heap.page_allocator, "SYS_TIME: {d:0.3}", .{state.current_time}) catch "TIME ERROR";
-        state.ui.text(width - 200.0, 40, time_str, telemetry_color);
-
-        // Terminal at bottom
         state.ui.text(20, height - 40, "> ", .{ .r = 0.0, .g = 1.0, .b = 0.0, .a = 1.0 });
         state.ui.text(40, height - 40, state.terminal_input[0..state.terminal_len], .{ .r = 1.0, .g = 1.0, .b = 1.0, .a = 1.0 });
     }

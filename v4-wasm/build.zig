@@ -25,6 +25,7 @@ pub fn build(b: *std.Build) !void {
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
+        .single_threaded = if (target.result.cpu.arch.isWasm()) true else false,
     });
 
     const exe = if (target.result.cpu.arch.isWasm())
