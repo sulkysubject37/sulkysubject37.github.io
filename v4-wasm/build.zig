@@ -39,7 +39,9 @@ pub fn build(b: *std.Build) !void {
             .root_module = root_module,
         });
 
-    exe.root_module.link_libc = true;
+    if (!target.result.cpu.arch.isWasm()) {
+        exe.root_module.link_libc = true;
+    }
 
     exe.root_module.addCSourceFile(.{
         .file = b.path("deps/stb_truetype.c"),
