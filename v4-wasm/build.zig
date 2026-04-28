@@ -39,9 +39,7 @@ pub fn build(b: *std.Build) !void {
             .root_module = root_module,
         });
 
-    if (!target.result.cpu.arch.isWasm()) {
-        exe.root_module.link_libc = true;
-    }
+    exe.root_module.link_libc = true;
 
     exe.root_module.addCSourceFile(.{
         .file = b.path("deps/stb_truetype.c"),
@@ -74,6 +72,7 @@ pub fn build(b: *std.Build) !void {
             .use_emmalloc = true,
             .use_filesystem = true,
             .shell_file_path = dep_sokol.builder.path("src/sokol/web/shell.html"),
+            .extra_args = &.{ "-sALLOW_MEMORY_GROWTH=1" },
         });
         b.getInstallStep().dependOn(&emscripten_link.step);
     }

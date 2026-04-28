@@ -232,5 +232,8 @@ pub fn main() void {
         .window_title = "SulkyOS v4.0",
         .icon = .{ .sokol_default = true },
         .logger = .{ .func = sokol.log.func },
+        .html5 = .{
+            .canvas_selector = "#canvas",
+        },
     });
 }
