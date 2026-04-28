@@ -32,16 +32,16 @@ const AppState = struct {
     is_booted: bool = false,
     current_time: f64 = 0,
     is_cruel_mode: bool = false,
+    is_failed: bool = false,
+    error_msg: [:0]const u8 = "UNKNOWN ERROR",
     terminal_input: [256]u8 = undefined,
     terminal_len: usize = 0,
-    terminal_history: [10][256]u8 = undefined,
-    terminal_history_count: usize = 0,
 };
 
 var state: AppState = undefined;
 
 export fn init() void {
-    log_info("INIT: Starting SulkyOS...");
+    // 1. Setup basic graphics first so we can at least clear the screen
     sg.setup(.{
         .environment = sglue.environment(),
         .logger = .{ .func = sokol.log.func },
@@ -50,9 +50,20 @@ export fn init() void {
         .logger = .{ .func = sokol.log.func },
     });
 
+    state.pass_action = .{};
+    state.pass_action.colors[0] = .{
+        .load_action = .CLEAR,
+        .clear_value = .{ .r = 0.1, .g = 0.1, .b = 0.1, .a = 1.0 },
+    };
+
+    // 2. Start initialization with better error tracking
+    log_info("INIT: Starting SulkyOS...");
+    
     const allocator = std.heap.page_allocator;
 
     state.atlas = font.FontAtlas.init(font_ttf, 1024, 1024) catch {
+        state.is_failed = true;
+        state.error_msg = "FONT BAKE FAILED";
         return;
     };
 
@@ -65,11 +76,15 @@ export fn init() void {
     };
 
     state.data = data_loader.load(allocator, portfolio_json) catch {
+        state.is_failed = true;
+        state.error_msg = "DATA LOAD FAILED";
         return;
     };
 
     const node_count = state.data.value.projects.len + 1;
     const links = allocator.alloc(physics.Link, state.data.value.projects.len) catch {
+        state.is_failed = true;
+        state.error_msg = "LINK ALLOC FAILED";
         return;
     };
     for (state.data.value.projects, 0..) |_, i| {
@@ -77,21 +92,17 @@ export fn init() void {
     }
 
     state.sim = physics.Simulation.init(allocator, node_count, links, 800, 600) catch {
+        state.is_failed = true;
+        state.error_msg = "SIM INIT FAILED";
         return;
     };
 
-    state.pass_action = .{};
-    state.pass_action.colors[0] = .{
-        .load_action = .CLEAR,
-        .clear_value = .{ .r = 0.05, .g = 0.05, .b = 0.05, .a = 1.0 },
-    };
-    
     state.terminal_len = 0;
-    state.terminal_history_count = 0;
     log_info("INIT: Complete");
 }
 
 export fn event(ev: [*c]const sapp.Event) void {
+    if (state.is_failed) return;
     if (ev.*.type == .CHAR and state.is_booted) {
         if (ev.*.char_code == 13) { // Enter
             const cmd = state.terminal_input[0..state.terminal_len];
@@ -117,6 +128,15 @@ export fn event(ev: [*c]const sapp.Event) void {
 export fn frame() void {
     const dt = @as(f32, @floatCast(sapp.frameDuration()));
     state.current_time += dt;
+
+    if (state.is_failed) {
+        sg.beginPass(.{ .action = state.pass_action, .swapchain = sglue.swapchain() });
+        // We can't render text if font failed, so just show a colored screen
+        // or a very basic debug shape if possible
+        sg.endPass();
+        sg.commit();
+        return;
+    }
 
     if (!state.is_booted) {
         state.boot_percent += dt * 50.0;
