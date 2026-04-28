@@ -1,0 +1,14 @@
+.{
+    .name = .sulkyos,
+    .version = "0.1.0",
+    .fingerprint = 0xdbaf67c5ee421ea4,
+    .dependencies = .{
+        .sokol = .{ .path = "deps/sokol-zig" },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "assets",
+    },
+}

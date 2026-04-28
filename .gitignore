@@ -7,3 +7,6 @@ ehthumbs.db
 Thumbs.db
 node_modules/
 .gemini/
+v4-wasm/.zig-cache/
+v4-wasm/zig-out/
+v4-deploy/
