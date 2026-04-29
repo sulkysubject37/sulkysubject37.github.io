@@ -74,7 +74,7 @@ pub fn build(b: *std.Build) !void {
             .use_emmalloc = true,
             .use_filesystem = true,
             .shell_file_path = dep_sokol.builder.path("src/sokol/web/shell.html"),
-            .extra_args = &.{ "-sALLOW_MEMORY_GROWTH=1" },
+            .extra_args = &.{ "-sALLOW_MEMORY_GROWTH=1", "-sASSERTIONS=1" },
         });
         b.getInstallStep().dependOn(&emscripten_link.step);
     }
