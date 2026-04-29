@@ -36,6 +36,7 @@ const SulkyOS = {
                 const entry = document.createElement('div');
                 entry.textContent = `[OK] ${messages[i]}`;
                 log.appendChild(entry);
+                // Progress halts at 37% as requested
                 progress.style.width = `${(i + 1) * 9.25}%`; 
                 i++;
             } else {
@@ -85,10 +86,7 @@ const SulkyOS = {
                 });
             });
 
-        window.addEventListener('resize', () => { 
-            updateSize(); 
-            simulation.force("center", d3.forceCenter(this.state.width / 2 + 140, this.state.height / 2)).alpha(0.3).restart(); 
-        });
+        window.addEventListener('resize', () => { updateSize(); simulation.force("center", d3.forceCenter(this.state.width / 2 + 140, this.state.height / 2)).alpha(0.3).restart(); });
     },
 
     toggleMode() {
@@ -130,9 +128,9 @@ const SulkyOS = {
             const term = document.createElement('div');
             term.className = 'terminal-block';
             term.style.top = '220px';
-            term.innerHTML = `<div id="term-out">SULKY_OS // READY<br>Type 'help' for commands...</div><div style="display:flex; gap:0.5rem"><span>></span><input type="text" id="term-input" spellcheck="false" style="background:none;border:none;color:inherit;font-family:inherit;width:100%;outline:none;"></div>`;
+            term.innerHTML = `<div id="term-out">SULKY_OS // READY<br>Type 'help' for commands...</div><div style="display:flex; gap:0.5rem"><span>></span><input type="text" id="term-in" spellcheck="false" style="background:none;border:none;color:inherit;font-family:inherit;width:100%;outline:none;"></div>`;
             surface.appendChild(term);
-            const input = document.getElementById('term-input');
+            const input = document.getElementById('term-in');
             const out = document.getElementById('term-out');
             input.onkeydown = (e) => {
                 if (e.key === 'Enter') {
@@ -156,7 +154,7 @@ const SulkyOS = {
             net.id = 'interactive-network';
             net.style.top = '250px';
             surface.appendChild(net);
-            requestAnimationFrame(() => this.renderInteractiveNetwork());
+            this.renderInteractiveNetwork();
             surface.style.height = '1000px';
             return;
         }
@@ -177,7 +175,7 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
         } else if (section === 'projects') {
             source = "[TYPE: header] PROJECTS.bin\n[TYPE: space]";
             portfolioData.projects.forEach(p => {
-                source += `[TYPE: section-label] ${p.title}\n[TYPE: metadata] ${p.tech} // ${p.link}\n${p.description}\n${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}\n[TYPE: space]\n`;
+                source += `[TYPE: section-label] ${p.title}\n[TYPE: metadata] ${p.tech}\n${p.description}\n${this.state.isCruelMode ? `[TYPE: data-node] ${p.cruelDescription}` : ''}\n[TYPE: space]\n`;
             });
         } else if (section === 'experience') {
             source = "[TYPE: header] EXPERIENCE.log\n[TYPE: space]";
@@ -195,7 +193,7 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
             source = "[TYPE: header] PUBLICATIONS.bib\n[TYPE: space]";
             portfolioData.publications.forEach(pub => source += `[TYPE: section-label] BIB_ENTRY\n${pub}\n[TYPE: space]\n`);
         } else if (section === 'contact') {
-            source = `[TYPE: header] CONTACT.sh\n[TYPE: space]\n[TYPE: section-label] CHANNELS\nEMAIL: ${portfolioData.about.email}\nGITHUB: ${portfolioData.about.social.github}\nLINKEDIN: ${portfolioData.about.social.linkedin}\nTWITTER: ${portfolioData.about.social.twitter}\nHASHNODE: ${portfolioData.about.social.blog}`;
+            source = `[TYPE: header] CONTACT.sh\n[TYPE: space]\n[TYPE: section-label] CHANNELS\nEMAIL: ${portfolioData.about.email}\nGITHUB: ${portfolioData.about.social.github}\nLINKEDIN: ${portfolioData.about.social.linkedin}`;
         }
 
         this.renderBitExact(surface, source);
@@ -224,7 +222,7 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
             if (type === 'space') { currentY += 40; return; }
 
             const font = type === 'header' ? '900 3.5rem "Playfair Display"' : 
-                         (type === 'metadata' || type === 'section-label' || type === 'data-node') ? '0.7rem "IBM Plex Mono"' : '1.1rem "EB Garamond"';
+                         (type === 'metadata' || type === 'section-label' || type === 'data-node') ? '0.7rem "IBM Plex Mono"' : '1.15rem "EB Garamond"';
             const lh = type === 'header' ? 70 : LH;
 
             const result = Pretext.layoutWithExclusion(text, width * 0.85, font, currentY, lh, (y) => {
@@ -247,18 +245,12 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
             });
             currentY = result.endY + 8;
         });
-        if (source.includes('[TYPE: header]')) {
-            container.style.height = `${currentY + 400}px`;
-        }
+        container.style.height = `${currentY + 400}px`;
     },
 
     renderInteractiveNetwork() {
         const netDiv = document.getElementById('interactive-network');
-        if (!netDiv) return;
-        const width = netDiv.offsetWidth || 800;
-        const height = 500;
-        
-        d3.select("#interactive-network").select("svg").remove();
+        const width = netDiv.offsetWidth, height = 500;
         const svg = d3.select("#interactive-network").append("svg").attr("width", "100%").attr("height", height);
         const g = svg.append("g");
         
@@ -266,21 +258,17 @@ ${this.state.isCruelMode ? `[TYPE: section-label] CRUEL_STANDARD_MANIFESTO\n[TYP
         const links = portfolioData.projects.map(p => ({ source: 'me', target: p.title }));
 
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
-            .force("charge", d3.forceManyBody().strength(-300))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-200))
             .force("center", d3.forceCenter(width / 2, height / 2));
 
-        const link = g.append("g").attr("stroke", this.state.isCruelMode ? "#00ff4144" : "#1a1a1822").selectAll("line").data(links).join("line");
-        
-        const node = g.append("g").selectAll("g").data(nodes).join("g")
-            .call(d3.drag().on("start", (e, d) => { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }).on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; }).on("end", (e, d) => { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
-
-        node.append("circle").attr("r", 8).attr("fill", d => d.group === 'core' ? (this.state.isCruelMode ? "#00ff41" : "#607080") : (this.state.isCruelMode ? "#ffb000" : "#1a1a18"));
-        node.append("text").text(d => d.label).attr("x", 12).attr("y", 4).attr("font-family", "IBM Plex Mono").attr("font-size", "10px").attr("fill", this.state.isCruelMode ? "#00ff41aa" : "#666");
+        const link = g.append("g").attr("stroke", "#1a1a1822").selectAll("line").data(links).join("line");
+        const node = g.append("g").selectAll("circle").data(nodes).join("circle").attr("r", 6).attr("fill", d => d.group === 'core' ? "#607080" : "#1a1a18")
+            .call(d3.drag().on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }).on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; }).on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
 
         simulation.on("tick", () => {
             link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
-            node.attr("transform", d => `translate(${d.x},${d.y})`);
+            node.attr("cx", d => d.x).attr("cy", d => d.y);
         });
     },
 

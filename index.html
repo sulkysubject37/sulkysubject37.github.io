@@ -1,1 +1,95 @@
+<<<<<<< HEAD
 <!doctypehtml><html lang=en-us><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"name=viewport><title>Sokol</title><style>body{margin:0;background-color:#000}.game{position:absolute;top:0;left:0;margin:0;border:0;width:100%;height:100%;overflow:hidden;display:block;image-rendering:optimizeSpeed;image-rendering:-moz-crisp-edges;image-rendering:-o-crisp-edges;image-rendering:-webkit-optimize-contrast;image-rendering:optimize-contrast;image-rendering:crisp-edges;image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor}</style></head><body><canvas class=game id=canvas oncontextmenu=event.preventDefault()></canvas><script>var Module={preRun:[],print:function(o){o=Array.prototype.slice.call(arguments).join(" "),console.log(o)},printErr:function(o){o=Array.prototype.slice.call(arguments).join(" "),console.error(o)}};window.onerror=function(){console.log("onerror: "+event.message)}</script><script async src=sulkyos.js></script></body></html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SULKY_OS // v3.0 // The Entangled Kernel</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Playfair+Display:wght@900&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=3.0.2">
+</head>
+<body>
+
+    <div id="graph-container">
+        <canvas id="graph-canvas"></canvas>
+    </div>
+
+    <div class="kernel-layout">
+        
+        <aside class="registry">
+            <div class="registry-header">~/REGISTRY</div>
+            <nav class="nav-tree" id="registry-nav">
+                <div class="nav-item active" data-target="profile">0x00 // PROFILE.man</div>
+                <div class="nav-item" data-target="projects">0x01 // PROJECTS.bin</div>
+                <div class="nav-item" data-target="experience">0x02 // EXPERIENCE.log</div>
+                <div class="nav-item" data-target="education">0x03 // EDUCATION.edu</div>
+                <div class="nav-item" data-target="skills">0x04 // SKILLS.sys</div>
+                <div class="nav-item" data-target="blog">0x05 // BLOG.log</div>
+                <div class="nav-item" data-target="publications">0x06 // PUBLICATIONS.bib</div>
+                <div class="nav-item" data-target="contact">0x07 // CONTACT.sh</div>
+                <div class="nav-item" data-target="network">0x08 // NETWORK.gml</div>
+                <div class="nav-item" data-target="terminal">0x09 // TERMINAL.sh</div>
+            </nav>
+
+            <div class="mode-control">
+                <button id="mode-toggle" class="mode-btn">[ SHIFT_TO_CRUEL ]</button>
+            </div>
+
+            <div class="system-status">
+                <div class="status-row">
+                    <span class="label">KERNEL</span>
+                    <span class="val">v3.0.3_STABLE</span>
+                </div>
+                <div class="status-row">
+                    <span class="label">UPTIME</span>
+                    <span class="val" id="uptime-clock">00:00:00</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="viewport">
+            <div class="viewport-header">
+                <span id="active-path">~/profile.man</span>
+                <span class="window-controls">[ 0x37 ]</span>
+            </div>
+            <div id="text-surface">
+                <!-- ALL CONTENT IS RENDERED LINE-BY-LINE VIA JS -->
+            </div>
+        </main>
+
+        <footer class="telemetry">
+            <div class="log-stream" id="log-feed">
+                <div class="log-entry">
+                    <span class="log-ts">[00:00:01]</span>
+                    <span class="log-msg">KERNEL_BOOT_SUCCESS</span>
+                </div>
+            </div>
+            <div class="coord-display" id="coord-telemetry">X: 000 | Y: 000</div>
+        </footer>
+
+    </div>
+
+    <div id="boot-overlay">
+        <div class="boot-content">
+            <pre class="boot-ascii">
+   _____ _    _ _      _  ____     __   ____   _____ 
+  / ____| |  | | |    | |/ /\ \   / /  / __ \ / ____|
+ | (___ | |  | | |    | ' /  \ \_/ /  | |  | | (___  
+  \___ \| |  | | |    |  &lt;    \   /   | |  | |\___ \ 
+  ____) | |__| | |____| . \    | |    | |__| |____) |
+ |_____/ \____/|______|_|\_\   |_|     \____/|_____/ 
+            </pre>
+            <div class="boot-bar-container"><div class="boot-bar" id="boot-progress"></div></div>
+            <div id="boot-log" style="font-family: 'IBM Plex Mono'; font-size: 10px; color: #888;"></div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/pretext-shim.js"></script>
+    <script src="js/script.js?v=3.0.2"></script>
+</body>
+</html>
+>>>>>>> parent of 583e094 (feat: finalize stabilization of SulkyOS v3.0.3 with 37% boot and restored interactive views)
