@@ -182,7 +182,9 @@
     border-right: 1px solid var(--line);
     position: relative;
     transition: background 0.4s ease;
-    cursor: default;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
   }
   .figure-cell:last-child { border-right: none; }
   .figure-cell:hover { background: var(--bg3); }
@@ -272,16 +274,16 @@
 
   /* ─── FIGURE SECTION ─────────────────────────── */
   .figure-section {
-    padding: 0 0 0 0;
+    padding: 120px 0;
     border-bottom: 1px solid var(--line);
   }
 
   .figure-header {
     display: grid;
     grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: 0;
-    padding: 80px clamp(24px, 8vw, 80px) 0;
+    align-items: center;
+    gap: clamp(24px, 5vw, 60px);
+    padding: 0 clamp(24px, 8vw, 80px) 40px;
     position: relative;
   }
 
@@ -292,12 +294,11 @@
     color: var(--line);
     line-height: 0.85;
     letter-spacing: -0.04em;
-    margin-right: clamp(24px, 4vw, 60px);
     flex-shrink: 0;
     user-select: none;
   }
 
-  .figure-header-text { padding-top: 16px; }
+  .figure-header-text { padding-top: 0; }
 
   .figure-title {
     font-family: var(--serif);
@@ -644,31 +645,31 @@
 
 <!-- ─── FIGURES STRIP ─────────────────────────────── -->
 <div class="figures-strip">
-  <div class="figure-cell">
+  <a href="#prometheus" class="figure-cell">
     <div class="figure-index">01</div>
     <div class="figure-name">Prometheus</div>
     <div class="figure-crime">Stole the hierarchy's fire and gave it away</div>
-  </div>
-  <div class="figure-cell">
+  </a>
+  <a href="#sisyphus" class="figure-cell">
     <div class="figure-index">02</div>
     <div class="figure-name">Sisyphus</div>
     <div class="figure-crime">Disabled death — the enforcement mechanism of rank</div>
-  </div>
-  <div class="figure-cell">
+  </a>
+  <a href="#cain" class="figure-cell">
     <div class="figure-index">03</div>
     <div class="figure-name">Cain</div>
     <div class="figure-crime">Rejected the hierarchy's verdict and destroyed the standard</div>
-  </div>
-  <div class="figure-cell">
+  </a>
+  <a href="#lucifer" class="figure-cell">
     <div class="figure-index">04</div>
     <div class="figure-name">Lucifer</div>
     <div class="figure-crime">Refused a positional instruction. Full knowledge. Full will.</div>
-  </div>
-  <div class="figure-cell">
+  </a>
+  <a href="#lilith" class="figure-cell">
     <div class="figure-index">05</div>
     <div class="figure-name">Lilith</div>
     <div class="figure-crime">Left before the hierarchy could formally contain her</div>
-  </div>
+  </a>
 </div>
 
 <!-- ─── INTRO SECTION ─────────────────────────────── -->
@@ -887,7 +888,7 @@
 </div>
 
 <!-- ─── LILITH ─────────────────────────────────────── -->
-<div class="figure-section" style="border-top: 1px solid var(--line);">
+<div class="figure-section" id="lilith">
   <div class="figure-header">
     <div class="figure-number-large">05</div>
     <div class="figure-header-text">
@@ -1060,6 +1061,13 @@
     Albert Camus, <em>The Myth of Sisyphus</em> (1942)<br>
     Friedrich Nietzsche, <em>Beyond Good and Evil</em> (1886) &nbsp;·&nbsp; <em>The Will to Power</em> (posth.)<br>
     Stanford Encyclopedia of Philosophy &nbsp;·&nbsp; Britannica &nbsp;·&nbsp; Jewish Women's Archive
+  </div>
+</footer>
+
+</body>
+</html>
+>
+ Archive
   </div>
 </footer>
 
