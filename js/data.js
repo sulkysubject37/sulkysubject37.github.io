@@ -232,6 +232,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "To Be Seen",
+            date: "May 10, 2026",
+            summary: "An inquiry into the irreducible human need for witness. Beyond love or success, the essay explores why registration in another's awareness is the baseline requirement for a functioning life, through the lens of Sisyphus and the anatomy of disappearance.",
+            link: "to-be-seen.html"
+        },
+        {
             title: "The Ones Who Said No",
             date: "May 10, 2026",
             summary: "A structural analysis of five mythological and theological figures who defied cosmic hierarchy. Exploring the crime of positional refusal across Greek, Biblical, and Jewish traditions.",
