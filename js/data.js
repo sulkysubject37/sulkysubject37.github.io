@@ -55,6 +55,13 @@ const portfolioData = {
     ],
     projects: [
         {
+            title: "QwD: قَلَّ وَدَلَّ",
+            tech: "Zig 0.13.0, SIMD, C-API",
+            description: "Ultra-high-throughput genomic analytics engine. Implements a columnar bitplane architecture to eliminate the 'ASCII Tax' in sequence processing.",
+            cruelDescription: "9,050 lines of pure Zig. Achieves 0.08 Instructions Per Base (IPB) by rotating horizontal strings into vertical bitplanes. PEAK: 1.48M reads/sec on desktop, 2.1M on Android. No branches in inner loops. No hidden allocations. Pure topology code.",
+            link: "QwD.html"
+        },
+        {
             title: "SRF: Structured Recomputation Framework",
             tech: "C++17, Python, CLI",
             description: "Deterministic execution-level abstraction for memory-constrained dynamic programming. Reduces space complexity from O(NM) to O(N) using functional recomputation and locality-aware tiling. Verified for extreme-scale biological sequence alignment (1M bp).",
@@ -231,6 +238,13 @@ const portfolioData = {
         "Systems Programming", "Network Biology", "Quantum Computing", "Algorithmic Rigor", "Open Source"
     ],
     posts: [
+        {
+            title: "Perspective Fails Science",
+            date: "May 18, 2026",
+            summary: "A thesis in three scales. Perspective is not a philosophical problem, it is a structural one. Embedded in the observer, encoded in the instrument, crystallised in the framework.",
+            link: "posts/2026-05-18_Perspective-Fails-Science.html"
+        },
+
         {
             title: "To Be Seen",
             date: "May 10, 2026",
