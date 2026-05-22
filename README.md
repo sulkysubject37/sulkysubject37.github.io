@@ -1,6 +1,6 @@
 # SulkyOS // The Tangle Interface
 
-> "Systems must fail loudly and safely." — The Cruel Standard
+> "Systems must fail loudly and safely." - The Cruel Standard
 
 This is the source code for my personal portfolio, reimagined as **SulkyOS**: a web-based **Text User Interface (TUI)** designed for high-performance navigation and rigorous data presentation.
 

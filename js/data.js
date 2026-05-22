@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "The Anatomy of Heresy",
+            date: "May 22, 2026",
+            summary: "A thesis in six parts on the structural pattern by which every civilization declares its mirror image unthinkable. Investigating heresy not as a theological error, but as an institutional technology for survival.",
+            link: "posts/2026-05-22_The-Anatomy-of-Heresy.html"
+        },
+        {
             title: "Perspective Fails Science",
             date: "May 18, 2026",
             summary: "A thesis in three scales. Perspective is not a philosophical problem, it is a structural one. Embedded in the observer, encoded in the instrument, crystallised in the framework.",

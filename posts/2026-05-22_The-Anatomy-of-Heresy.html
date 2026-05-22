@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Anatomy of Heresy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;1,300&family=UnifrakturMaguntia&family=Oswald:wght@300;400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#0a0805;cursor:none;overflow-x:hidden;font-size:16px}
+
+/* ── CURSOR ── */
+#cur{
+  position:fixed;width:12px;height:12px;border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  border:1.5px solid rgba(255,255,255,0.6);
+  background:transparent;
+  transition:width .2s,height .2s,border-color .2s,background .2s;
+  mix-blend-mode:difference;
+}
+#cur.big{width:36px;height:36px;background:rgba(255,255,255,.06);}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:9998;transition:width .08s linear}
+
+/* ── SHARED REVEAL ── */
+.r{opacity:0;transform:translateY(32px);transition:opacity .9s ease,transform .9s ease}
+.r.on{opacity:1;transform:none}
+.r2{opacity:0;transition:opacity 1.4s ease .3s}
+.r2.on{opacity:1}
+.rd{opacity:0;transform:translateX(-20px);transition:opacity .8s ease,transform .8s ease}
+.rd.on{opacity:1;transform:none}
+
+/* ════════════════════════════════════════════
+   INTRO - ILLUMINATED MANUSCRIPT
+   Vellum, gold leaf, Latin marginalia
+════════════════════════════════════════════ */
+#s0{
+  min-height:100vh;
+  background:#1a1208;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  padding:80px clamp(20px,5vw,80px);
+}
+/* vellum texture */
+#s0::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(180,140,60,.08) 0%,transparent 60%),
+    radial-gradient(ellipse at 70% 80%,rgba(120,80,20,.06) 0%,transparent 50%),
+    repeating-linear-gradient(97deg,transparent,transparent 400px,rgba(160,120,40,.015) 400px,rgba(160,120,40,.015) 401px);
+  pointer-events:none;
+}
+/* illuminated border */
+#s0::after{
+  content:'';position:absolute;
+  inset:20px;
+  border:1px solid rgba(180,140,60,.2);
+  pointer-events:none;
+}
+.ms-corner{
+  position:absolute;width:60px;height:60px;
+  border-color:rgba(180,140,60,.45);border-style:solid;
+}
+.ms-corner.tl{top:20px;left:20px;border-width:2px 0 0 2px;}
+.ms-corner.tr{top:20px;right:20px;border-width:2px 2px 0 0;}
+.ms-corner.bl{bottom:20px;left:20px;border-width:0 0 2px 2px;}
+.ms-corner.br{bottom:20px;right:20px;border-width:0 2px 2px 0;}
+
+.ms-inner{
+  max-width:860px;text-align:center;position:relative;z-index:2;
+}
+.ms-rubric{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.35em;text-transform:uppercase;
+  color:rgba(180,140,60,.6);margin-bottom:2.5rem;
+}
+.ms-drop-cap{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(70px,14vw,160px);
+  color:rgba(180,140,60,.9);
+  line-height:.85;letter-spacing:.06em;
+  display:block;
+  text-shadow:0 0 60px rgba(180,140,60,.25),0 0 120px rgba(180,140,60,.1);
+  animation:goldPulse 6s ease-in-out infinite;
+}
+@keyframes goldPulse{0%,100%{text-shadow:0 0 60px rgba(180,140,60,.25),0 0 120px rgba(180,140,60,.1)}50%{text-shadow:0 0 80px rgba(180,140,60,.4),0 0 160px rgba(180,140,60,.2)}}
+.ms-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(28px,5vw,58px);
+  color:rgba(240,228,195,.92);
+  letter-spacing:.12em;line-height:1.15;
+  margin:.5rem 0 1rem;
+  font-weight:400;
+}
+.ms-subtitle{
+  font-family:'IM Fell English',serif;
+  font-style:italic;font-size:clamp(16px,2.2vw,22px);
+  color:rgba(180,140,60,.7);margin-bottom:2.5rem;line-height:1.6;
+}
+.ms-rule{
+  width:200px;height:1px;background:linear-gradient(to right,transparent,rgba(180,140,60,.5),transparent);
+  margin:0 auto 2rem;
+}
+.ms-incipit{
+  font-family:'IM Fell English',serif;
+  font-size:clamp(15px,1.8vw,19px);
+  color:rgba(210,195,160,.65);
+  line-height:1.9;max-width:640px;margin:0 auto 3rem;
+}
+.ms-marginalia{
+  position:absolute;left:28px;top:50%;transform:translateY(-50%);
+  font-family:'IM Fell English',serif;
+  font-style:italic;font-size:11px;
+  color:rgba(180,140,60,.25);
+  writing-mode:vertical-rl;
+  letter-spacing:.08em;line-height:1.6;
+  user-select:none;
+}
+.ms-marginalia-r{
+  position:absolute;right:28px;top:50%;transform:translateY(-50%) rotate(180deg);
+  font-family:'IM Fell English',serif;
+  font-style:italic;font-size:11px;
+  color:rgba(180,140,60,.25);
+  writing-mode:vertical-rl;
+  letter-spacing:.08em;line-height:1.6;
+  user-select:none;
+}
+.ms-scroll{
+  font-family:'Cinzel',serif;font-size:10px;
+  letter-spacing:.3em;color:rgba(180,140,60,.35);
+  text-transform:uppercase;
+  animation:msb 3s ease-in-out infinite;
+}
+@keyframes msb{0%,100%{opacity:.35}50%{opacity:.7}}
+
+/* ════════════════════════════════════════════
+   SECTION I - ISLAMIC GEOMETRIC
+   Arabesque, geometric tile, deep lapis
+════════════════════════════════════════════ */
+#s1{
+  min-height:100vh;
+  background:#0d1a2e;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;overflow:hidden;
+}
+/* geometric tile background */
+#s1::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(30deg,rgba(180,140,60,.04) 1px,transparent 1px),
+    linear-gradient(150deg,rgba(180,140,60,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,140,60,.02) 1px,transparent 1px);
+  background-size:40px 40px,40px 40px,20px 20px;
+  pointer-events:none;
+}
+#s1::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(13,26,46,.8));
+  pointer-events:none;
+}
+.geo-border{
+  position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(to right,transparent,rgba(180,140,60,.6),rgba(200,160,80,1),rgba(180,140,60,.6),transparent);
+}
+.geo-border-b{
+  position:absolute;bottom:0;left:0;right:0;height:4px;
+  background:linear-gradient(to right,transparent,rgba(180,140,60,.6),rgba(200,160,80,1),rgba(180,140,60,.6),transparent);
+}
+
+.geo-inner{max-width:1080px;margin:0 auto;position:relative;z-index:2;}
+.geo-bismillah{
+  font-family:'Cinzel',serif;font-size:10px;
+  letter-spacing:.4em;text-transform:uppercase;
+  color:rgba(180,140,60,.5);text-align:center;
+  margin-bottom:3rem;
+}
+.geo-heading{
+  font-family:'Cinzel',serif;
+  font-size:clamp(32px,5.5vw,72px);
+  color:rgba(220,200,140,.95);
+  letter-spacing:.06em;line-height:1;
+  margin-bottom:.5rem;font-weight:400;
+}
+.geo-sub{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(16px,2vw,20px);
+  color:rgba(180,140,60,.6);
+  margin-bottom:3rem;border-bottom:1px solid rgba(180,140,60,.15);
+  padding-bottom:2rem;
+}
+.geo-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:start;}
+@media(max-width:720px){.geo-grid{grid-template-columns:1fr}}
+.geo-p{
+  font-family:'IM Fell English',serif;
+  font-size:19px;font-weight:400;line-height:1.88;
+  color:rgba(200,185,150,.78);margin-bottom:1.5rem;
+}
+.geo-p em{font-style:italic;color:rgba(220,200,140,.95);}
+.geo-callout{
+  border:1px solid rgba(180,140,60,.25);
+  background:rgba(180,140,60,.04);
+  padding:1.8rem;margin:2rem 0;
+  position:relative;
+}
+.geo-callout::before{
+  content:'◆';
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  color:rgba(180,140,60,.8);font-size:14px;
+  background:#0d1a2e;padding:0 8px;
+}
+.geo-callout-text{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:18px;color:rgba(220,200,140,.85);
+  line-height:1.65;text-align:center;
+}
+.geo-aside{
+  padding:2rem;
+  background:rgba(0,0,0,.3);
+  border-left:3px solid rgba(180,140,60,.4);
+}
+.geo-aside-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(180,140,60,.5);margin-bottom:.8rem;
+}
+.geo-aside-p{
+  font-family:'IM Fell English',serif;font-size:16px;
+  color:rgba(180,155,110,.65);line-height:1.8;
+}
+.geo-ornament{
+  text-align:center;font-size:24px;color:rgba(180,140,60,.3);
+  margin:2rem 0;letter-spacing:.5em;
+}
+
+/* ════════════════════════════════════════════
+   SECTION II - BYZANTINE MOSAIC
+   Deep crimson, gold tesserae, icon style
+════════════════════════════════════════════ */
+#s2{
+  min-height:100vh;
+  background:#1a0808;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;overflow:hidden;
+}
+#s2::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(140,20,20,.3) 0%,transparent 60%),
+    radial-gradient(circle at 50% 100%,rgba(100,10,10,.2) 0%,transparent 50%),
+    repeating-linear-gradient(45deg,transparent,transparent 14px,rgba(180,140,60,.012) 14px,rgba(180,140,60,.012) 15px),
+    repeating-linear-gradient(-45deg,transparent,transparent 14px,rgba(180,140,60,.012) 14px,rgba(180,140,60,.012) 15px);
+  pointer-events:none;
+}
+.byz-arch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:300px;height:150px;
+  border:1px solid rgba(180,140,60,.08);
+  border-bottom:none;border-radius:150px 150px 0 0;
+  pointer-events:none;
+}
+
+.byz-inner{max-width:940px;margin:0 auto;position:relative;z-index:2;}
+.byz-icon-label{
+  font-family:'Cinzel',serif;font-size:9px;
+  letter-spacing:.4em;text-transform:uppercase;
+  color:rgba(180,140,60,.4);text-align:center;margin-bottom:2rem;
+}
+.byz-heading{
+  font-family:'Cinzel',serif;
+  font-size:clamp(30px,5vw,64px);
+  color:rgba(240,200,160,.92);
+  letter-spacing:.05em;line-height:1.05;
+  margin-bottom:1.5rem;font-weight:600;
+  text-align:center;
+  text-shadow:0 0 40px rgba(180,60,40,.4);
+}
+.byz-deck{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(15px,2vw,20px);color:rgba(180,100,80,.8);
+  text-align:center;margin-bottom:3rem;
+  border-top:1px solid rgba(180,140,60,.15);
+  border-bottom:1px solid rgba(180,140,60,.15);
+  padding:1rem 0;
+}
+.byz-columns{display:grid;grid-template-columns:1fr 1fr;gap:50px;}
+@media(max-width:700px){.byz-columns{grid-template-columns:1fr}}
+.byz-p{
+  font-family:'IM Fell English',serif;font-size:19px;
+  font-weight:300;line-height:1.88;
+  color:rgba(210,180,160,.75);margin-bottom:1.4rem;
+}
+.byz-p em{color:rgba(240,200,160,.95);font-style:italic;}
+.byz-quote{
+  background:rgba(100,20,10,.4);
+  border-left:4px solid rgba(180,80,60,.6);
+  padding:1.5rem 1.8rem;margin:2rem 0;
+}
+.byz-quote-text{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:20px;color:rgba(240,200,160,.85);line-height:1.6;
+}
+.byz-quote-attr{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(180,100,80,.5);margin-top:.8rem;
+}
+.byz-case{
+  border:1px solid rgba(180,140,60,.15);
+  padding:1.5rem;margin-top:1.5rem;
+  background:rgba(0,0,0,.25);
+}
+.byz-case-title{
+  font-family:'Cinzel',serif;font-size:13px;
+  letter-spacing:.12em;color:rgba(180,140,60,.7);
+  margin-bottom:.8rem;
+  border-bottom:1px solid rgba(180,140,60,.15);padding-bottom:.5rem;
+}
+.byz-case-p{
+  font-family:'IM Fell English',serif;font-size:15px;
+  color:rgba(180,150,130,.65);line-height:1.78;
+}
+
+/* ════════════════════════════════════════════
+   SECTION III - REFORMATION BROADSHEET
+   Gothic type, woodblock, 1517 broadsheet
+════════════════════════════════════════════ */
+#s3{
+  min-height:100vh;
+  background:#e8e0d0;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;overflow:hidden;
+  color:#1a1208;
+}
+#s3::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(0,0,0,.025) 28px,rgba(0,0,0,.025) 29px),
+    radial-gradient(ellipse at 50% 50%,transparent 70%,rgba(0,0,0,.08));
+  pointer-events:none;
+}
+.ref-inner{max-width:960px;margin:0 auto;position:relative;z-index:2;}
+.ref-masthead{
+  text-align:center;
+  border-top:4px double #1a1208;
+  border-bottom:4px double #1a1208;
+  padding:1rem 0;margin-bottom:2.5rem;
+}
+.ref-pub{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(28px,6vw,72px);
+  color:#1a1208;line-height:1;
+  text-shadow:1px 1px 0 rgba(0,0,0,.1);
+}
+.ref-dateline{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.2em;color:#666;margin-top:.3rem;
+}
+.ref-kicker{
+  background:#8b1a1a;color:#e8e0d0;
+  font-family:'Cinzel',serif;font-size:clamp(11px,2vw,16px);
+  letter-spacing:.15em;padding:.5rem 1.5rem;
+  text-align:center;margin-bottom:2rem;
+}
+.ref-headline{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:clamp(30px,5.5vw,66px);
+  line-height:.95;color:#1a1208;
+  text-align:center;margin-bottom:1rem;
+}
+.ref-headline .red{color:#8b1a1a;}
+.ref-body{
+  display:grid;grid-template-columns:1fr 3px 1fr;
+  gap:0;margin:2rem 0;
+}
+@media(max-width:680px){.ref-body{grid-template-columns:1fr}}
+.ref-col{padding:0 2rem;}
+.ref-col:first-child{padding-left:0}
+.ref-col:last-child{padding-right:0}
+.ref-rule{background:#1a1208;}
+.ref-subhead{
+  font-family:'UnifrakturMaguntia',serif;
+  font-size:22px;color:#1a1208;
+  margin-bottom:.6rem;border-bottom:1px solid #1a1208;
+  padding-bottom:.3rem;
+}
+.ref-p{
+  font-family:'IM Fell English',serif;font-size:15px;
+  line-height:1.85;color:#2a2015;margin-bottom:.9rem;
+}
+.ref-p em{font-style:italic;color:#8b1a1a;}
+.ref-block{
+  background:#1a1208;color:#e8e0d0;
+  padding:1rem 1.2rem;margin:1rem 0;
+  font-family:'IM Fell English',serif;
+  font-style:italic;font-size:16px;line-height:1.55;
+}
+.ref-ornament{text-align:center;color:#8b1a1a;font-size:18px;letter-spacing:.4em;margin:1.5rem 0;}
+.ref-charge{
+  border:2px solid #1a1208;padding:1.2rem;margin-top:1.5rem;
+}
+.ref-charge-title{
+  font-family:'UnifrakturMaguntia',serif;font-size:18px;
+  border-bottom:1px solid #1a1208;padding-bottom:.3rem;margin-bottom:.8rem;
+}
+.ref-charge-item{
+  font-family:'IM Fell English',serif;font-size:14px;
+  line-height:1.7;color:#2a2015;
+  display:flex;gap:.5rem;margin-bottom:.4rem;
+}
+.ref-charge-num{color:#8b1a1a;flex-shrink:0;font-weight:700;}
+
+/* ════════════════════════════════════════════
+   SECTION IV - SOVIET CONSTRUCTIVIST
+   Bold red diagonal, propaganda geometry
+════════════════════════════════════════════ */
+#s4{
+  min-height:100vh;
+  background:#0f0505;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;overflow:hidden;
+}
+/* constructivist diagonal */
+#s4::before{
+  content:'';position:absolute;
+  top:-20%;left:-10%;
+  width:70%;height:170%;
+  background:rgba(160,10,10,.08);
+  transform:rotate(-12deg);
+  pointer-events:none;
+}
+#s4::after{
+  content:'';position:absolute;
+  top:0;right:0;
+  width:3px;height:100%;
+  background:linear-gradient(to bottom,transparent,#cc0000,transparent);
+  pointer-events:none;
+}
+.sov-inner{max-width:1060px;margin:0 auto;position:relative;z-index:2;}
+.sov-banner{
+  background:#cc0000;
+  padding:.6rem 1.5rem;
+  display:inline-block;
+  margin-bottom:2rem;
+  transform:skewX(-3deg);
+}
+.sov-banner-text{
+  font-family:'Oswald',sans-serif;font-size:11px;
+  letter-spacing:.35em;text-transform:uppercase;
+  color:#fff;font-weight:700;
+}
+.sov-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:start;}
+@media(max-width:720px){.sov-layout{grid-template-columns:1fr}}
+.sov-left{padding-right:48px;border-right:3px solid #cc0000;}
+.sov-right{padding-left:48px;}
+@media(max-width:720px){.sov-left{padding-right:0;border-right:none;border-bottom:3px solid #cc0000;padding-bottom:2rem;margin-bottom:2rem}.sov-right{padding-left:0}}
+.sov-heading{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(36px,6.5vw,88px);
+  font-weight:700;line-height:.88;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  margin-bottom:1.5rem;
+}
+.sov-heading .white{color:#e8e0d0;}
+.sov-heading .red{color:#cc0000;}
+.sov-heading .dim{color:rgba(232,224,208,.3);}
+.sov-star{color:#cc0000;font-size:28px;margin-bottom:1.5rem;display:block;}
+.sov-p{
+  font-family:'IM Fell English',serif;font-size:19px;
+  line-height:1.85;color:rgba(232,224,208,.72);
+  margin-bottom:1.4rem;
+}
+.sov-p em{color:#cc0000;font-style:italic;}
+.sov-slogan{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(18px,3vw,32px);
+  font-weight:700;text-transform:uppercase;
+  color:#cc0000;letter-spacing:.04em;
+  line-height:1.1;
+  border-left:6px solid #cc0000;
+  padding-left:1.2rem;margin:2rem 0;
+}
+.sov-case{
+  background:rgba(204,0,0,.08);
+  border:1px solid rgba(204,0,0,.2);
+  padding:1.5rem;margin-bottom:1.5rem;
+}
+.sov-case-label{
+  font-family:'Oswald',sans-serif;font-size:10px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:#cc0000;margin-bottom:.8rem;font-weight:400;
+}
+.sov-case-p{
+  font-family:'IM Fell English',serif;font-size:16px;
+  color:rgba(232,224,208,.65);line-height:1.8;
+}
+.sov-stat{
+  font-family:'Oswald',sans-serif;
+  font-size:64px;color:#cc0000;font-weight:700;
+  line-height:1;margin-bottom:.3rem;
+}
+.sov-stat-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.18em;color:rgba(232,224,208,.35);
+  text-transform:uppercase;
+}
+
+/* ════════════════════════════════════════════
+   SECTION V - OXIDIZED ARCHIVE
+   Verdigris, aged copper, scientific ledger
+════════════════════════════════════════════ */
+#s5{
+  min-height:100vh;
+  background:#0a110f;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;overflow:hidden;
+}
+#s5::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(40,100,80,.07) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 30%,rgba(30,80,60,.05) 0%,transparent 50%),
+    repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(60,120,90,.015) 40px,rgba(60,120,90,.015) 41px);
+  pointer-events:none;
+}
+.arch-inner{max-width:980px;margin:0 auto;position:relative;z-index:2;}
+.arch-stamp{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(80,160,120,.45);margin-bottom:2rem;
+  border-bottom:1px solid rgba(80,160,120,.12);padding-bottom:1rem;
+}
+.arch-heading{
+  font-family:'Cinzel',serif;
+  font-size:clamp(28px,4.5vw,56px);
+  color:rgba(120,200,160,.85);
+  letter-spacing:.06em;line-height:1.05;
+  margin-bottom:1rem;font-weight:400;
+}
+.arch-sub{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:18px;color:rgba(80,140,100,.6);
+  margin-bottom:3rem;
+}
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+@media(max-width:700px){.arch-grid{grid-template-columns:1fr}}
+.arch-p{
+  font-family:'IM Fell English',serif;font-size:19px;
+  font-weight:300;line-height:1.88;
+  color:rgba(160,210,185,.7);margin-bottom:1.4rem;
+}
+.arch-p em{color:rgba(120,200,160,.95);font-style:italic;}
+.arch-entry{
+  border:1px solid rgba(80,160,120,.15);
+  padding:1.5rem;margin-bottom:1.5rem;
+  position:relative;background:rgba(0,0,0,.2);
+}
+.arch-entry-label{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(80,160,120,.45);margin-bottom:.6rem;
+}
+.arch-entry-title{
+  font-family:'Cinzel',serif;font-size:15px;
+  color:rgba(120,200,160,.75);margin-bottom:.8rem;
+  letter-spacing:.06em;
+}
+.arch-entry-p{
+  font-family:'IM Fell English',serif;font-size:15px;
+  color:rgba(140,190,165,.6);line-height:1.78;
+}
+.arch-verdict{
+  background:rgba(80,160,120,.06);
+  border-left:3px solid rgba(80,160,120,.35);
+  padding:1.5rem;margin-top:1.5rem;
+}
+.arch-verdict-label{
+  font-family:'JetBrains Mono',monospace;font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(80,160,120,.45);margin-bottom:.5rem;
+}
+.arch-verdict-text{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:17px;color:rgba(160,220,190,.7);line-height:1.7;
+}
+
+/* ════════════════════════════════════════════
+   SECTION VI - THE VOID
+   Pure black, one truth, silence
+════════════════════════════════════════════ */
+#s6{
+  min-height:100vh;
+  background:#000;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px clamp(20px,5vw,80px);
+  position:relative;
+}
+.void-inner{
+  max-width:680px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.void-number{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(80px,16vw,200px);
+  color:#fff;opacity:.03;
+  line-height:1;user-select:none;margin-bottom:-1rem;
+}
+.void-rule{width:1px;height:80px;background:rgba(255,255,255,.08);margin:2rem auto;}
+.void-statement{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:clamp(22px,3.5vw,40px);
+  color:rgba(255,255,255,.82);
+  line-height:1.55;margin-bottom:1.5rem;
+}
+.void-sub{
+  font-family:'IM Fell English',serif;
+  font-size:clamp(14px,1.8vw,18px);
+  color:rgba(255,255,255,.28);
+  line-height:1.8;max-width:520px;margin-bottom:3rem;
+}
+.void-the-line{
+  font-family:'Cinzel',serif;
+  font-size:clamp(14px,2.5vw,22px);
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+  border-top:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:1rem 2rem;margin:1rem 0 2rem;
+}
+.void-the-line span{color:#fff;opacity:.9;}
+.void-coda{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(255,255,255,.15);line-height:2.8;
+}
+
+/* ── PROGRESS COLOR BY SECTION ── */
+body[data-sec="0"] #prog{background:rgba(180,140,60,.8)}
+body[data-sec="1"] #prog{background:rgba(180,140,60,.8)}
+body[data-sec="2"] #prog{background:rgba(180,80,60,.8)}
+body[data-sec="3"] #prog{background:rgba(139,26,26,.8)}
+body[data-sec="4"] #prog{background:rgba(204,0,0,.9)}
+body[data-sec="5"] #prog{background:rgba(80,160,120,.7)}
+body[data-sec="6"] #prog{background:rgba(255,255,255,.4)}
+</style>
+</head>
+<body data-sec="0">
+
+<div id="cur"></div>
+<div id="prog"></div>
+
+<!-- ════════════════════════════════════════════
+     S0 - ILLUMINATED MANUSCRIPT INTRO
+════════════════════════════════════════════ -->
+<section id="s0">
+  <div class="ms-corner tl"></div>
+  <div class="ms-corner tr"></div>
+  <div class="ms-corner bl"></div>
+  <div class="ms-corner br"></div>
+  <div class="ms-marginalia">Hic incipit · De natura haeresis · Anno Domini</div>
+  <div class="ms-marginalia-r">Adversus · Omnes Gentes · Semper Idem</div>
+
+  <div class="ms-inner">
+    <div class="ms-rubric r">Tractatus de Natura Haeresis · A Thesis in Six Parts</div>
+    <span class="ms-drop-cap r2">H</span>
+    <div class="ms-title r">THE ANATOMY<br>OF HERESY</div>
+    <div class="ms-subtitle r">On the structural pattern by which every civilization<br>declares its mirror image unthinkable</div>
+    <div class="ms-rule r"></div>
+    <p class="ms-incipit r">There is a particular kind of idea that every civilization, in every era, has found intolerable. Not the idea that is simply wrong. Not the idea that is merely dangerous. The intolerable idea receives a special name. It is declared not merely incorrect but <em style="font-style:italic;color:rgba(180,140,60,.85)">contaminating</em> - a thing whose proximity corrupts, whose adherents must be not just corrected but expelled, not just expelled but erased.</p>
+    <div class="ms-scroll r">✦ &nbsp; Scroll to begin &nbsp; ✦</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S1 - ISLAMIC GEOMETRIC
+     THE STRUCTURAL LOGIC
+════════════════════════════════════════════ -->
+<section id="s1">
+  <div class="geo-border"></div>
+  <div class="geo-border-b"></div>
+  <div class="geo-inner">
+    <div class="geo-bismillah r">✦ &nbsp; Scale I - The Structural Logic &nbsp; ✦</div>
+
+    <div class="r">
+      <div class="geo-heading">Heresy Is Always<br>an Inside Job</div>
+      <div class="geo-sub">The declaration comes not when the idea is most false - but when it is most threatening to the organizational apparatus of those who declare it.</div>
+    </div>
+
+    <div class="geo-grid">
+      <div>
+        <p class="geo-p r">The Cathars of twelfth-century southern France were not pagans. They were Christians - rigorous ones, arguably more rigorous than the Church that destroyed them. They had bishops, sacraments, a theology grounded in scripture. What they did not have was a pope, a hierarchy that owned land, or a priesthood that mediated salvation.</p>
+        <p class="geo-p r">The Albigensian Crusade of 1209 - the first crusade called against Christians by Christians - was not a theological dispute that got out of hand. It was the institutional Church responding to an idea that made the institutional Church <em>unnecessary.</em></p>
+
+        <div class="geo-callout r">
+          <div class="geo-callout-text">The heresy is declared not when the idea is maximally false - but when it is maximally threatening to the organizational apparatus of the orthodoxy.</div>
+        </div>
+
+        <p class="geo-p r">Gnosticism was declared heretic by Irenaeus of Lyon in <em>Adversus Haereses</em> (180 CE) not because Gnostics denied Christ - many affirmed a version of Christ - but because Gnostic epistemology located divine knowledge <em>inside the individual.</em> The pneumatikos required no priest to access the divine.</p>
+      </div>
+
+      <div>
+        <div class="geo-aside r">
+          <div class="geo-aside-label">Case: The Mutazilites - Baghdad, 8th–9th Century</div>
+          <p class="geo-aside-p">The Mutazilites affirmed the unity of God, the prophethood of Muhammad, the authority of the Quran. What they asserted was that the Quran was <em>created</em> - that it came into being in time rather than existing eternally. This seems like a metaphysical subtlety. It was, in practice, a declaration that the ulema - whose authority derived from custodianship of an eternal text - were optional. A created Quran is a human document. A human document can be interpreted by reason. And reason requires no specialist class of interpreters.</p>
+        </div>
+
+        <div class="geo-ornament r">◆ &nbsp; ◆ &nbsp; ◆</div>
+
+        <p class="geo-p r">The Caliph al-Mutawakkil reversed the Mutazilite inquisition in 848 CE not because the metaphysics of divine speech had been resolved - but because the traditional ulema were a more reliable source of political legitimacy. The heresy was declared when the calculus of institutional power required it.</p>
+
+        <p class="geo-p r">Irenaeus understood this perfectly. His attack on Gnosticism is, at its core, an argument for institutional authority. <em>True knowledge</em> is transmitted through apostolic succession, the chain of bishops traceable to the apostles. You do not need a toll booth on the road to a destination you can reach directly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S2 - BYZANTINE
+     THE MIRROR PROBLEM
+════════════════════════════════════════════ -->
+<section id="s2">
+  <div class="byz-arch"></div>
+  <div class="byz-inner">
+    <div class="byz-icon-label r">✦ Scale II - The Mirror Problem ✦</div>
+    <div class="byz-heading r">The Heresy Bears<br>the Orthodoxy's Face</div>
+    <div class="byz-deck r">It is not the foreign religion that gets declared heretic. It is the insider - the one who has read the same texts, knows the same passwords, and arrived at an unbearable conclusion.</div>
+
+    <div class="byz-columns">
+      <div>
+        <p class="byz-p r">The Donatists of fourth-century North Africa agreed with the Catholic Church on virtually every point of doctrine. Their schism concerned a single question: whether sacraments performed by clergy who had lapsed during the Diocletian persecution - the <em>traditores</em>, those who handed over scriptures to Roman authorities - were valid. The Donatists said no.</p>
+
+        <div class="byz-quote r">
+          <div class="byz-quote-text">Augustine recognized immediately that the Donatist position was defensible - possibly more intuitive than the Catholic counter-argument. His rebuttal was intellectually elegant. It was also institutionally necessary.</div>
+          <div class="byz-quote-attr">- on Augustine contra Donatistas</div>
+        </div>
+
+        <p class="byz-p r">Augustine's doctrine of <em>ex opere operato</em> - that the sacrament works by virtue of the act, not the virtue of the performer - made the institution robust. The Donatist position made every priest auditable by his congregation. One of these is compatible with a centralized hierarchy. The other is not.</p>
+      </div>
+
+      <div>
+        <p class="byz-p r">This is the mirror structure: the heresy takes the orthodoxy's own values - purity, authentic transmission, direct access to the divine, rational consistency - and pursues them further than the orthodoxy can tolerate.</p>
+
+        <div class="byz-case r">
+          <div class="byz-case-title">The Cathars · Asceticism Taken Seriously</div>
+          <p class="byz-case-p">The Cathars pursued Christian asceticism to its logical end. The material world as corruption, the spirit as the only true locus of the divine. Not a foreign theology - a completion of one already present in the tradition. They were destroyed for arriving at the conclusion the tradition implied.</p>
+        </div>
+
+        <div class="byz-case r">
+          <div class="byz-case-title">The Mutazilites · Reason Taken Seriously</div>
+          <p class="byz-case-p">They took Islamic rationalism to its conclusion: if God is just and rational, and reason is a divine gift, then reason must be the instrument of theology. The ulema had no objection to reason in principle. They had every objection to reason in practice - applied without limit to the foundations of their authority.</p>
+        </div>
+
+        <p class="byz-p r">The declared heretics were not abandoning the tradition. They were <em>accelerating</em> into it, and the acceleration was the problem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S3 - REFORMATION BROADSHEET
+     THE MECHANICS
+════════════════════════════════════════════ -->
+<section id="s3">
+  <div class="ref-inner">
+    <div class="ref-masthead r">
+      <div class="ref-pub">Das Ketzerblatt</div>
+      <div class="ref-dateline">Special Dispatch · The Mechanics of Condemnation · Scale III</div>
+    </div>
+    <div class="ref-kicker r">The Formal Declaration of Heresy Is Not a Theological Opinion - It Is a Technology</div>
+    <div class="ref-headline r">Die Werkzeuge<br>der <span class="red">Verdammnis</span></div>
+
+    <div class="ref-body r">
+      <div class="ref-col">
+        <div class="ref-subhead">The Text of Condemnation</div>
+        <p class="ref-p">Irenaeus writes <em>Adversus Haereses.</em> The Council of Nicaea produces the Nicene Creed and anathematizes Arianism. The Abbasid ulema issue <em>fatwas.</em> The Brahminical tradition produces the concept of <em>nastika</em> - those who reject the Vedas - applied to Buddhists, Jains, Charvakas. The Chinese imperial state declares movements <em>xie jiao</em> - heterodox teachings.</p>
+        <p class="ref-p">In every case: a written instrument of exclusion, produced by an institution, with a formal vocabulary of contamination. The instrument precedes the theology. The machinery is always ready.</p>
+
+        <div class="ref-block r">"Before Irenaeus, Christianity had no settled meaning. <em>Adversus Haereses</em> is partly an attack on Gnosticism - and partly a construction of what Christianity is. The heretic defines the boundary by standing outside it."</div>
+
+        <div class="ref-subhead" style="margin-top:1.5rem;">The Charge of Secrecy</div>
+        <p class="ref-p">Across traditions, the heresy is accused of concealment - an exoteric face and an esoteric core, deceiving ordinary people while reserving the true teaching for initiates. Irenaeus makes this charge against Gnostics. The Ottoman state made it against the Bektashi Sufis. The Communist Party made it against Falun Gong.</p>
+        <p class="ref-p">This charge is structurally necessary: it explains why the heresy cannot simply be refuted in open debate. And it licenses extrajudicial response - because an enemy that lies cannot be answered with argument alone.</p>
+      </div>
+
+      <div class="ref-rule"></div>
+
+      <div class="ref-col">
+        <div class="ref-subhead">The Contamination Model</div>
+        <p class="ref-p">Heresy spreads like disease - this is the metaphor that appears, universally, in the literature of condemnation. Irenaeus describes Gnostic ideas as a "plague." Medieval inquisitors spoke of heresy as "infection." The Ottoman term <em>bid'a</em> (innovation) implied corruption of a previously pure body. The Chinese <em>xie jiao</em> implies a teaching that "deviates" from proper order.</p>
+        <p class="ref-p">The disease metaphor does specific work: it justifies aggressive response before the individual is personally guilty of anything. A disease is not controlled by waiting for symptoms.</p>
+        <div class="ref-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+        <div class="ref-charge r">
+          <div class="ref-charge-title">The Four Components - Always Present</div>
+          <div class="ref-charge-item"><span class="ref-charge-num">I.</span><span>A written instrument of exclusion with a vocabulary of contamination</span></div>
+          <div class="ref-charge-item"><span class="ref-charge-num">II.</span><span>Boundary clarification - the heretic defines where orthodoxy ends</span></div>
+          <div class="ref-charge-item"><span class="ref-charge-num">III.</span><span>The charge of secrecy - licensing response beyond open argument</span></div>
+          <div class="ref-charge-item"><span class="ref-charge-num">IV.</span><span>The social contamination model - disease metaphor, preemptive exclusion</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S4 - SOVIET CONSTRUCTIVIST
+     SECULAR HERESIES
+════════════════════════════════════════════ -->
+<section id="s4">
+  <div class="sov-inner">
+    <div class="sov-banner r"><div class="sov-banner-text">Scale IV - When States Replace Churches</div></div>
+
+    <div class="sov-layout">
+      <div class="sov-left">
+        <div class="sov-heading r">
+          <span class="sov-star">★</span>
+          <span class="white">THE</span><br>
+          <span class="red">SECULAR</span><br>
+          <span class="white">HERE</span><span class="dim">SIES</span>
+        </div>
+        <p class="sov-p r">The twentieth century is instructive because it demonstrates that the heresy pattern does not require religion. When the institutional locus of orthodoxy shifts from the Church to the State, the mechanics transfer with it - intact, precise, and lethal.</p>
+
+        <div class="sov-slogan r">The content changes.<br>The structure does not.</div>
+
+        <p class="sov-p r">Lysenko rejected Mendelian genetics not on experimental grounds but on ideological ones. Mendelian genetics, with its fixed hereditary units, implied that organisms had natures that could not be transformed by environment. This was metaphysically incompatible with Marxist-Leninist ideology, which held that environment determines character - that the new Soviet man could be produced by correct social conditions.</p>
+      </div>
+
+      <div class="sov-right">
+        <div class="sov-case r">
+          <div class="sov-case-label">Case: Lysenkoism - USSR, 1948</div>
+          <p class="sov-case-p">Orthodox geneticists were not simply wrong - they were <em style="color:rgba(204,0,0,.9)">reactionary,</em> which is the Soviet equivalent of heretic. Between 1948 and the mid-1960s, genetics was suppressed as a discipline. Hundreds of scientists were fired, imprisoned, or killed. The charge was not scientific error. It was ideological contamination.</p>
+        </div>
+
+        <div class="sov-case r">
+          <div class="sov-case-label">Case: Revolutionary France, 1794</div>
+          <p class="sov-case-p">The Revolution produced its own heresy structure within months of abolishing the Church. The Hébertistes - demanding faster de-Christianization - were declared heretic and guillotined. The Dantonistes - demanding moderation - were declared heretic from the other direction and guillotined weeks later. The Revolution had, within five years, developed an inquisition, a vocabulary of contamination, a mechanism of exclusion.</p>
+        </div>
+
+        <div style="margin-top:2rem;" class="r">
+          <div class="sov-stat">1848</div>
+          <div class="sov-stat-label">Year of the Communist Manifesto · and of al-Mutawakkil's reversal of the Mutazilite inquisition · The same year. Different civilizations. Identical structure.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S5 - OXIDIZED ARCHIVE
+     THE REHABILITATIONS
+════════════════════════════════════════════ -->
+<section id="s5">
+  <div class="arch-inner">
+    <div class="arch-stamp r">Archive - Scale V - The Rehabilitations · What happens when the heresy was right</div>
+    <div class="arch-heading r">History's Mordant Habit</div>
+    <div class="arch-sub r">The heresies most vigorously suppressed are often the ones most nearly correct.</div>
+
+    <div class="arch-grid">
+      <div>
+        <p class="arch-p r">History has a pattern within the pattern: the heresy declaration is not calibrated to truth. It is calibrated to institutional survival. When institutional survival and truth coincide, the mechanism works correctly. When they diverge - when the truth <em>is</em> the heresy - the mechanism produces exactly the same output.</p>
+        <p class="arch-p r">There is no internal signal, within the apparatus of condemnation, distinguishing the true heresy from the suppressed insight. Both receive the <em>Adversus.</em> Both receive the anathema. Both receive the fire.</p>
+
+        <div class="arch-entry r">
+          <div class="arch-entry-label">File: Galileo Galilei</div>
+          <div class="arch-entry-title">Condemned 1633 · Rehabilitated 1992</div>
+          <p class="arch-entry-p">Forced to abjure heliocentrism under threat of torture. The Church's 1992 formal acknowledgment that the condemnation was wrong is extraordinary - an institution admitting that its heresy-declaring mechanism can be applied to truth as readily as to falsehood, and produce the same result.</p>
+        </div>
+
+        <div class="arch-entry r">
+          <div class="arch-entry-label">File: Ibn Rushd (Averroës)</div>
+          <div class="arch-entry-title">Declared heterodox, exiled 1195</div>
+          <p class="arch-entry-p">Condemned by the Almohad Caliph, his works burned. His texts were translated into Latin and became foundational to the European Scholastic tradition - the thought declared heretic in one civilization became the orthodox foundation of another. The heretic was translated and became Aquinas's source.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="arch-entry r">
+          <div class="arch-entry-label">File: Mutazilites</div>
+          <div class="arch-entry-title">Defeated 848 CE - Questions unresolved</div>
+          <p class="arch-entry-p">The Ash'arite theological school that defeated them - and remains dominant - has spent centuries wrestling with exactly the questions the Mutazilites posed about divine attributes and human free will. The heretics were suppressed. The problems were not.</p>
+        </div>
+
+        <div class="arch-entry r">
+          <div class="arch-entry-label">File: Epigenetic Inheritance</div>
+          <div class="arch-entry-title">Lamarckism expelled · Partially rehabilitated 2015–</div>
+          <p class="arch-entry-p">The Extended Evolutionary Synthesis rehabilitates, in modified form, a version of inheritance of acquired characteristics - the evolutionary heresy after Darwin. Epigenetic inheritance, transgenerational stress responses, developmental plasticity: these restore to evolutionary theory a role for environmental influence on heritable variation that the strict gene-centric synthesis had expelled as contamination.</p>
+        </div>
+
+        <div class="arch-verdict r">
+          <div class="arch-verdict-label">Pattern confirmed</div>
+          <p class="arch-verdict-text">The rehabilitation pattern reveals the deepest structural feature of the heresy mechanism: it is not calibrated to truth. It is calibrated to institutional survival. When institutional survival and truth coincide, the mechanism works correctly. When they diverge, it does not notice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     S6 - THE VOID
+     THE PATTERN STRIPPED BARE
+════════════════════════════════════════════ -->
+<section id="s6">
+  <div class="void-inner">
+    <div class="void-number r2">VI</div>
+    <div class="void-rule r2"></div>
+    <div class="void-statement r">The heresy is always the same heresy.</div>
+    <div class="void-the-line r"><span>You do not need us.</span></div>
+    <p class="void-sub r">An institution holds a body of doctrine that is also, simultaneously, an organizational logic - a justification for the institution's existence, its hierarchy, its authority. An idea arises, typically from inside the tradition, that accepts the doctrine's foundations but pursues them to a conclusion the institution cannot absorb without restructuring itself.</p>
+    <p class="void-sub r" style="margin-top:-1rem;">The institution does not know it is protecting its organizational logic rather than its doctrine - because in the institution's own terms, the organizational logic <em style="font-style:italic;color:rgba(255,255,255,.5)">is</em> the doctrine. The hierarchy is the faith. The party is the revolution. The genome is the organism.</p>
+    <p class="void-sub r" style="color:rgba(255,255,255,.18);">This is why the pattern repeats across traditions that share no history. It is not that Catholic inquisitors learned from Abbasid ulema, or that Stalinist commissars studied Irenaeus. The pattern is generated by the structure - by any situation in which an institution holds a monopoly on legitimacy and an inside idea challenges the basis of that monopoly.</p>
+    <div class="void-coda r">
+      Irenaeus · 180 CE &nbsp;·&nbsp; Albigensian Crusade · 1209 &nbsp;·&nbsp; Donatists · 4th C<br>
+      Mutazilites · 848 &nbsp;·&nbsp; Galileo · 1633 &nbsp;·&nbsp; Ibn Rushd · 1195<br>
+      Lysenko · 1948 &nbsp;·&nbsp; Revolutionary France · 1794<br>
+      Laland et al. · 2015–2022 &nbsp;·&nbsp; ASA · 2016<br><br>
+      ✦ &nbsp; Same structure. Different costumes. &nbsp; ✦
+    </div>
+  </div>
+</section>
+
+<script>
+// cursor
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';
+  cur.style.top=e.clientY+'px';
+});
+document.querySelectorAll('p,h1,h2,h3,div').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// progress bar
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+// section tracking for progress color
+const sections=document.querySelectorAll('section[id]');
+const secObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      document.body.dataset.sec=e.target.id.replace('s','');
+    }
+  });
+},{threshold:0.3});
+sections.forEach(s=>secObs.observe(s));
+
+// reveals
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:0.07});
+document.querySelectorAll('.r,.r2,.rd').forEach(el=>revObs.observe(el));
+</script>
+</body>
+</html>
