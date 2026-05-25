@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Semantic Satiation of Everything",
+            date: "May 22, 2026",
+            summary: "A civilizational diagnosis of language failure. Investigating how the brain severs the signal when words like love, depression, and genocide are repeated until they stop carrying reality. A structural analysis of the zero-auth vocabulary.",
+            link: "posts/2026-05-22_Semantic-Satiation-of-Everything.html"
+        },
+        {
             title: "The Anatomy of Heresy",
             date: "May 22, 2026",
             summary: "A thesis in six parts on the structural pattern by which every civilization declares its mirror image unthinkable. Investigating heresy not as a theological error, but as an institutional technology for survival.",

@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semantic Satiation of Everything</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:ital,wght@0,300;0,400;1,300&family=Bebas+Neue&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --ink:#09090b;
+  --paper:#f4f1ea;
+  --paper2:#ede9e0;
+  --red:#9b1c1c;
+  --red2:#c0392b;
+  --gold:#8a7340;
+  --mono:'JetBrains Mono',monospace;
+  --serif:'IM Fell English',Georgia,serif;
+  --display:'Playfair Display',Georgia,serif;
+  --blast:'Bebas Neue',sans-serif;
+}
+
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--serif);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR */
+#cur{
+  position:fixed;width:8px;height:8px;
+  border:1px solid rgba(244,241,234,.5);
+  border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s;
+}
+#cur.big{width:32px;height:32px;border-color:rgba(244,241,234,.15);}
+
+/* PROGRESS */
+#prog{
+  position:fixed;top:0;left:0;height:1px;
+  width:0;background:var(--paper);
+  z-index:9998;opacity:.3;
+  transition:width .06s linear;
+}
+
+/* GRAIN */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:.5;
+}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.r.on{opacity:1;transform:none}
+.rf{opacity:0;transition:opacity 1.4s ease}
+.rf.on{opacity:1}
+
+/* ══════════════════════════════════════
+   SECTION 0: INTRO
+   Precise. Clean. Full control. Maximum weight.
+   The world before satiation.
+══════════════════════════════════════ */
+#s0{
+  min-height:100vh;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+#s0::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 60%,rgba(155,28,28,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.intro-inner{
+  max-width:980px;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:end;
+}
+@media(max-width:720px){.intro-inner{grid-template-columns:1fr;gap:40px}}
+.intro-left{}
+.intro-eyebrow{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.32em;text-transform:uppercase;
+  color:rgba(244,241,234,.25);margin-bottom:2.5rem;
+}
+.intro-h1{
+  font-family:var(--display);
+  font-size:clamp(42px,7vw,90px);
+  font-weight:900;line-height:.9;
+  letter-spacing:-.02em;color:var(--paper);
+}
+.intro-h1 em{
+  font-style:italic;font-weight:400;
+  color:rgba(244,241,234,.35);
+  display:block;font-size:.65em;
+  letter-spacing:0;margin-top:.3rem;
+}
+.intro-rule{
+  width:40px;height:2px;
+  background:var(--red2);
+  margin:2.5rem 0;
+}
+.intro-thesis{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(17px,2.2vw,22px);
+  line-height:1.75;
+  color:rgba(244,241,234,.6);
+  max-width:420px;
+}
+.intro-right{
+  display:flex;flex-direction:column;
+  gap:2rem;padding-bottom:.5rem;
+}
+.intro-stat{border-top:1px solid rgba(244,241,234,.07);padding-top:1.5rem;}
+.intro-stat-n{
+  font-family:var(--blast);
+  font-size:clamp(48px,7vw,88px);
+  line-height:.85;color:var(--red2);
+  opacity:.7;
+}
+.intro-stat-l{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(244,241,234,.2);margin-top:.5rem;
+}
+.intro-quote-block{
+  border-left:2px solid rgba(244,241,234,.08);
+  padding-left:1.5rem;
+}
+.intro-quote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:17px;line-height:1.7;
+  color:rgba(244,241,234,.45);
+}
+.intro-quote-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,241,234,.2);margin-top:.6rem;
+}
+.intro-scroll{
+  position:absolute;bottom:40px;left:50%;
+  transform:translateX(-50%);
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(244,241,234,.15);
+  animation:breathe 3s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.15}50%{opacity:.4}}
+
+/* ══════════════════════════════════════
+   SECTION I: NEUROLOGICAL BASELINE
+   Still clean. Precise. Like a lab report.
+══════════════════════════════════════ */
+#s1{
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+#s1::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 27px,
+    rgba(0,0,0,.025) 27px,rgba(0,0,0,.025) 28px
+  );pointer-events:none;
+}
+.lab-inner{max-width:820px;margin:0 auto;position:relative;z-index:2;}
+.lab-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(9,9,11,.3);margin-bottom:2.5rem;
+  display:flex;align-items:center;gap:16px;
+}
+.lab-chapter::after{
+  content:'';flex:0 0 60px;height:1px;
+  background:rgba(9,9,11,.15);
+}
+.lab-h2{
+  font-family:var(--display);
+  font-size:clamp(32px,5vw,64px);
+  font-weight:700;line-height:.95;
+  letter-spacing:-.025em;
+  color:var(--ink);margin-bottom:2rem;
+}
+.lab-h2 span{color:var(--red);}
+.lab-p{
+  font-size:19px;font-weight:400;
+  line-height:1.88;color:rgba(9,9,11,.75);
+  margin-bottom:1.5rem;
+}
+.lab-p em{font-style:italic;color:var(--ink);}
+.lab-drop::first-letter{
+  float:left;
+  font-family:var(--display);font-weight:900;
+  font-size:90px;line-height:.72;
+  color:var(--red);
+  margin:6px 12px 0 0;
+}
+.lab-callout{
+  background:var(--ink);color:var(--paper);
+  padding:2rem 2.5rem;margin:2.5rem 0;
+}
+.lab-callout-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(244,241,234,.3);margin-bottom:.8rem;
+}
+.lab-callout-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:20px;line-height:1.65;
+  color:rgba(244,241,234,.85);
+}
+.lab-callout-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,241,234,.25);margin-top:.8rem;
+}
+.lab-word-repeat{
+  font-family:var(--mono);font-size:13px;
+  letter-spacing:.1em;color:rgba(9,9,11,.2);
+  line-height:2.2;margin:2rem 0;
+  border-left:2px solid rgba(9,9,11,.08);
+  padding-left:1.5rem;
+}
+.lab-word-repeat span{
+  transition:opacity .3s;
+}
+.lab-word-repeat span.fading{opacity:.08;}
+
+/* ══════════════════════════════════════
+   SECTION II: DEPRESSION
+   First visible stress. Type starts crowding.
+══════════════════════════════════════ */
+#s2{
+  background:#111014;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+/* first ghost words in background */
+#s2::before{
+  content:'depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression depression';
+  position:absolute;top:0;left:0;right:0;
+  font-family:var(--blast);font-size:clamp(28px,4vw,48px);
+  line-height:1.4;letter-spacing:.06em;
+  color:rgba(155,28,28,.045);
+  word-break:break-all;padding:20px;
+  pointer-events:none;z-index:0;
+  overflow:hidden;height:100%;
+}
+.dep-inner{max-width:760px;margin:0 auto;position:relative;z-index:2;}
+.dep-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,241,234,.2);margin-bottom:2.5rem;
+}
+.dep-h2{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,62px);
+  font-weight:900;line-height:.92;
+  color:var(--paper);margin-bottom:2rem;
+}
+.dep-h2 .struck{
+  text-decoration:line-through;
+  text-decoration-color:var(--red);
+  text-decoration-thickness:3px;
+  color:rgba(244,241,234,.4);
+}
+.dep-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(244,241,234,.72);
+  margin-bottom:1.5rem;
+}
+.dep-p em{color:var(--paper);font-style:italic;}
+.dep-split{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  gap:0;margin:2.5rem 0;
+}
+@media(max-width:640px){.dep-split{grid-template-columns:1fr}}
+.dep-split-div{background:rgba(244,241,234,.06);}
+.dep-col{padding:0 2rem;}
+.dep-col:first-child{padding-left:0}
+.dep-col:last-child{padding-right:0}
+.dep-col-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(244,241,234,.2);
+  border-bottom:1px solid rgba(244,241,234,.06);
+  padding-bottom:.6rem;margin-bottom:1rem;
+}
+.dep-col-item{
+  font-family:var(--serif);font-style:italic;
+  font-size:16px;line-height:1.8;
+  color:rgba(244,241,234,.55);
+  margin-bottom:.4rem;
+}
+.dep-col-item.dim{color:rgba(244,241,234,.2);}
+.dep-verdict{
+  border:1px solid rgba(155,28,28,.25);
+  padding:1.5rem 2rem;margin-top:2rem;
+  background:rgba(155,28,28,.04);
+}
+.dep-verdict-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;line-height:1.7;
+  color:rgba(244,241,234,.7);
+}
+
+/* ══════════════════════════════════════
+   SECTION III: LOVE
+   Light section. Weight contrast. Quotes heavy.
+══════════════════════════════════════ */
+#s3{
+  background:var(--paper2);
+  color:var(--ink);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+.love-inner{max-width:900px;margin:0 auto;}
+.love-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(9,9,11,.25);margin-bottom:2.5rem;
+}
+.love-h2{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,64px);
+  font-weight:400;font-style:italic;
+  line-height:.95;color:var(--ink);
+  margin-bottom:2.5rem;
+}
+.love-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:start;
+}
+@media(max-width:700px){.love-grid{grid-template-columns:1fr}}
+.love-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(9,9,11,.72);margin-bottom:1.4rem;
+}
+.love-p em{font-style:italic;color:var(--ink);}
+.love-quote{
+  background:var(--ink);color:var(--paper);
+  padding:2.5rem;margin-bottom:2rem;
+  position:relative;
+}
+.love-quote::before{
+  content:'\201C';
+  font-family:var(--display);font-size:80px;
+  color:rgba(244,241,234,.06);
+  position:absolute;top:.5rem;left:1.2rem;
+  line-height:1;pointer-events:none;
+}
+.love-quote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:19px;line-height:1.65;
+  color:rgba(244,241,234,.82);
+  position:relative;z-index:1;
+}
+.love-quote-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,241,234,.25);margin-top:1rem;
+}
+.love-satiation-list{
+  font-family:var(--mono);font-size:13px;
+  color:rgba(9,9,11,.35);line-height:2.4;
+  border-left:2px solid rgba(9,9,11,.08);
+  padding-left:1.5rem;
+}
+.love-satiation-list span{
+  display:block;
+}
+.love-satiation-list span.heavy{
+  color:rgba(9,9,11,.08);
+  font-size:11px;
+}
+
+/* ══════════════════════════════════════
+   SECTION IV: MORAL SATIATION
+   Dark. Hard. Structured like a criminal record.
+══════════════════════════════════════ */
+#s4{
+  background:#0a0205;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+#s4::before{
+  content:'';position:absolute;
+  top:0;left:0;width:4px;height:100%;
+  background:linear-gradient(to bottom,transparent,var(--red),transparent);
+  opacity:.4;pointer-events:none;
+}
+.moral-inner{max-width:960px;margin:0 auto;}
+.moral-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,241,234,.2);margin-bottom:2.5rem;
+}
+.moral-h2{
+  font-family:var(--blast);
+  font-size:clamp(36px,7vw,100px);
+  letter-spacing:.04em;line-height:.88;
+  color:var(--paper);margin-bottom:2rem;
+}
+.moral-h2 .red{color:var(--red2);}
+.moral-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:48px;align-items:start;
+}
+@media(max-width:700px){.moral-grid{grid-template-columns:1fr}}
+.moral-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(244,241,234,.68);
+  margin-bottom:1.5rem;
+}
+.moral-p em{color:var(--paper);font-style:italic;}
+.moral-word-list{
+  display:flex;flex-direction:column;gap:0;
+  margin:1.5rem 0;
+}
+.moral-word{
+  font-family:var(--blast);
+  font-size:clamp(20px,3.5vw,36px);
+  letter-spacing:.06em;
+  border-bottom:1px solid rgba(244,241,234,.04);
+  padding:.5rem 0;
+  color:rgba(244,241,234,.5);
+  transition:color .3s;
+}
+.moral-word:hover{color:var(--red2);}
+.moral-word.dim{color:rgba(244,241,234,.1);}
+.moral-quote{
+  border-left:3px solid var(--red);
+  padding:1.5rem 2rem;margin:2rem 0;
+  background:rgba(155,28,28,.05);
+}
+.moral-quote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:20px;line-height:1.65;
+  color:rgba(244,241,234,.8);
+}
+.moral-quote-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(155,28,28,.6);margin-top:.8rem;
+}
+
+/* ══════════════════════════════════════
+   SECTION V: FIVE HISTORICAL CASES
+   Five visual registers. Five civilizations.
+══════════════════════════════════════ */
+#s5{
+  min-height:100vh;
+  background:var(--paper);
+  color:var(--ink);
+  padding:80px 0;
+  position:relative;overflow:hidden;
+}
+.hist-header{
+  max-width:820px;margin:0 auto;
+  padding:0 clamp(20px,6vw,100px);
+  margin-bottom:60px;
+}
+.hist-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(9,9,11,.25);margin-bottom:1.5rem;
+}
+.hist-h2{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,64px);
+  font-weight:700;line-height:.95;
+  color:var(--ink);
+}
+
+/* case tiles */
+.case-stack{display:flex;flex-direction:column;gap:0;}
+
+.case{
+  padding:48px clamp(20px,6vw,100px);
+  border-top:1px solid rgba(9,9,11,.08);
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:48px;align-items:start;
+}
+@media(max-width:700px){.case{grid-template-columns:1fr;gap:24px}}
+
+/* Case 1: Rome */
+.case-rome{background:var(--paper);}
+.case-num-rome{
+  font-family:var(--blast);
+  font-size:88px;line-height:.85;
+  color:rgba(9,9,11,.06);
+  user-select:none;
+}
+.case-label-rome{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(9,9,11,.3);margin-bottom:.5rem;
+}
+.case-title{
+  font-family:var(--display);font-size:22px;
+  font-weight:700;color:var(--ink);
+  margin-bottom:1rem;letter-spacing:-.01em;
+}
+.case-p{
+  font-family:var(--serif);font-size:17px;
+  line-height:1.85;color:rgba(9,9,11,.65);
+  margin-bottom:.9rem;
+}
+.case-p em{font-style:italic;color:var(--ink);}
+
+/* Case 2: Totalitarian */
+.case-total{background:#0f0f0f;color:var(--paper);}
+.case-num-total{
+  font-family:var(--blast);font-size:88px;
+  line-height:.85;color:rgba(244,241,234,.04);
+  user-select:none;
+}
+.case-total .case-label-rome{color:rgba(244,241,234,.2);}
+.case-total .case-title{color:var(--paper);}
+.case-total .case-p{color:rgba(244,241,234,.6);}
+.case-total .case-p em{color:var(--paper);}
+
+/* Case 3: Consumer */
+.case-consumer{background:var(--paper2);}
+.case-num-consumer{
+  font-family:var(--blast);font-size:88px;
+  line-height:.85;color:rgba(9,9,11,.05);
+  user-select:none;
+}
+
+/* Case 4: Social Media */
+.case-social{background:#060610;color:var(--paper);}
+.case-num-social{
+  font-family:var(--blast);font-size:88px;
+  line-height:.85;color:rgba(244,241,234,.03);
+  user-select:none;
+}
+.case-social .case-label-rome{color:rgba(244,241,234,.18);}
+.case-social .case-title{color:var(--paper);}
+.case-social .case-p{color:rgba(244,241,234,.55);}
+.case-social .case-p em{color:var(--paper);}
+.escalation{
+  font-family:var(--mono);font-size:11px;
+  line-height:2;color:rgba(244,241,234,.18);
+  margin:1rem 0;
+  word-break:break-all;
+}
+
+/* Case 5: AI */
+.case-ai{background:#03030a;color:var(--paper);}
+.case-num-ai{
+  font-family:var(--blast);font-size:88px;
+  line-height:.85;color:rgba(244,241,234,.02);
+  user-select:none;
+}
+.case-ai .case-label-rome{color:rgba(244,241,234,.15);}
+.case-ai .case-title{color:rgba(244,241,234,.7);}
+.case-ai .case-p{color:rgba(244,241,234,.45);}
+.case-ai .case-p em{color:rgba(244,241,234,.7);}
+
+/* ══════════════════════════════════════
+   SECTION VI: GRIEF
+   Design starting to break. Overlapping. Saturating.
+══════════════════════════════════════ */
+#s6{
+  background:#080808;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+/* grief word flood */
+#s6::before{
+  content:'grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief grief';
+  position:absolute;inset:0;
+  font-family:var(--blast);
+  font-size:clamp(32px,5vw,60px);
+  letter-spacing:.04em;line-height:1.3;
+  color:rgba(244,241,234,.018);
+  word-break:break-all;
+  padding:20px;pointer-events:none;
+  overflow:hidden;
+}
+.grief-inner{max-width:780px;margin:0 auto;position:relative;z-index:2;}
+.grief-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,241,234,.15);margin-bottom:2.5rem;
+}
+.grief-h2{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,62px);
+  font-weight:400;font-style:italic;
+  line-height:.95;color:rgba(244,241,234,.8);
+  margin-bottom:2rem;
+}
+.grief-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(244,241,234,.6);
+  margin-bottom:1.5rem;
+}
+.grief-p em{color:rgba(244,241,234,.85);font-style:italic;}
+.grief-line{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:clamp(20px,3vw,34px);
+  color:rgba(244,241,234,.85);
+  border-top:1px solid rgba(244,241,234,.06);
+  border-bottom:1px solid rgba(244,241,234,.06);
+  padding:1.5rem 0;margin:2.5rem 0;
+  text-align:center;
+  line-height:1.4;
+}
+.grief-quote{
+  display:grid;grid-template-columns:3px 1fr;
+  gap:28px;margin:2rem 0;
+}
+.grief-quote-bar{background:rgba(244,241,234,.12);}
+.grief-quote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;line-height:1.7;
+  color:rgba(244,241,234,.5);
+}
+.grief-quote-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(244,241,234,.18);margin-top:.6rem;
+}
+
+/* ══════════════════════════════════════
+   SECTION VII: REALITY SATIATED
+   Full saturation. Design collapsing under weight.
+══════════════════════════════════════ */
+#s7{
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+/* paper being consumed by type */
+#s7::after{
+  content:'love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love love';
+  position:absolute;bottom:0;left:0;right:0;
+  font-family:var(--blast);
+  font-size:clamp(22px,3.5vw,42px);
+  letter-spacing:.04em;line-height:1.25;
+  color:rgba(9,9,11,.04);
+  word-break:break-all;padding:20px;
+  pointer-events:none;z-index:0;
+  height:50%;overflow:hidden;
+}
+.real-inner{max-width:820px;margin:0 auto;position:relative;z-index:2;}
+.real-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(9,9,11,.2);margin-bottom:2.5rem;
+}
+.real-h2{
+  font-family:var(--display);
+  font-size:clamp(30px,5vw,64px);
+  font-weight:900;line-height:.92;
+  color:var(--ink);margin-bottom:2.5rem;
+}
+.real-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(9,9,11,.7);margin-bottom:1.5rem;
+}
+.real-p em{color:var(--ink);font-style:italic;}
+.real-symptoms{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;margin:2rem 0;
+  border:1px solid rgba(9,9,11,.08);
+}
+@media(max-width:620px){.real-symptoms{grid-template-columns:1fr}}
+.real-symptom{
+  padding:1.5rem 2rem;
+  border-bottom:1px solid rgba(9,9,11,.06);
+  border-right:1px solid rgba(9,9,11,.06);
+}
+.real-symptom:nth-child(even){border-right:none;}
+.real-symptom-word{
+  font-family:var(--blast);
+  font-size:22px;letter-spacing:.06em;
+  color:var(--ink);margin-bottom:.3rem;
+}
+.real-symptom-desc{
+  font-family:var(--serif);font-style:italic;
+  font-size:14px;line-height:1.65;
+  color:rgba(9,9,11,.45);
+}
+.real-rumi{
+  background:var(--ink);color:var(--paper);
+  padding:2.5rem;margin:2.5rem 0;
+}
+.real-rumi-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(18px,2.5vw,26px);
+  line-height:1.6;color:rgba(244,241,234,.82);
+}
+.real-rumi-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,241,234,.22);margin-top:1rem;
+}
+
+/* ══════════════════════════════════════
+   SECTION VIII: STRUCTURAL DIAGNOSIS
+   Clinical. Precise. Cold as surgery.
+══════════════════════════════════════ */
+#s8{
+  background:#04040a;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+.diag-inner{max-width:900px;margin:0 auto;}
+.diag-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,241,234,.15);margin-bottom:2.5rem;
+}
+.diag-h2{
+  font-family:var(--blast);
+  font-size:clamp(36px,7vw,96px);
+  letter-spacing:.03em;line-height:.88;
+  color:rgba(244,241,234,.85);
+  margin-bottom:2.5rem;
+}
+.diag-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;
+}
+@media(max-width:700px){.diag-grid{grid-template-columns:1fr}}
+.diag-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(244,241,234,.6);
+  margin-bottom:1.5rem;
+}
+.diag-p em{color:rgba(244,241,234,.9);font-style:italic;}
+.diag-note{
+  border:1px solid rgba(244,241,234,.06);
+  padding:1.5rem 2rem;margin:2rem 0;
+}
+.diag-note-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(244,241,234,.18);margin-bottom:.8rem;
+}
+.diag-note-text{
+  font-family:var(--mono);font-style:italic;
+  font-size:12px;line-height:1.9;
+  color:rgba(244,241,234,.35);
+}
+.diag-quote{
+  background:rgba(155,28,28,.08);
+  border-left:2px solid rgba(155,28,28,.4);
+  padding:1.5rem 2rem;
+}
+.diag-quote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:19px;line-height:1.65;
+  color:rgba(244,241,234,.7);
+}
+.diag-quote-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(155,28,28,.5);margin-top:.8rem;
+}
+
+/* ══════════════════════════════════════
+   SECTION IX: TERMINAL STAGE
+   The page is almost gone. Almost nothing left.
+══════════════════════════════════════ */
+#s9{
+  background:#000;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+/* barely visible satiated background */
+#s9::before{
+  content:'love depression trauma evil freedom grief war love depression trauma evil freedom grief war love depression trauma evil freedom grief war love depression trauma evil freedom grief war love depression trauma evil freedom grief war love depression trauma evil freedom grief war';
+  position:absolute;inset:0;
+  font-family:var(--blast);
+  font-size:clamp(18px,2.5vw,30px);
+  letter-spacing:.06em;line-height:1.6;
+  color:rgba(244,241,234,.008);
+  word-break:break-all;padding:20px;
+  pointer-events:none;overflow:hidden;
+}
+.term-inner{
+  max-width:640px;width:100%;
+  position:relative;z-index:2;
+}
+.term-chapter{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,241,234,.1);margin-bottom:3rem;
+}
+.term-h2{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(28px,4.5vw,56px);
+  font-weight:400;line-height:1.05;
+  color:rgba(244,241,234,.7);
+  margin-bottom:2rem;
+}
+.term-p{
+  font-size:19px;line-height:1.88;
+  color:rgba(244,241,234,.45);
+  margin-bottom:1.5rem;
+}
+.term-p em{color:rgba(244,241,234,.7);font-style:italic;}
+.term-lear{
+  margin:2.5rem 0;padding:2rem 0;
+  border-top:1px solid rgba(244,241,234,.05);
+  border-bottom:1px solid rgba(244,241,234,.05);
+}
+.term-lear-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(18px,2.5vw,24px);
+  line-height:1.6;color:rgba(244,241,234,.55);
+}
+.term-lear-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(244,241,234,.15);margin-top:.8rem;
+}
+.term-final-line{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(16px,2vw,20px);
+  color:rgba(244,241,234,.35);
+  line-height:1.5;margin-top:2.5rem;
+  letter-spacing:.01em;
+}
+
+/* ══════════════════════════════════════
+   SECTION X: CODA
+   Nothing left. White silence. One sentence.
+══════════════════════════════════════ */
+#s10{
+  background:#f7f5f0;
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+.coda-inner{
+  max-width:560px;text-align:center;
+}
+.coda-rule{
+  width:1px;height:60px;
+  background:rgba(9,9,11,.12);
+  margin:0 auto 3rem;
+}
+.coda-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(9,9,11,.2);margin-bottom:2.5rem;
+}
+.coda-stmt{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(20px,3vw,32px);
+  font-weight:400;line-height:1.5;
+  color:rgba(9,9,11,.65);
+  margin-bottom:2rem;
+}
+.coda-sub{
+  font-family:var(--serif);font-size:16px;
+  line-height:1.8;color:rgba(9,9,11,.3);
+  margin-bottom:3rem;
+}
+.coda-buk{
+  border-top:1px solid rgba(9,9,11,.08);
+  padding-top:2rem;
+}
+.coda-buk-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:17px;line-height:1.7;
+  color:rgba(9,9,11,.4);
+}
+.coda-buk-attr{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(9,9,11,.18);margin-top:.8rem;
+}
+.coda-end{
+  margin-top:4rem;
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(9,9,11,.12);
+}
+
+/* NAV DOTS */
+#nav{
+  position:fixed;right:28px;top:50%;
+  transform:translateY(-50%);
+  z-index:900;
+  display:flex;flex-direction:column;gap:10px;
+  align-items:center;
+}
+.nd{
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(244,241,234,.15);
+  border:none;cursor:pointer;
+  transition:all .3s;padding:0;
+}
+.nd.on{
+  background:rgba(244,241,234,.6);
+  height:16px;border-radius:2px;
+}
+body[data-bg="light"] .nd{background:rgba(9,9,11,.15);}
+body[data-bg="light"] .nd.on{background:rgba(9,9,11,.5);}
+@media(max-width:600px){#nav{display:none}}
+</style>
+</head>
+<body data-bg="dark">
+
+<div id="cur"></div>
+<div id="prog"></div>
+
+<nav id="nav">
+  <button class="nd on" data-s="s0" aria-label="Intro"></button>
+  <button class="nd" data-s="s1" aria-label="Baseline"></button>
+  <button class="nd" data-s="s2" aria-label="Depression"></button>
+  <button class="nd" data-s="s3" aria-label="Love"></button>
+  <button class="nd" data-s="s4" aria-label="Moral"></button>
+  <button class="nd" data-s="s5" aria-label="History"></button>
+  <button class="nd" data-s="s6" aria-label="Grief"></button>
+  <button class="nd" data-s="s7" aria-label="Reality"></button>
+  <button class="nd" data-s="s8" aria-label="Diagnosis"></button>
+  <button class="nd" data-s="s9" aria-label="Terminal"></button>
+  <button class="nd" data-s="s10" aria-label="Coda"></button>
+</nav>
+
+<!-- ════════════════════════════════
+     S0 - INTRO
+════════════════════════════════ -->
+<section id="s0">
+  <div class="intro-inner">
+    <div class="intro-left">
+      <div class="intro-eyebrow r">Essay on civilizational language failure</div>
+      <h1 class="intro-h1 r">
+        Semantic<br>Satiation<br>of<br>
+        <em>Everything</em>
+      </h1>
+      <div class="intro-rule r"></div>
+      <p class="intro-thesis r">How civilization exhausted its own vocabulary and called it progress. A diagnosis without a cure.</p>
+    </div>
+    <div class="intro-right">
+      <div class="intro-stat r">
+        <div class="intro-stat-n">60×</div>
+        <div class="intro-stat-l">Repetitions required to sever a word from its meaning in individual cognition. Civilizational satiation requires no repetition limit. It simply never stops.</div>
+      </div>
+      <div class="intro-quote-block r">
+        <div class="intro-quote-text">"Information is the resolution of uncertainty."</div>
+        <div class="intro-quote-attr">Claude Shannon</div>
+      </div>
+      <div class="intro-stat r">
+        <div class="intro-stat-n">∞</div>
+        <div class="intro-stat-l">Volume of emotionally optimized language currently being generated. Rarity, the precondition of meaning, has been eliminated as a category.</div>
+      </div>
+    </div>
+  </div>
+  <div class="intro-scroll">scroll</div>
+</section>
+
+<!-- ════════════════════════════════
+     S1 - NEUROLOGICAL BASELINE
+════════════════════════════════ -->
+<section id="s1">
+  <div class="lab-inner">
+    <div class="lab-chapter r">I &nbsp; The Neurological Baseline</div>
+    <h2 class="lab-h2 r">The Brain <span>Severs</span><br>the Signal</h2>
+
+    <p class="lab-p lab-drop r">Semantic satiation is a documented cognitive phenomenon. A word repeated continuously undergoes reactive inhibition in the cortical processing nodes responsible for semantic retrieval. The phonological form remains accessible. The meaning does not. The brain hears the sound and finds the referent temporarily unreachable.</p>
+
+    <div class="lab-word-repeat r" id="wordRepeat">
+      <span>chair</span> <span>chair</span> <span>chair</span> <span>chair</span> <span>chair</span>
+      <span>chair</span> <span>chair</span> <span>chair</span> <span>chair</span> <span>chair</span>
+      <span>chair</span> <span>chair</span> <span class="fading">chair</span> <span class="fading">chair</span> <span class="fading">chair</span>
+      <span class="fading">chair</span> <span class="fading">chair</span> <span class="fading">chair</span> <span class="fading">chair</span> <span class="fading">chair</span>
+    </div>
+
+    <p class="lab-p r">The question this essay asks is mechanical. What happens when the repetition is not individual but civilizational. When it does not resolve because the repetition never stops. When the words being satiated are not "chair" but <em>depression, love, trauma, evil, freedom, grief, war,</em> and <em>genocide.</em></p>
+    <p class="lab-p r">The answer is not temporary inhibition. The answer is permanent severing.</p>
+
+    <div class="lab-callout r">
+      <div class="lab-callout-label">Shannon Entropy</div>
+      <div class="lab-callout-text">If a word can apply to everything, it resolves zero uncertainty. In information theory, a signal that carries no surprise carries no information. Satiation is the process by which a high-value signal is degraded into white noise through indiscriminate repetition.</div>
+      <div class="lab-callout-attr">Information Theory</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S2 - DEPRESSION
+════════════════════════════════ -->
+<section id="s2">
+  <div class="dep-inner">
+    <div class="dep-chapter r">II &nbsp; Depression Is No Longer Depression</div>
+    <h2 class="dep-h2 r">
+      <span class="struck">Depression</span><br>Is No Longer<br>Depression
+    </h2>
+
+    <div class="dep-split r">
+      <div class="dep-col">
+        <div class="dep-col-label">What the word was built to carry</div>
+        <div class="dep-col-item">Unbearable psychic collapse</div>
+        <div class="dep-col-item">Disappearance of motivational topology</div>
+        <div class="dep-col-item">A silence so complete it felt physical</div>
+        <div class="dep-col-item">Social disappearance</div>
+        <div class="dep-col-item">A body that stopped generating reasons to continue occupying it</div>
+      </div>
+      <div class="dep-split-div"></div>
+      <div class="dep-col">
+        <div class="dep-col-label">What the word now carries</div>
+        <div class="dep-col-item dim">The feeling of a grey Monday</div>
+        <div class="dep-col-item dim">Aesthetic melancholy in a film</div>
+        <div class="dep-col-item dim">A relatable caption over a photograph of rain</div>
+        <div class="dep-col-item dim">A personality characteristic disclosed in an introduction</div>
+        <div class="dep-col-item dim">A TikTok genre with its own lighting palette and soundtrack</div>
+      </div>
+    </div>
+
+    <p class="dep-p r">The people using the word in these contexts are not lying. They are using a word inherited from a language environment in which that word has already been stretched past its load-bearing capacity. They did not cause the inflation. They are spending currency that was already debased before they arrived.</p>
+
+    <div class="dep-verdict r">
+      <div class="dep-verdict-text">Overuse does not democratize meaning. It erodes the distinction that meaning requires to function. When every state becomes catastrophic, catastrophe itself becomes linguistically homeless.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S3 - LOVE
+════════════════════════════════ -->
+<section id="s3">
+  <div class="love-inner">
+    <div class="love-chapter r">III &nbsp; The Semantic Collapse of Love</div>
+    <h2 class="love-h2 r">"Love" may be the most thoroughly exhausted word in the history of human language.</h2>
+
+    <div class="love-grid">
+      <div>
+        <div class="love-quote r">
+          <div class="love-quote-text">"Love is not love which alters when it alteration finds, or bends with the remover to remove."</div>
+          <div class="love-quote-attr">Shakespeare, Sonnet 116</div>
+        </div>
+        <p class="love-p r">That definition has hardness. Love as a thing that holds under conditions that would dissolve anything softer. An invariant property, not a momentary intensity.</p>
+        <div class="love-quote r">
+          <div class="love-quote-text">"The semantic collapse of love is a lossy compression error."</div>
+          <div class="love-quote-attr">Systems Analysis</div>
+        </div>
+        <p class="love-p r">This schema assumes love is a high-bandwidth category. That assumption is incompatible with a language environment in which the entire spectrum of human affinity is lossily compressed into a single boolean operator: the heart button. The API doesn't accept nuance; it only accepts a bit.</p>
+      </div>
+      <div>
+        <p class="love-p r">What the word carries now:</p>
+        <div class="love-satiation-list r">
+          <span>POST /like HTTP/1.1</span>
+          <span>Boolean: TRUE</span>
+          <span>Compression: LOSSY</span>
+          <span>Signal: DEGRADED</span>
+          <span class="heavy">1010101010101010101010101010101010101010101010101010101010101010101010</span>
+          <span style="opacity:.3">Status: SATIATED</span>
+          <span style="opacity:.2">Payload: NULL</span>
+          <span style="opacity:.12">Entropy: 0</span>
+          <span style="opacity:.06">Value: 0</span>
+          <span style="opacity:.03">Meaning: 0</span>
+        </div>
+        <p class="love-p r" style="margin-top:2rem;">The word cannot simultaneously carry Rumi's meaning and Instagram's meaning. One of them loses. The evidence of which one lost is the difficulty people currently report in naming, accessing, and believing in the serious version of the thing.</p>
+        <p class="love-p r">Capitalism accelerated this. The market does not destroy emotional vocabulary intentionally. It finds emotional vocabulary useful and uses it until it is used up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S4 - MORAL SATIATION
+════════════════════════════════ -->
+<section id="s4">
+  <div class="moral-inner">
+    <div class="moral-chapter r">IV &nbsp; Moral Semantic Satiation</div>
+    <h2 class="moral-h2 r">THE WORDS<br>THAT <span class="red">CALIBRATE</span><br>COLLAPSE</h2>
+
+    <div class="moral-grid">
+      <div>
+        <div class="moral-word-list r">
+          <div class="moral-word">FASCISM</div>
+          <div class="moral-word dim">evil</div>
+          <div class="moral-word">OPPRESSIVE</div>
+          <div class="moral-word dim">toxic</div>
+          <div class="moral-word">GENOCIDE</div>
+          <div class="moral-word dim">narcissist</div>
+          <div class="moral-word">TRAUMA</div>
+          <div class="moral-word dim">violence</div>
+          <div class="moral-word dim" style="opacity:.15">abusive</div>
+        </div>
+      </div>
+      <div>
+        <p class="moral-p r">These words were built to discriminate. To mark the severe end of a distribution. Their function was calibration. They told the collective where serious response was required.</p>
+        <p class="moral-p r">Weaponized deployment across incompatible severity levels has destroyed that function. When "violence" describes both a physical assault and an argument that caused emotional discomfort, the word can no longer tell you which level of response is appropriate.</p>
+
+        <div class="moral-quote r">
+          <div class="moral-quote-text">"Shabdon ke bojh tale dab gayi hai sachai" - truth has been buried under the weight of words. Not under silence. Under excess. The words did not protect the truth. They buried it.</div>
+          <div class="moral-quote-attr">Javed Akhtar</div>
+        </div>
+
+        <p class="moral-p r">When "fascism" describes both a system of totalitarian racial state violence and a policy disagreement, the word cannot alert you to the arrival of the actual thing. The instrument that should identify severity has been broken by overuse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S5 - FIVE HISTORICAL CASES
+════════════════════════════════ -->
+<section id="s5">
+  <div class="hist-header">
+    <div class="hist-chapter r">V &nbsp; Five Historical Instances of Semantic Collapse</div>
+    <h2 class="hist-h2 r">These are not analogies.<br>They are case studies.</h2>
+  </div>
+
+  <div class="case-stack">
+    <div class="case case-rome r">
+      <div class="case-num-rome">01</div>
+      <div>
+        <div class="case-label-rome">Late Roman Republic</div>
+        <div class="case-title">Semantic Lag Concealing Civilizational Decay</div>
+        <p class="case-p">Honor. Virtue. Republic. Senate. Liberty. By the late Republic, the words continued in full ceremonial use while the realities they described had been gutted. "Senatus Populusque Romanus" was inscribed on every public monument while the senate functioned as a ratification machine for military strongmen.</p>
+        <p class="case-p">This is the specific danger of semantic lag. Language inherited from a functional civilization continues to organize cognition after the civilization has stopped being functional. People keep thinking in the old categories while the ground they described has collapsed.</p>
+      </div>
+    </div>
+
+    <div class="case case-total r">
+      <div class="case-num-total">02</div>
+      <div>
+        <div class="case-label-rome">Totalitarian Language Systems</div>
+        <div class="case-title">Satiation as Weapon</div>
+        <p class="case-p">Propaganda operates through semantic oversaturation. The mechanism is not primarily censorship. Censorship removes words. Propaganda deploys words at volume until they stop describing reality and start replacing it.</p>
+        <p class="case-p">Orwell understood the terminal endpoint: a language topology in which the words required to think against the system have been <em>satiated</em> out of functional existence. Not banned. Satiated. "Crimestop" in 1984 is not a prohibition. It is the neurological endpoint of semantic satiation applied systematically to the vocabulary of dissent.</p>
+      </div>
+    </div>
+
+    <div class="case case-consumer r">
+      <div class="case-num-consumer">03</div>
+      <div>
+        <div class="case-label-rome">Consumer Capitalism</div>
+        <div class="case-title">Language Consumed Faster Than Objects</div>
+        <p class="case-p">Every product is: revolutionary, iconic, authentic, essential, life-changing, empowering, transformative. These words were built to mark genuine categorical distinction. Deployed across millions of products simultaneously, they mark nothing.</p>
+        <p class="case-p">Language is consumed faster than objects. Words die from overemployment. The cemetery of exhausted adjectives in advertising copy is vast and the graves are shallow and new ones are being dug continuously.</p>
+      </div>
+    </div>
+
+    <div class="case case-social r">
+      <div class="case-num-social">04</div>
+      <div>
+        <div class="case-label-rome">Social Media Architecture</div>
+        <div class="case-title">Algorithmic Enforcement of Escalation</div>
+        <p class="case-p">Social media platforms are architecturally structured to reward emotional intensity. Moderate language does not propagate. The rational economic response for any participant is continuous vocabulary escalation.</p>
+        <div class="escalation">amazing horrifying traumatic devastating heartbreaking life-changing disgusting iconic insane obsessed unhinged destroyed amazing horrifying traumatic devastating heartbreaking life-changing disgusting iconic insane obsessed unhinged destroyed amazing horrifying traumatic</div>
+        <p class="case-p">The paradox is strict: <em>emotional numbness produced by emotional excess.</em> The vocabulary available for genuine intensity has been preoccupied by lesser intensities. Genuine intensity now arrives into a language environment with no remaining headroom to receive it.</p>
+      </div>
+    </div>
+
+    <div class="case case-ai r">
+      <div class="case-num-ai">05</div>
+      <div>
+        <div class="case-label-rome">The AI Acceleration</div>
+        <div class="case-title">The Elimination of Rarity</div>
+        <p class="case-p">Large language models generate statistically optimized emotional language at volume and speed no human production could approach. Meaning depends partly on rarity. A word that appears everywhere carries less than a word that appears only where it is precisely required.</p>
+        <p class="case-p">If LLMs make emotional language cheap (O(1) complexity to generate a heartfelt apology), then the only language that will retain meaning is language that is computationally expensive to produce—actions, verifiable code, and silence. Meaning is now a function of cryptographic friction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S6 - GRIEF
+════════════════════════════════ -->
+<section id="s6">
+  <div class="grief-inner">
+    <div class="grief-chapter r">VI &nbsp; The Death of Authentic Grief</div>
+    <h2 class="grief-h2 r">Humanity once gathered<br>around tragedy.</h2>
+
+    <div class="grief-line r">Now tragedy appears between advertisements.</div>
+
+    <p class="grief-p r">That is not metaphor. That is the literal topology of the information environment. A genocide is reported. The next item is a recipe. The item after that is a product recommendation. The item after that is someone's child doing something charming. The item after that is another atrocity from a different geography.</p>
+    <p class="grief-p r">The human node was evolutionarily designed to process tragedy within a local, low-latency radius. Social media connected that node to a global, unthrottled Pub/Sub event stream of atrocities. The result is a literal buffer overflow. The system drops packets (empathy) to prevent a total kernel panic.</p>
+
+    <div class="grief-quote r">
+      <div class="grief-quote-bar"></div>
+      <div>
+        <div class="grief-quote-text">"In an unthrottled stream, the only response is a circuit break."</div>
+        <div class="grief-quote-attr">The Cruel Standard</div>
+        <div class="grief-quote-text" style="margin-top:1rem;font-size:15px;color:rgba(244,241,234,.3);">The register of grief is only possible if the event has mass. When tragedy is processed as high-throughput content, it loses its gravitational constant. You cannot witness what has been flattened into a sequence of bits.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S7 - REALITY SATIATED
+════════════════════════════════ -->
+<section id="s7">
+  <div class="real-inner">
+    <div class="real-chapter r">VII &nbsp; When Reality Itself Becomes Semantically Satiated</div>
+    <h2 class="real-h2 r">The Terminal Stage</h2>
+
+    <p class="real-p r">The terminal stage is not when words lose meaning. It is when reality itself becomes unconvincing.</p>
+
+    <div class="real-symptoms r">
+      <div class="real-symptom">
+        <div class="real-symptom-word">WAR</div>
+        <div class="real-symptom-desc">Feels cinematic. The visual grammar of war reporting is processed through the same channels as action film. The brain cannot reliably separate them.</div>
+      </div>
+      <div class="real-symptom">
+        <div class="real-symptom-word">LOVE</div>
+        <div class="real-symptom-desc">Feels performative. The experience and its broadcast are produced simultaneously. The private residue was where the meaning lived. There is no private residue.</div>
+      </div>
+      <div class="real-symptom">
+        <div class="real-symptom-word">DEPRESSION</div>
+        <div class="real-symptom-desc">Feels aestheticized. The person experiencing it encounters the aesthetic version before their own. Their experience gets organized by the template that was already waiting.</div>
+      </div>
+      <div class="real-symptom">
+        <div class="real-symptom-word">IDENTITY</div>
+        <div class="real-symptom-desc">Feels branded. The language available for describing interiority is marketing language. No other presentation format is as widely distributed or as readily understood.</div>
+      </div>
+    </div>
+
+    <div class="real-rumi r">
+      <div class="real-rumi-text">"True signal exists only in the territory where the vocabulary has not yet arrived."</div>
+      <div class="real-rumi-attr">Reference-as-Truth</div>
+      <p style="font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.7;color:rgba(244,241,234,.35);margin-top:1.2rem;">That territory is the space beyond conceptual satiation. The place where experience exists before it is flattened by lossy categories. The satiated words are the firewall preventing access to the real.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S8 - STRUCTURAL DIAGNOSIS
+════════════════════════════════ -->
+<section id="s8">
+  <div class="diag-inner">
+    <div class="diag-chapter r">VIII &nbsp; The Structural Diagnosis</div>
+    <h2 class="diag-h2 r">NOT A BUG.<br>A BYPRODUCT.</h2>
+
+    <div class="diag-grid">
+      <div>
+        <p class="diag-p r">This is not a complaint about generational decline. The people producing semantic satiation are not less serious than previous generations. They are responding rationally to the incentive topology of the information environment they were born into.</p>
+        <p class="diag-p r">The system topology produces semantic satiation as a byproduct of normal function. The engagement mechanics that erode emotional vocabulary are the same mechanics that generate platform revenue, political mobilization, consumer behavior, and social coordination. The satiation is mechanical exhaust of systems otherwise working exactly as designed.</p>
+        <div class="diag-note r">
+          <div class="diag-note-label">Technical note</div>
+          <div class="diag-note-text">Correctable errors have identifiable agents who could choose differently. This system has no such agent. The platform does not choose to erode emotional vocabulary. It chooses to maximize engagement, and emotional vocabulary erosion is what that choice produces at scale over time.</div>
+        </div>
+      </div>
+      <div>
+        <div class="diag-quote r">
+          <div class="diag-quote-text">"Jo dikh raha hai woh sach nahin, jo sach hai woh dikh nahin raha" - what is visible is not true, what is true is not visible.</div>
+          <div class="diag-quote-attr">Javed Akhtar</div>
+        </div>
+        <p class="diag-p r" style="margin-top:1.5rem;">The satiation mechanism produces exactly this condition. The visible vocabulary is not carrying the real emotional content. The real emotional content is not findable in the visible vocabulary. The gap between them is where the civilizational damage lives.</p>
+        <p class="diag-p r">The institution does not know it is protecting its organizational mechanics rather than its doctrine. The platform does not know it is eroding meaning rather than distributing content. The system is self-concealing at every level of operation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S9 - TERMINAL STAGE
+════════════════════════════════ -->
+<section id="s9">
+  <div class="term-inner">
+    <div class="term-chapter r">IX &nbsp; The Final Stage</div>
+    <h2 class="term-h2 r">Stimulate harder because the vocabulary of response has been worn too smooth to grip anything.</h2>
+
+    <p class="term-p r">People begin seeking stronger and stronger experiences to feel semantic impact again. Not because they are addicted in the clinical sense. Because the existing vocabulary can no longer deliver the registration of intensity that experience is supposed to produce. The experience happens. The word arrives. The word does not land. Nothing is registered at the depth that would make it real.</p>
+
+    <p class="term-p r">This may explain the convergence of irony culture, nihilism, hyperstimulation, doomscrolling, and political extremism not as separate phenomena but as variations of the same response.</p>
+
+    <div class="term-lear r">
+      <div class="term-lear-text">"The worst is not, so long as we can say this is the worst."</div>
+      <div class="term-lear-attr">Shakespeare, King Lear</div>
+      <p style="font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.7;color:rgba(244,241,234,.3);margin-top:1rem;">The moment you can name the worst, you are not yet there. The terminal point is where language stops arriving. Where experience exceeds the capacity of the words that should carry it.</p>
+    </div>
+
+    <div class="term-final-line r">
+      The greatest tragedy is not that words are false.<br>
+      It is that they have been used so often<br>
+      they can no longer carry reality.
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     S10 - CODA
+════════════════════════════════ -->
+<section id="s10">
+  <div class="coda-inner">
+    <div class="coda-rule rf"></div>
+    <div class="coda-label r">Coda</div>
+    <div class="coda-stmt r">Precision is resistance.</div>
+    <p class="coda-sub r">The refusal to use a word at a weight it cannot carry. The insistence on finding the word that fits rather than the word that performs. The choice to say less with more accuracy rather than more with less. This is not a solution. It is a practice. A practice that runs against every incentive structure in the current information environment.</p>
+    <div class="coda-buk r">
+      <div class="coda-buk-text">"Do not ask what a word means. Ask what it cost to generate."</div>
+      <div class="coda-buk-attr">The Cruel Standard</div>
+      <p style="font-family:var(--serif);font-size:14px;line-height:1.75;color:rgba(9,9,11,.22);margin-top:1rem;font-style:italic;">When the semantic channel is flooded with noise, silence is the only remaining variable that cannot be satiated. The only truth is the one that requires kinetic friction to produce.</p>
+    </div>
+    <div class="coda-end r">A civilization dies when its words survive longer than their meanings.</div>
+  </div>
+</section>
+
+<script>
+// cursor
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';
+  cur.style.top=e.clientY+'px';
+});
+document.querySelectorAll('p,h1,h2,div').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// progress
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+// reveal
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:0.07});
+document.querySelectorAll('.r,.rf').forEach(el=>obs.observe(el));
+
+// nav dots + bg toggle
+const sections=document.querySelectorAll('section[id]');
+const dots=document.querySelectorAll('.nd');
+const lightSections=new Set(['s1','s3','s5','s7','s10']);
+const sObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      dots.forEach(d=>d.classList.toggle('on',d.dataset.s===id));
+      document.body.dataset.bg=lightSections.has(id)?'light':'dark';
+    }
+  });
+},{threshold:0.4});
+sections.forEach(s=>sObs.observe(s));
+dots.forEach(d=>d.addEventListener('click',()=>{
+  document.getElementById(d.dataset.s)?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+</script>
+</body>
+</html>
