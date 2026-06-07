@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOUR SYSTEM IS WORKING PERFECTLY. THAT IS THE PROBLEM.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --bg:       #1c1e18;
+  --bg2:      #22241d;
+  --bg3:      #191b15;
+  --paper:    #d4cdb8;
+  --paper2:   #c8c0a8;
+  --paper3:   #bdb49a;
+  --ink:      #1a1c16;
+  --muted:    #8a8878;
+  --dim:      #5a5c50;
+  --warn:     #c8952a;
+  --warn2:    #a67820;
+  --red:      #8b2020;
+  --red2:     #6e1818;
+  --green:    #4a6b3a;
+  --green2:   #3a5a2c;
+  --mono:     'JetBrains Mono', monospace;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sov:      'Oswald', sans-serif;
+  --type:     'Special Elite', cursive;
+}
+
+body{
+  background:var(--bg);
+  color:var(--paper);
+  font-family:var(--mono);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR: crosshair like a geiger counter needle */
+#cur{
+  position:fixed;
+  width:16px;height:16px;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+}
+#cur::before,#cur::after{
+  content:'';position:absolute;
+  background:rgba(200,149,42,.7);
+}
+#cur::before{
+  width:1px;height:16px;
+  left:50%;top:0;transform:translateX(-50%);
+}
+#cur::after{
+  width:16px;height:1px;
+  top:50%;left:0;transform:translateY(-50%);
+}
+#cur.big::before{height:24px;}
+#cur.big::after{width:24px;}
+
+/* PROGRESS: radiation meter style */
+#prog{
+  position:fixed;top:0;left:0;
+  height:3px;width:0;
+  background:linear-gradient(to right,var(--green2),var(--warn),var(--red));
+  z-index:9998;
+  transition:width .08s linear;
+  box-shadow:0 0 6px rgba(200,149,42,.3);
+}
+
+/* GRAIN overlay */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;
+  mix-blend-mode:overlay;
+}
+
+/* SCAN LINES subtle */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 3px,
+    rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px
+  );
+  pointer-events:none;z-index:999;
+}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease}
+.r.on{opacity:1;transform:none}
+.rf{opacity:0;transition:opacity 1.6s ease .2s}
+.rf.on{opacity:1}
+.rl{opacity:0;transform:translateX(-16px);transition:opacity .7s ease,transform .7s ease}
+.rl.on{opacity:1;transform:none}
+
+/* ════════════════════════════════════════
+   LETTERHEAD / DOCUMENT HEADER
+   Soviet ministry paper, every page stamped
+════════════════════════════════════════ */
+.doc-header{
+  background:var(--bg3);
+  border-bottom:2px solid rgba(200,149,42,.25);
+  padding:1.2rem clamp(20px,5vw,80px);
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:1rem;
+  position:sticky;top:0;z-index:800;
+}
+.dh-left{
+  font-size:8px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dim);
+  line-height:1.7;
+}
+.dh-center{
+  font-family:var(--sov);font-size:11px;
+  letter-spacing:.35em;text-transform:uppercase;
+  color:rgba(200,149,42,.5);text-align:center;
+  white-space:nowrap;
+}
+.dh-right{
+  font-size:8px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--dim);
+  line-height:1.7;text-align:right;
+}
+/* radiation symbol */
+.rad-sym{
+  font-size:14px;color:rgba(200,149,42,.35);
+  animation:radPulse 4s ease-in-out infinite;
+}
+@keyframes radPulse{0%,100%{opacity:.35}50%{opacity:.7}}
+
+/* ════════════════════════════════════════
+   SECTION 0: COVER PAGE
+   Soviet technical report cover. Stamped.
+   Gloomy amber on deep olive-grey.
+════════════════════════════════════════ */
+#s0{
+  min-height:100vh;
+  background:var(--bg3);
+  padding:60px clamp(20px,6vw,100px) 80px;
+  display:flex;align-items:center;
+  position:relative;overflow:hidden;
+}
+/* aged paper bleed at bottom */
+#s0::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to bottom,transparent,rgba(0,0,0,.4));
+  pointer-events:none;
+}
+.cover-inner{
+  max-width:1060px;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:start;
+  position:relative;z-index:2;
+}
+@media(max-width:740px){.cover-inner{grid-template-columns:1fr;gap:40px}}
+
+.cover-stamp{
+  display:inline-block;
+  border:3px solid rgba(139,32,32,.6);
+  color:rgba(139,32,32,.7);
+  font-family:var(--sov);font-size:11px;
+  letter-spacing:.3em;text-transform:uppercase;
+  padding:.35rem 1rem;
+  transform:rotate(-2.5deg);
+  margin-bottom:2.5rem;
+  box-shadow:inset 0 0 0 1px rgba(139,32,32,.2);
+}
+.cover-doc-num{
+  font-size:9px;letter-spacing:.22em;
+  color:var(--dim);text-transform:uppercase;
+  margin-bottom:1.5rem;line-height:1.9;
+}
+.cover-h1{
+  font-family:var(--sov);
+  font-size:clamp(26px,4.5vw,52px);
+  font-weight:700;line-height:.96;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--paper);margin-bottom:1rem;
+}
+.cover-h1 .dim-word{color:rgba(212,205,184,.3);}
+.cover-h1 .warn-word{color:var(--warn);}
+.cover-subtitle{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(14px,1.8vw,18px);
+  color:rgba(212,205,184,.45);
+  line-height:1.75;margin-bottom:2.5rem;
+  max-width:480px;
+}
+.cover-right{
+  padding-top:1rem;
+}
+.cover-field{
+  border-top:1px solid rgba(212,205,184,.08);
+  padding:1rem 0;
+  display:grid;grid-template-columns:140px 1fr;
+  gap:1rem;align-items:baseline;
+}
+.cover-field-label{
+  font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim);
+}
+.cover-field-val{
+  font-size:12px;letter-spacing:.04em;
+  color:rgba(212,205,184,.55);line-height:1.6;
+}
+.cover-warning-box{
+  margin-top:2rem;
+  border:1px solid rgba(200,149,42,.2);
+  background:rgba(200,149,42,.04);
+  padding:1.2rem 1.5rem;
+}
+.cover-warning-label{
+  font-family:var(--sov);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:var(--warn2);margin-bottom:.6rem;
+}
+.cover-warning-text{
+  font-size:12px;line-height:1.8;
+  color:rgba(212,205,184,.4);
+}
+.cover-scroll{
+  position:absolute;bottom:50px;left:50%;
+  transform:translateX(-50%);
+  font-size:8px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--dim);
+  animation:blink 3s steps(1) infinite;
+  z-index:2;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ════════════════════════════════════════
+   SECTION I: THE EQUATION
+   Graph paper. Math. Clinical.
+════════════════════════════════════════ */
+#s1{
+  background:var(--bg2);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+/* graph paper grid */
+#s1::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(212,205,184,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,205,184,.025) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+.eq-inner{max-width:900px;margin:0 auto;position:relative;z-index:2;}
+.sec-label{
+  font-size:8px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:2.5rem;
+  display:flex;align-items:center;gap:16px;
+}
+.sec-label::after{
+  content:'';flex:0 0 48px;height:1px;
+  background:rgba(212,205,184,.1);
+}
+.sec-h2{
+  font-family:var(--sov);
+  font-size:clamp(26px,4.5vw,52px);
+  font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;line-height:.95;
+  color:var(--paper);margin-bottom:2rem;
+}
+.sec-h2 .acc{color:var(--warn);}
+.body-p{
+  font-family:var(--serif);
+  font-size:19px;font-weight:300;
+  line-height:1.9;color:rgba(212,205,184,.72);
+  margin-bottom:1.5rem;
+}
+.body-p em{font-style:italic;color:rgba(212,205,184,.95);}
+.body-p strong{font-weight:400;color:var(--warn);}
+
+/* equation block */
+.eq-block{
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(212,205,184,.08);
+  border-left:3px solid rgba(200,149,42,.4);
+  padding:2rem 2.5rem;margin:2.5rem 0;
+  font-family:var(--mono);
+}
+.eq-block-label{
+  font-size:8px;letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(200,149,42,.4);margin-bottom:1.2rem;
+}
+.eq-line{
+  font-size:13px;line-height:2.1;
+  color:rgba(212,205,184,.55);
+  letter-spacing:.04em;
+}
+.eq-line .var{color:rgba(212,205,184,.85);}
+.eq-line .op{color:rgba(200,149,42,.6);}
+.eq-line .result{color:var(--warn);font-style:italic;}
+
+.callout{
+  background:rgba(139,32,32,.08);
+  border:1px solid rgba(139,32,32,.2);
+  border-left:3px solid var(--red);
+  padding:1.5rem 2rem;margin:2rem 0;
+}
+.callout-label{
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(139,32,32,.5);margin-bottom:.6rem;
+}
+.callout-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;line-height:1.65;
+  color:rgba(212,205,184,.75);
+}
+
+/* ════════════════════════════════════════
+   SECTION II: BOEING
+   Incident report format. Amber warning.
+════════════════════════════════════════ */
+#s2{
+  background:var(--bg3);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+.inc-header{
+  background:rgba(200,149,42,.06);
+  border:1px solid rgba(200,149,42,.15);
+  border-left:4px solid var(--warn);
+  padding:1.5rem 2rem;margin-bottom:3rem;
+  display:grid;grid-template-columns:auto 1fr;
+  gap:1.5rem;align-items:start;
+}
+.inc-code{
+  font-family:var(--sov);font-size:11px;
+  letter-spacing:.25em;color:var(--warn);
+  text-transform:uppercase;white-space:nowrap;
+  padding-top:.1rem;
+}
+.inc-title{
+  font-family:var(--sov);
+  font-size:clamp(22px,3.5vw,38px);
+  font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;line-height:1;
+  color:var(--paper);
+}
+.inc-sub{
+  font-size:11px;letter-spacing:.08em;
+  color:rgba(212,205,184,.35);
+  margin-top:.5rem;line-height:1.6;
+}
+.causal-chain{
+  margin:2.5rem 0;
+}
+.causal-item{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:0;
+  position:relative;
+}
+.causal-item::before{
+  content:'';position:absolute;
+  left:23px;top:32px;bottom:-8px;
+  width:1px;background:rgba(212,205,184,.08);
+}
+.causal-item:last-child::before{display:none}
+.causal-num{
+  font-family:var(--sov);font-size:11px;
+  letter-spacing:.1em;color:var(--dim);
+  padding-top:.8rem;
+}
+.causal-body{
+  border-top:1px solid rgba(212,205,184,.06);
+  padding:1rem 0 1.5rem 1.5rem;
+}
+.causal-title{
+  font-family:var(--sov);font-size:13px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(212,205,184,.6);margin-bottom:.4rem;
+}
+.causal-p{
+  font-family:var(--serif);font-size:17px;
+  font-weight:300;line-height:1.85;
+  color:rgba(212,205,184,.55);
+}
+.causal-p em{font-style:italic;color:rgba(212,205,184,.8);}
+.fatality-block{
+  background:rgba(139,32,32,.1);
+  border:1px solid rgba(139,32,32,.25);
+  padding:1.5rem 2rem;margin:2rem 0;
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;
+}
+@media(max-width:600px){.fatality-block{grid-template-columns:1fr}}
+.fat-item{}
+.fat-num{
+  font-family:var(--sov);
+  font-size:clamp(32px,5vw,52px);
+  font-weight:700;color:var(--red);
+  line-height:1;
+}
+.fat-label{
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(139,32,32,.5);margin-top:.4rem;line-height:1.7;
+}
+.finding-box{
+  border:1px solid rgba(212,205,184,.08);
+  padding:1.5rem 2rem;margin-top:2rem;
+  background:rgba(0,0,0,.2);
+}
+.finding-label{
+  font-size:8px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--dim);border-bottom:1px solid rgba(212,205,184,.06);
+  padding-bottom:.6rem;margin-bottom:1rem;
+}
+.finding-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:17px;line-height:1.75;
+  color:rgba(212,205,184,.55);
+}
+
+/* ════════════════════════════════════════
+   SECTION III: FINANCE
+   Ledger paper. Green ink fading.
+════════════════════════════════════════ */
+#s3{
+  background:var(--paper2);
+  color:var(--ink);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+#s3::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(74,107,58,.15) 31px,rgba(74,107,58,.15) 32px),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(74,107,58,.06) 79px,rgba(74,107,58,.06) 80px);
+  pointer-events:none;
+}
+.ledger-inner{max-width:920px;margin:0 auto;position:relative;z-index:2;}
+.ledger-sec-label{
+  font-size:8px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(26,28,22,.3);margin-bottom:2.5rem;
+  display:flex;align-items:center;gap:16px;
+}
+.ledger-sec-label::after{
+  content:'';flex:0 0 48px;height:1px;
+  background:rgba(26,28,22,.15);
+}
+.ledger-h2{
+  font-family:var(--sov);
+  font-size:clamp(24px,4vw,48px);
+  font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;line-height:.95;
+  color:var(--ink);margin-bottom:2rem;
+}
+.ledger-p{
+  font-family:var(--serif);font-size:19px;
+  font-weight:300;line-height:1.88;
+  color:rgba(26,28,22,.7);margin-bottom:1.4rem;
+}
+.ledger-p em{font-style:italic;color:var(--ink);}
+.ledger-entry{
+  border-top:1px solid rgba(26,28,22,.12);
+  padding:1.2rem 0;
+  display:grid;grid-template-columns:220px 1fr;
+  gap:2rem;align-items:baseline;
+}
+.ledger-key{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(26,28,22,.35);
+}
+.ledger-val{
+  font-family:var(--serif);font-size:16px;
+  color:rgba(26,28,22,.65);line-height:1.65;
+}
+.ledger-val.critical{color:var(--red2);font-style:italic;}
+.ledger-callout{
+  background:rgba(26,28,22,.06);
+  border:1px solid rgba(26,28,22,.12);
+  border-left:3px solid var(--green);
+  padding:1.5rem 2rem;margin:2rem 0;
+}
+.ledger-callout-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;line-height:1.65;
+  color:rgba(26,28,22,.65);
+}
+.ledger-verdict{
+  background:var(--ink);color:var(--paper);
+  padding:1.5rem 2rem;margin-top:2rem;
+}
+.ledger-verdict-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:18px;line-height:1.65;
+  color:rgba(212,205,184,.75);
+}
+
+/* ════════════════════════════════════════
+   SECTION IV: HEALTHCARE
+   Dull institutional beige. Filing cabinet.
+════════════════════════════════════════ */
+#s4{
+  background:#1e201a;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;
+}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;border:1px solid rgba(212,205,184,.07);
+  margin:2.5rem 0;
+}
+@media(max-width:680px){.stats-grid{grid-template-columns:1fr}}
+.stat-cell{
+  padding:1.5rem;
+  border-right:1px solid rgba(212,205,184,.07);
+}
+.stat-cell:last-child{border-right:none}
+.stat-n{
+  font-family:var(--sov);
+  font-size:clamp(28px,4.5vw,52px);
+  font-weight:700;line-height:1;
+  color:var(--warn);margin-bottom:.4rem;
+}
+.stat-n.bad{color:var(--red);}
+.stat-label{
+  font-size:8px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dim);line-height:1.7;
+}
+.case-ref{
+  border:1px solid rgba(212,205,184,.06);
+  padding:1.5rem 2rem;margin:2rem 0;
+  background:rgba(0,0,0,.15);
+}
+.case-ref-label{
+  font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:.8rem;
+  border-bottom:1px solid rgba(212,205,184,.05);
+  padding-bottom:.5rem;
+}
+.case-ref-p{
+  font-family:var(--serif);font-size:16px;
+  font-weight:300;line-height:1.82;
+  color:rgba(212,205,184,.5);
+}
+.case-ref-p em{font-style:italic;color:rgba(212,205,184,.75);}
+
+/* ════════════════════════════════════════
+   SECTION V: SOFTWARE
+   Circuit board green. Terminal output.
+════════════════════════════════════════ */
+#s5{
+  background:#141810;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+#s5::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(74,107,58,.08) 0%,transparent 60%),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(74,107,58,.03) 59px,rgba(74,107,58,.03) 60px),
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(74,107,58,.03) 59px,rgba(74,107,58,.03) 60px);
+  pointer-events:none;
+}
+.term-inner{max-width:900px;margin:0 auto;position:relative;z-index:2;}
+.term-bar{
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(74,107,58,.2);
+  padding:.5rem 1rem;
+  font-size:9px;letter-spacing:.12em;
+  color:rgba(74,107,58,.5);
+  margin-bottom:2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.term-dot{width:8px;height:8px;border-radius:50%;}
+.td1{background:rgba(139,32,32,.4)}
+.td2{background:rgba(200,149,42,.3)}
+.td3{background:rgba(74,107,58,.4)}
+.term-h2{
+  font-family:var(--sov);
+  font-size:clamp(24px,4vw,48px);
+  font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;line-height:.95;
+  color:rgba(180,210,160,.75);margin-bottom:2rem;
+}
+.term-p{
+  font-family:var(--serif);font-size:19px;
+  font-weight:300;line-height:1.88;
+  color:rgba(180,210,160,.5);margin-bottom:1.4rem;
+}
+.term-p em{font-style:italic;color:rgba(180,210,160,.8);}
+.code-block{
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(74,107,58,.15);
+  padding:1.5rem 2rem;margin:2rem 0;
+  font-family:var(--mono);
+}
+.code-comment{font-size:11px;color:rgba(74,107,58,.4);line-height:2;}
+.code-line{font-size:12px;color:rgba(180,210,160,.45);line-height:2.1;letter-spacing:.03em;}
+.code-line .kw{color:rgba(180,210,160,.75);}
+.code-line .val{color:var(--warn);opacity:.7;}
+.code-line .err{color:rgba(139,32,32,.8);}
+
+/* ════════════════════════════════════════
+   SECTION VI: THE PATTERN
+   Soviet poster style. Bold. Hammer.
+════════════════════════════════════════ */
+#s6{
+  background:var(--bg3);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+/* large background numeral */
+#s6::before{
+  content:'VI';
+  position:absolute;right:-20px;top:-20px;
+  font-family:var(--sov);font-size:300px;
+  font-weight:700;letter-spacing:-.05em;
+  color:rgba(212,205,184,.025);
+  pointer-events:none;user-select:none;line-height:1;
+}
+.pattern-inner{max-width:1060px;margin:0 auto;position:relative;z-index:2;}
+.pattern-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;margin-top:2.5rem;
+  border:1px solid rgba(212,205,184,.07);
+}
+@media(max-width:700px){.pattern-grid{grid-template-columns:1fr}}
+.pattern-item{
+  padding:2rem;
+  border-bottom:1px solid rgba(212,205,184,.06);
+  border-right:1px solid rgba(212,205,184,.06);
+  position:relative;
+}
+.pattern-item:nth-child(even){border-right:none}
+.pattern-item:nth-last-child(-n+2){border-bottom:none}
+@media(max-width:700px){
+  .pattern-item{border-right:none}
+  .pattern-item:last-child{border-bottom:none}
+  .pattern-item:nth-last-child(2){border-bottom:1px solid rgba(212,205,184,.06)}
+}
+.pattern-num{
+  font-family:var(--sov);
+  font-size:clamp(40px,7vw,80px);
+  font-weight:700;line-height:.85;
+  color:rgba(212,205,184,.05);
+  position:absolute;top:1rem;right:1.5rem;
+  user-select:none;
+}
+.pattern-title{
+  font-family:var(--sov);font-size:13px;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--warn2);margin-bottom:.8rem;
+  position:relative;z-index:1;
+}
+.pattern-p{
+  font-family:var(--serif);font-size:16px;
+  font-weight:300;line-height:1.82;
+  color:rgba(212,205,184,.5);
+  position:relative;z-index:1;
+}
+.pattern-p em{font-style:italic;color:rgba(212,205,184,.75);}
+.pattern-conclusion{
+  background:var(--warn);
+  padding:2rem 2.5rem;margin-top:2.5rem;
+}
+.pattern-conclusion-text{
+  font-family:var(--sov);
+  font-size:clamp(18px,3vw,28px);
+  font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;line-height:1.2;
+  color:var(--ink);
+}
+
+/* ════════════════════════════════════════
+   SECTION VII: SMALL SYSTEMS
+   Typed memo. Soviet bureaucratic memo.
+════════════════════════════════════════ */
+#s7{
+  background:var(--paper3);
+  color:var(--ink);
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  position:relative;overflow:hidden;
+}
+#s7::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(26,28,22,.06) 29px,rgba(26,28,22,.06) 30px);
+  pointer-events:none;
+}
+.memo-inner{max-width:860px;margin:0 auto;position:relative;z-index:2;}
+.memo-header{
+  border-top:3px double rgba(26,28,22,.25);
+  border-bottom:3px double rgba(26,28,22,.25);
+  padding:.8rem 0;margin-bottom:2.5rem;
+  display:grid;grid-template-columns:1fr auto;
+  align-items:center;
+}
+.memo-from{
+  font-family:var(--type);font-size:12px;
+  color:rgba(26,28,22,.5);line-height:1.8;
+}
+.memo-code{
+  font-family:var(--type);font-size:11px;
+  color:rgba(26,28,22,.35);text-align:right;line-height:1.8;
+}
+.memo-h2{
+  font-family:var(--type);
+  font-size:clamp(24px,4vw,44px);
+  line-height:1.05;color:var(--ink);
+  margin-bottom:2rem;
+}
+.memo-p{
+  font-family:var(--type);font-size:16px;
+  line-height:1.9;color:rgba(26,28,22,.65);
+  margin-bottom:1.2rem;
+}
+.memo-p em{font-style:italic;color:var(--ink);}
+.analogy{
+  border:1px solid rgba(26,28,22,.12);
+  padding:1.2rem 1.5rem;margin:1.2rem 0;
+  background:rgba(255,255,255,.15);
+}
+.analogy-title{
+  font-family:var(--type);font-size:12px;
+  color:rgba(26,28,22,.45);
+  border-bottom:1px solid rgba(26,28,22,.08);
+  padding-bottom:.4rem;margin-bottom:.6rem;
+  letter-spacing:.05em;
+}
+.analogy-p{
+  font-family:var(--type);font-size:15px;
+  line-height:1.8;color:rgba(26,28,22,.55);
+}
+
+/* ════════════════════════════════════════
+   SECTION VIII: THREE QUESTIONS
+   Final page. Worn. Gloomy. Precise.
+════════════════════════════════════════ */
+#s8{
+  background:#13150f;
+  min-height:100vh;
+  padding:80px clamp(20px,6vw,100px);
+  display:flex;align-items:center;
+  position:relative;overflow:hidden;
+}
+/* worn paper edge top */
+#s8::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,rgba(212,205,184,.06),transparent);
+}
+.q-inner{max-width:860px;margin:0 auto;width:100%;}
+.q-header{margin-bottom:4rem;}
+.q-eyebrow{
+  font-size:8px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:1.5rem;
+}
+.q-h2{
+  font-family:var(--sov);
+  font-size:clamp(22px,4vw,44px);
+  font-weight:300;letter-spacing:.08em;
+  text-transform:uppercase;line-height:1.05;
+  color:rgba(212,205,184,.5);
+}
+.question{margin-bottom:3.5rem;}
+.q-num{
+  font-family:var(--sov);
+  font-size:clamp(48px,8vw,96px);
+  font-weight:700;line-height:.85;
+  color:rgba(212,205,184,.04);
+  user-select:none;margin-bottom:-0.5rem;
+}
+.q-title{
+  font-family:var(--sov);
+  font-size:clamp(16px,2.5vw,22px);
+  font-weight:500;letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--warn);margin-bottom:1rem;
+}
+.q-body{
+  font-family:var(--serif);font-size:18px;
+  font-weight:300;line-height:1.88;
+  color:rgba(212,205,184,.5);
+  border-left:1px solid rgba(212,205,184,.07);
+  padding-left:2rem;
+}
+.q-body em{font-style:italic;color:rgba(212,205,184,.8);}
+.final-stamp{
+  border-top:1px solid rgba(212,205,184,.07);
+  padding-top:2.5rem;margin-top:2rem;
+  display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:1.5rem;
+}
+.final-text{
+  font-family:var(--sov);
+  font-size:clamp(14px,2.5vw,24px);
+  font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;line-height:1.2;
+  color:rgba(212,205,184,.25);
+}
+.final-text .lit{color:rgba(212,205,184,.6);}
+.final-rad{
+  font-size:28px;
+  color:rgba(200,149,42,.2);
+  animation:radPulse 3s ease-in-out infinite;
+}
+
+/* NAV */
+#nav{
+  position:fixed;right:20px;top:50%;
+  transform:translateY(-50%);
+  z-index:850;
+  display:flex;flex-direction:column;gap:8px;
+}
+.nd{
+  width:3px;height:3px;border-radius:50%;
+  background:rgba(212,205,184,.12);
+  border:none;cursor:pointer;padding:0;
+  transition:all .3s;
+}
+.nd.on{
+  background:rgba(200,149,42,.5);
+  height:20px;border-radius:2px;
+}
+.nd:hover{background:rgba(200,149,42,.3);}
+@media(max-width:600px){#nav{display:none}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="prog"></div>
+
+<!-- DOCUMENT HEADER -->
+<header class="doc-header">
+  <div class="dh-left">
+    MINISTRY OF SYSTEM ANALYSIS<br>
+    INCIDENT REPORT SERIES
+  </div>
+  <div class="dh-center">
+    <span class="rad-sym">☢</span>
+    &nbsp; CLASSIFIED: UNRESTRICTED &nbsp;
+    <span class="rad-sym">☢</span>
+  </div>
+  <div class="dh-right">
+    FILE: SDA-001<br>
+    STATUS: OPEN
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="nd on" data-s="s0"></button>
+  <button class="nd" data-s="s1"></button>
+  <button class="nd" data-s="s2"></button>
+  <button class="nd" data-s="s3"></button>
+  <button class="nd" data-s="s4"></button>
+  <button class="nd" data-s="s5"></button>
+  <button class="nd" data-s="s6"></button>
+  <button class="nd" data-s="s7"></button>
+  <button class="nd" data-s="s8"></button>
+</nav>
+
+<!-- ══ S0: COVER ══ -->
+<section id="s0">
+  <div class="cover-inner">
+    <div>
+      <div class="cover-stamp r">INCIDENT CONFIRMED</div>
+      <div class="cover-doc-num r">
+        DOCUMENT NO. SDA-001-REV.3<br>
+        SERIES: STRUCTURAL FAILURE ANALYSIS<br>
+        DISTRIBUTION: UNRESTRICTED
+      </div>
+      <h1 class="cover-h1 r">
+        Your system<br>
+        is working<br>
+        <span class="warn-word">perfectly.</span><br>
+        <span class="dim-word">that is the</span><br>
+        problem.
+      </h1>
+      <p class="cover-subtitle r">On why large industries fail by design, not by accident, and what the failure pattern reveals about every system you will ever build.</p>
+    </div>
+    <div class="cover-right">
+      <div class="cover-field r">
+        <div class="cover-field-label">Failure class</div>
+        <div class="cover-field-val">Local optimization producing global degradation</div>
+      </div>
+      <div class="cover-field r">
+        <div class="cover-field-label">Industries examined</div>
+        <div class="cover-field-val">Aviation, Finance, Healthcare, Software</div>
+      </div>
+      <div class="cover-field r">
+        <div class="cover-field-label">Pattern status</div>
+        <div class="cover-field-val">Scale-invariant. Domain-independent. Repeating.</div>
+      </div>
+      <div class="cover-field r">
+        <div class="cover-field-label">Root cause</div>
+        <div class="cover-field-val">Optimization target selected. Load-bearing adjacent variables not instrumented. Feedback loops absent or severed.</div>
+      </div>
+      <div class="cover-field r">
+        <div class="cover-field-label">Corrective action</div>
+        <div class="cover-field-val">Three questions. Answer them before you build.</div>
+      </div>
+      <div class="cover-warning-box r">
+        <div class="cover-warning-label">☢ &nbsp; Analyst note</div>
+        <div class="cover-warning-text">The post-mortem asks: what went wrong? The correct question is: what went right so completely that it destroyed everything adjacent to it? The failure is not the deviation from the design. The failure is the design.</div>
+      </div>
+    </div>
+  </div>
+  <div class="cover-scroll">▼ &nbsp; open report &nbsp; ▼</div>
+</section>
+
+<!-- ══ S1: THE EQUATION ══ -->
+<section id="s1">
+  <div class="eq-inner">
+    <div class="sec-label r">Section I &nbsp; The Structural Failure Mode</div>
+    <h2 class="sec-h2 r">One <span class="acc">Equation.</span><br>Every Case.</h2>
+
+    <p class="body-p r">Before the case studies, the mechanism. One equation covers all of them.</p>
+
+    <div class="eq-block r">
+      <div class="eq-block-label">Transfer Function — System S</div>
+      <div class="eq-line">System <span class="var">S</span> has <span class="var">n</span> state variables: <span class="var">x1, x2, x3 ... xn</span></div>
+      <div class="eq-line">System optimizes for <span class="var">x1</span></div>
+      <div class="eq-line">Resources are <span class="op">finite</span></div>
+      <div class="eq-line">Allocation to <span class="var">x1</span> reduces allocation available to <span class="var">x2 ... xn</span></div>
+      <div class="eq-line">At sufficient optimization pressure: <span class="var">x2 ... xn</span> <span class="op">degrade</span></div>
+      <div class="eq-line">If any of <span class="var">x2 ... xn</span> are load-bearing:</div>
+      <div class="eq-line result">&nbsp;&nbsp;&nbsp;&nbsp;system fails at threshold crossing</div>
+    </div>
+
+    <p class="body-p r">The critical structural feature: the system does not know it is failing while it is succeeding. The metric being optimized is improving. Every dashboard is green. The degraded variables are not on the dashboard, either because they were never instrumented or because the feedback loop from their degradation to system output is too long to appear in quarterly reporting.</p>
+
+    <p class="body-p r">The failure arrives as a <em>discontinuity.</em> Not gradual decline. A threshold crossing. The degraded variable holds above the critical threshold for years while the optimized variable improves. Then it crosses. The system fails fast.</p>
+
+    <div class="callout r">
+      <div class="callout-label">Critical finding</div>
+      <div class="callout-text">The people running the system describe this as a surprise. It was not a surprise. It was the terminal output of a transfer function that had been running since the optimization pressure was first applied. The surprise is a measurement artifact, not an event.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S2: BOEING ══ -->
+<section id="s2">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="sec-label r">Section II &nbsp; Aviation</div>
+    <div class="inc-header r">
+      <div class="inc-code">INC-MAX-2018</div>
+      <div>
+        <div class="inc-title">Boeing 737 MAX</div>
+        <div class="inc-sub">Optimized variable: unit production cost / Degraded variable: pilot retraining requirement / Threshold: MCAS authority exceeded pilot override capacity</div>
+      </div>
+    </div>
+
+    <div class="causal-chain r">
+      <div class="causal-item">
+        <div class="causal-num">01</div>
+        <div class="causal-body">
+          <div class="causal-title">The Business Constraint</div>
+          <p class="causal-p">Airbus A320neo threatened Boeing's market position. Boeing's response was the 737 MAX with larger CFM LEAP engines mounted further forward. This changed aerodynamic handling at high angles of attack. Southwest Airlines held a contract clause entitling compensation if MAX pilots required simulator training beyond 737 qualifications.</p>
+        </div>
+      </div>
+      <div class="causal-item">
+        <div class="causal-num">02</div>
+        <div class="causal-body">
+          <div class="causal-title">The Constraint Converted</div>
+          <p class="causal-p">The business constraint was converted into an engineering constraint: the MAX had to be certifiable as a 737 variant. MCAS was developed to manage the aerodynamic difference at high angle of attack by applying automatic nose-down trim. It was classified as an <em>enhancement</em> to existing functionality. It was not disclosed in the Flight Crew Operations Manual.</p>
+        </div>
+      </div>
+      <div class="causal-item">
+        <div class="causal-num">03</div>
+        <div class="causal-body">
+          <div class="causal-title">The Decisions That Produced the Failure</div>
+          <p class="causal-p">MCAS authority expanded to full stabilizer travel: 9.9 degrees. Dual-sensor agreement requirement removed, replaced by single-sensor input. No simulator training required. Pilots were not informed the system existed. A single sensor failure now commanded continuous nose-down input pilots had no training to recognize or counter.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="fatality-block r">
+      <div class="fat-item">
+        <div class="fat-num">189</div>
+        <div class="fat-label">Lion Air 610<br>29 October 2018</div>
+      </div>
+      <div class="fat-item">
+        <div class="fat-num">157</div>
+        <div class="fat-label">Ethiopian Airlines 302<br>10 March 2019</div>
+      </div>
+    </div>
+
+    <div class="finding-box r">
+      <div class="finding-label">Design failure revealed</div>
+      <div class="finding-text">When a business constraint is converted into an engineering constraint without being labeled as such, it becomes invisible in subsequent engineering review. It looks like a specification requirement. It is audited against compliance with itself, not against the system behavior it produces. The safety case was constructed to justify the business outcome rather than to evaluate the engineering outcome.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S3: FINANCE ══ -->
+<section id="s3">
+  <div class="ledger-inner">
+    <div class="ledger-sec-label r">Section III &nbsp; Finance</div>
+    <h2 class="ledger-h2 r">The 2008<br>Mortgage Collapse</h2>
+
+    <div class="ledger-entry r">
+      <div class="ledger-key">Optimized variable</div>
+      <div class="ledger-val">Transaction volume and fee generation per unit of mortgage exposure</div>
+    </div>
+    <div class="ledger-entry r">
+      <div class="ledger-key">Degraded variable</div>
+      <div class="ledger-val critical">Actual credit risk on the underlying instruments</div>
+    </div>
+    <div class="ledger-entry r">
+      <div class="ledger-key">Failure threshold</div>
+      <div class="ledger-val critical">Default correlation in CDO tranches during correlated national housing price decline</div>
+    </div>
+
+    <p class="ledger-p r" style="margin-top:2rem;">The standard narrative attributes this to greed. The greed was present. It was not the cause. The cause was an architectural decision made in the early development of mortgage-backed securities that was not revisited when the volume of those securities increased by four orders of magnitude.</p>
+
+    <div class="ledger-callout r">
+      <div class="ledger-callout-text">The Gaussian copula model estimated default correlation from historical data. The historical data did not include a national housing price decline. The model was estimating the correlation parameter from data that was systematically missing the tail event it was being used to evaluate.</div>
+    </div>
+
+    <p class="ledger-p r">The fee structure of mortgage origination rewarded volume, not quality. Originators earned fees at closing regardless of subsequent default. The entity bearing the credit risk was not the entity evaluating the credit quality at origination. This is a <em>broken feedback loop.</em> The signal that would have corrected the behavior, which is credit loss, never reached the agent whose behavior needed to be corrected.</p>
+
+    <div class="ledger-verdict r">
+      <div class="ledger-verdict-text">A feedback loop that does not connect the consequence of a decision to the agent making the decision will eventually optimize toward the maximum possible consequence. The mortgage origination system had been architected to sever the feedback loop between credit decision and credit outcome. The business model and the failure mode were the same architectural feature viewed from different points in time.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S4: HEALTHCARE ══ -->
+<section id="s4">
+  <div style="max-width:920px;margin:0 auto;">
+    <div class="sec-label r">Section IV &nbsp; Healthcare</div>
+    <h2 class="sec-h2 r">The Billing Engine<br>That <span class="acc">Ate</span> the System</h2>
+
+    <p class="body-p r">This one has not produced a single catastrophic discontinuity. It produces a continuous low-intensity failure that is more dangerous precisely because it never becomes visible as a crisis.</p>
+
+    <div class="stats-grid r">
+      <div class="stat-cell">
+        <div class="stat-n">17%</div>
+        <div class="stat-label">Of US GDP spent on healthcare. Roughly double the OECD average. Source: CMS National Health Expenditure Data, 2022</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-n bad">46th</div>
+        <div class="stat-label">US life expectancy ranking globally. Source: WHO Global Health Observatory, 2022</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-n bad">16min</div>
+        <div class="stat-label">Average physician time per encounter spent on EHR documentation vs 13 minutes on clinical care. Source: Annals of Internal Medicine, 2019</div>
+      </div>
+    </div>
+
+    <p class="body-p r">Fee-for-service pays per procedure. It does not pay for outcomes. It does not pay for prevention. A system paid per procedure has a financial incentive structure that is indifferent to whether the procedure was necessary and actively <em>misaligned</em> with prevention, which eliminates the need for the procedure.</p>
+
+    <div class="case-ref r">
+      <div class="case-ref-label">Case reference: McAllen, Texas — Gawande, The New Yorker, 2009</div>
+      <p class="case-ref-p">A county with Medicare costs approximately double the national average and outcomes not measurably better than comparable counties. The physicians were not fraudulent. They were responding rationally to the incentive structure they were operating inside. The volume of procedures performed was treated as a measure of quality of care.</p>
+    </div>
+
+    <div class="callout r">
+      <div class="callout-label">Design failure revealed</div>
+      <div class="callout-text">Continuous low-intensity failure is more dangerous than acute failure because it never generates the political and organizational pressure required to force redesign. The system is never visibly broken. It is merely performing below its potential across millions of individual interactions, none of which is severe enough to constitute a crisis event.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S5: SOFTWARE ══ -->
+<section id="s5">
+  <div class="term-inner">
+    <div class="sec-label r" style="color:rgba(74,107,58,.4);">Section V &nbsp; Software</div>
+    <div class="term-bar r">
+      <div class="term-dot td1"></div>
+      <div class="term-dot td2"></div>
+      <div class="term-dot td3"></div>
+      <span>SYSTEM_ANALYSIS_MODULE v1.0 &nbsp; // &nbsp; FEATURE_VELOCITY_TRAP</span>
+    </div>
+    <h2 class="term-h2 r">The Feature<br>Velocity Trap</h2>
+
+    <p class="term-p r">Optimized variable: feature release rate as proxy for product development velocity. Load-bearing variables that degrade: system coherence, maintainability, security surface area.</p>
+
+    <div class="code-block r">
+      <div class="code-comment">// the mathematical property, not a management failure</div>
+      <div class="code-line"><span class="kw">features</span> += <span class="val">n</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// linear growth</span></div>
+      <div class="code-line"><span class="kw">interactions</span> = <span class="val">features</span>^<span class="val">2</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// combinatorial growth</span></div>
+      <div class="code-line"><span class="kw">maintenance_overhead</span> <span class="err">increases</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// unmeasured</span></div>
+      <div class="code-line"><span class="kw">velocity_metric</span> = <span class="val">features_shipped</span> &nbsp;&nbsp;<span class="code-comment">// still green</span></div>
+      <div class="code-line"><span class="err">// system coherence: not instrumented</span></div>
+      <div class="code-line"><span class="err">// security surface area: not instrumented</span></div>
+      <div class="code-line"><span class="err">// failure: discontinuity when threshold crossed</span></div>
+    </div>
+
+    <p class="term-p r">Feature velocity is measurable. System coherence is not. A team can count features shipped per sprint. It cannot count the degree to which those features have made the system harder to reason about, harder to test, and harder to modify correctly. The degradation is <em>invisible in the metric the system is using to evaluate its own performance.</em></p>
+
+    <p class="term-p r">The complexity is not eliminated by architectural paradigms. It is moved. Microservices reduce code-level coupling while introducing network-level coupling, distributed state management problems, and operational complexity that monolithic architectures do not have.</p>
+
+    <div class="code-block r">
+      <div class="code-comment">// the proxy metric problem</div>
+      <div class="code-line"><span class="kw">proxy</span> = feature_velocity</div>
+      <div class="code-line"><span class="kw">target</span> = value_delivery</div>
+      <div class="code-line"><span class="kw">correlation</span>(proxy, target) = <span class="val">f(conditions)</span></div>
+      <div class="code-line"><span class="code-comment">// as conditions change, correlation degrades</span></div>
+      <div class="code-line"><span class="kw">metric</span> <span class="val">improving</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err">// true</span></div>
+      <div class="code-line"><span class="kw">target</span> <span class="err">degrading</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="err">// also true</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S6: THE PATTERN ══ -->
+<section id="s6">
+  <div class="pattern-inner">
+    <div class="sec-label r">Section VI &nbsp; The Pattern Extracted</div>
+    <h2 class="sec-h2 r">Four Industries.<br>One <span class="acc">Structure.</span></h2>
+    <p class="body-p r" style="max-width:680px;">The pattern has six components. They appear in every case.</p>
+
+    <div class="pattern-grid r">
+      <div class="pattern-item">
+        <div class="pattern-num">1</div>
+        <div class="pattern-title">Single variable selected</div>
+        <p class="pattern-p">A single variable is selected for optimization because it is measurable, tied to revenue or competitive position, or because it is what the decision-makers are evaluated on.</p>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-num">2</div>
+        <div class="pattern-title">System optimizes. It works.</div>
+        <p class="pattern-p">The system is designed or evolves to maximize that variable. This works. The variable improves. The system is described as performing well. Every dashboard is green.</p>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-num">3</div>
+        <div class="pattern-title">Adjacent variables degrade</div>
+        <p class="pattern-p">Resources are finite. Maximizing one variable draws from adjacent variables. They begin to degrade. This is not measured because they were not the optimization target and are frequently not instrumented.</p>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-num">4</div>
+        <div class="pattern-title">Load-bearing variables degrade</div>
+        <p class="pattern-p">Some of the degrading variables are <em>load-bearing.</em> The system depends on them for its core function. The gap between measured performance and actual functional capacity widens invisibly.</p>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-num">5</div>
+        <div class="pattern-title">Feedback loops absent</div>
+        <p class="pattern-p">Feedback loops that would have connected the degradation signal back to the optimization process are absent, severed by design, or operating on timescales too long to appear in reporting. The people running the system do not know.</p>
+      </div>
+      <div class="pattern-item">
+        <div class="pattern-num">6</div>
+        <div class="pattern-title">Threshold crossed. Surprise.</div>
+        <p class="pattern-p">A threshold is crossed. Failure arrives as a discontinuity. The people running the system describe it as a surprise. It was not a surprise. It was the terminal output of the transfer function that had been running since step one.</p>
+      </div>
+    </div>
+
+    <div class="pattern-conclusion r">
+      <div class="pattern-conclusion-text">
+        The corrective interventions that work share one feature: they add a feedback loop from the degrading variable back to the optimization process. Build it before the threshold. Not after.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S7: SMALL SYSTEMS ══ -->
+<section id="s7">
+  <div class="memo-inner">
+    <div class="memo-header r">
+      <div class="memo-from">
+        INTERNAL MEMO<br>
+        RE: Scale-invariant application of SDA-001 findings
+      </div>
+      <div class="memo-code">
+        SECTION VII<br>
+        REF: SDA-001
+      </div>
+    </div>
+    <h2 class="memo-h2 r">The Pattern Does Not<br>Care About Scale.</h2>
+
+    <p class="memo-p r">The industries above fail at scale. The same pattern runs at every scale. The equations are the same. The stakes are smaller. The visibility is worse, because small systems do not attract the investigative infrastructure that produces the post-mortems above.</p>
+
+    <div class="analogy r">
+      <div class="analogy-title">Case: Startup optimizing for user growth</div>
+      <p class="analogy-p">Same transfer function as Boeing optimizing for production cost. The variable being degraded is system reliability. The feedback loop is absent because reliability failures in a small system are recoverable and pain is distributed across users rather than concentrated in a single visible event. The threshold crossing arrives as churn that cannot be explained by product analysis because the product metrics are green. The degraded variable was never on the dashboard.</p>
+    </div>
+
+    <div class="analogy r">
+      <div class="analogy-title">Case: Research team optimizing for publication count</div>
+      <p class="analogy-p">Same transfer function as mortgage origination. The variable being degraded is result validity. The feedback loop is absent because the agent who benefits from the publication is not the agent who bears the cost of an invalid result. The threshold crossing is a replication crisis.</p>
+    </div>
+
+    <div class="analogy r">
+      <div class="analogy-title">Case: Government agency optimizing for processed case volume</div>
+      <p class="analogy-p">Same transfer function as healthcare billing. The variable being degraded is actual outcome quality. Volume is measurable in real time. Outcomes are measured on timescales that exceed the political reporting cycle. The system looks productive. It may be producing nothing of value at high throughput.</p>
+    </div>
+
+    <p class="memo-p r">The pattern is scale-invariant. The mechanism does not care about the domain.</p>
+  </div>
+</section>
+
+<!-- ══ S8: THREE QUESTIONS ══ -->
+<section id="s8">
+  <div class="q-inner">
+    <div class="q-header r">
+      <div class="q-eyebrow">Section VIII &nbsp; Final Findings</div>
+      <div class="q-h2">Three Questions.<br>Answer Them Before<br>You Build.</div>
+    </div>
+
+    <div class="question r">
+      <div class="q-num">01</div>
+      <div class="q-title">What are you optimizing for, and what happens to every other state variable?</div>
+      <div class="q-body">List the state variables that feel fixed, that feel like background conditions rather than active variables. They are not fixed. They are variables you have not instrumented. List them. Estimate the transfer function. Determine which ones are load-bearing. If you cannot express the relationship between your optimization target and your load-bearing adjacent variables in quantitative terms, <em>you do not know whether your system design is safe.</em></div>
+    </div>
+
+    <div class="question r">
+      <div class="q-num">02</div>
+      <div class="q-title">Where are the feedback loops, and what is the latency on each one?</div>
+      <div class="q-body">A feedback loop is only useful if its latency is shorter than the timescale on which the degradation it is supposed to correct becomes irreversible. Map every consequential decision in your system. Identify who bears the consequence of each decision. If the agent bearing the consequence is not the agent making the decision, <em>you have a broken feedback loop.</em> Fix it before you build, or accept that you are building the failure mode into the architecture.</div>
+    </div>
+
+    <div class="question r">
+      <div class="q-num">03</div>
+      <div class="q-title">What does failure look like, and when is it no longer recoverable?</div>
+      <div class="q-body">Most system designers can describe nominal operation in detail. Few can describe failure modes with equivalent precision. Identify the specific threshold crossing in the specific variable the system depends on and is not measuring. Name it. Assign a measurement. Build instrumentation for it before it becomes relevant. <em>Systems that fail without surprise fail in ways that are recoverable. Surprises are not recoverable.</em></div>
+    </div>
+
+    <div class="final-stamp r">
+      <div class="final-text">
+        The system is working <span class="lit">perfectly.</span><br>
+        Build the system that measures<br>
+        what your optimization is <span class="lit">destroying.</span>
+      </div>
+      <div class="final-rad">☢</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// cursor
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';
+  cur.style.top=e.clientY+'px';
+});
+document.querySelectorAll('p,h1,h2,div').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// progress
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+// reveal
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:0.07});
+document.querySelectorAll('.r,.rf,.rl').forEach(el=>obs.observe(el));
+
+// nav
+const sections=document.querySelectorAll('section[id]');
+const dots=document.querySelectorAll('.nd');
+const sObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      dots.forEach(d=>d.classList.toggle('on',d.dataset.s===id));
+    }
+  });
+},{threshold:0.35});
+sections.forEach(s=>sObs.observe(s));
+dots.forEach(d=>d.addEventListener('click',()=>{
+  document.getElementById(d.dataset.s)?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+</script>
+</body>
+</html>

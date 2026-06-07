@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Your System is Working Perfectly. That is the Problem.",
+            date: "June 7, 2026",
+            summary: "A structural post-mortem on the failure mode of local optimization. Analyzing how the pursuit of a single metric in Aviation, Finance, and Software destroys the load-bearing variables the system depends on but refuses to measure.",
+            link: "Perfect-System-Problem.html"
+        },
+        {
             title: "Semantic Satiation of Everything",
             date: "May 22, 2026",
             summary: "A civilizational diagnosis of language failure. Investigating how the brain severs the signal when words like love, depression, and genocide are repeated until they stop carrying reality. A structural analysis of the zero-auth vocabulary.",
