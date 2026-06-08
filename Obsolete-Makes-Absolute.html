@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obsolete Makes Absolute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  /* Romantic palette: Expanded Turner skies, Friedrich mists, Constable earth */
+  --canvas:    #fdfaf3; /* Luminous buttery base */
+  --canvas2:   #f6f1e6;
+  --canvas3:   #f0ebdb;
+  --ink:       #2d2922; /* Warm charcoal */
+  --sepia:     #7a6348;
+  --sepia2:    #9b8465;
+  
+  /* The "Calming" Expansion */
+  --gold:      #af8f4f;
+  --gold2:     #dcc28a;
+  --gold3:     #f4e6c0;
+  
+  --mist:      #b2beca; /* Pale cerulean mist */
+  --mist2:     #8ca0b0;
+  --sage:      #a8b898; /* Soothing mossy green */
+  --sage2:     #8a9a7a;
+  --violet:    #7b748a; /* Dusty lavender-grey */
+  --violet2:   #5b546a;
+  --rose:      #c2a2a2; /* Faded petal pink */
+  --rose2:     #a88a8a;
+  --ochre:     #d9b88c; /* Warm earth gold */
+  --sky:       #cbdbe0; /* Distant morning blue */
+
+  --serif:   'IM Fell English', Georgia, serif;
+  --display: 'Playfair Display', Georgia, serif;
+  --cinzel:  'Cinzel', serif;
+  --mono:    'JetBrains Mono', monospace;
+}
+
+body{
+  background:var(--canvas);
+  color:var(--ink);
+  font-family:var(--serif);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CURSOR: quill tip */
+#cur{
+  position:fixed;
+  width:4px;height:4px;
+  border-radius:50%;
+  background:var(--sepia);
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,opacity .2s;
+}
+#cur::after{
+  content:'';
+  position:absolute;
+  width:1px;height:24px;
+  background:linear-gradient(to bottom,var(--sepia),transparent);
+  left:50%;top:100%;
+  transform:translateX(-50%) rotate(12deg);
+  transform-origin:top;
+  opacity:0.6;
+}
+#cur.big{width:36px;height:36px;opacity:.1;border-radius:50%;background:var(--gold2);}
+
+/* PROGRESS: gold leaf line */
+#prog{
+  position:fixed;top:0;left:0;
+  height:3px;width:0;
+  background:linear-gradient(to right,var(--gold),var(--gold3),var(--gold));
+  z-index:9998;
+  box-shadow:0 0 12px rgba(220,194,138,.3);
+  transition:width .08s linear;
+}
+
+/* GRAIN: aged canvas texture + depth */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:998;
+  mix-blend-mode:multiply;
+}
+
+/* ══════════════════════════════════════════
+   PAINTING CANVAS BACKGROUNDS
+   Multi-stop atmospheric gradients
+══════════════════════════════════════════ */
+
+/* Turner sky: Sun-drenched morning fog */
+.paint-turner{
+  background:
+    radial-gradient(ellipse at 50% 20%,rgba(244,230,192,.6) 0%,transparent 70%),
+    radial-gradient(ellipse at 15% 70%,rgba(217,184,140,.3) 0%,transparent 60%),
+    radial-gradient(ellipse at 85% 50%,rgba(203,219,224,.3) 0%,transparent 55%),
+    linear-gradient(to bottom,var(--canvas) 0%,#f0e6cc 100%);
+}
+
+/* Friedrich mist: Cool lavender distance */
+.paint-friedrich{
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(178,190,202,.3) 0%,transparent 70%),
+    radial-gradient(ellipse at 20% 40%,rgba(123,116,138,.15) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 30%,rgba(203,219,224,.2) 0%,transparent 50%),
+    linear-gradient(to bottom,var(--canvas) 0%,#e4e9ef 100%);
+}
+
+/* Delacroix: Muted rose and warm earth shadows */
+.paint-delacroix{
+  background:
+    radial-gradient(ellipse at 70% 30%,rgba(194,162,162,.25) 0%,transparent 65%),
+    radial-gradient(ellipse at 20% 70%,rgba(155,132,101,.2) 0%,transparent 55%),
+    radial-gradient(circle at 50% 50%,transparent 20%,rgba(45,41,34,.05) 100%),
+    var(--canvas2);
+}
+
+/* Constable: Soft sage and dew-touched light */
+.paint-constable{
+  background:
+    radial-gradient(ellipse at 40% 80%,rgba(168,184,152,.2) 0%,transparent 65%),
+    radial-gradient(ellipse at 65% 15%,rgba(244,230,192,.3) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(138,154,122,.1) 100%),
+    var(--canvas3);
+}
+
+/* Rembrandt: Soft amber focal point, breathing darks */
+.paint-rembrandt{
+  background:
+    radial-gradient(ellipse at 35% 40%,rgba(217,184,140,.3) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 85%,rgba(45,41,34,.15) 0%,transparent 60%),
+    radial-gradient(circle at 35% 40%,rgba(244,230,192,.2) 0%,transparent 30%),
+    #ede3d0;
+}
+
+/* Caspar night: Luminous dusk blues and silver lining */
+.paint-night{
+  background:
+    radial-gradient(ellipse at 50% 10%,rgba(123,116,138,.25) 0%,transparent 65%),
+    radial-gradient(ellipse at 50% 100%,rgba(91,84,106,.2) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 50%,rgba(178,190,202,.15) 0%,transparent 55%),
+    linear-gradient(to bottom,#f2ece0,#d9d1be);
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION: floating chapter marks
+══════════════════════════════════════════ */
+#nav{
+  position:fixed;right:24px;top:50%;
+  transform:translateY(-50%);
+  z-index:900;
+  display:flex;flex-direction:column;
+  gap:10px;align-items:flex-end;
+}
+.nd{
+  display:flex;align-items:center;gap:8px;
+  background:none;border:none;cursor:pointer;
+  padding:0;
+}
+.nd-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(92,74,46,.2);
+  transition:all .4s;flex-shrink:0;
+}
+.nd-label{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:transparent;
+  transition:color .3s;white-space:nowrap;
+}
+.nd.on .nd-dot{
+  background:var(--gold);
+  width:20px;border-radius:2px;
+  box-shadow:0 0 8px rgba(154,125,62,.4);
+}
+.nd:hover .nd-label{color:rgba(92,74,46,.5);}
+.nd.on .nd-label{color:var(--sepia2);}
+@media(max-width:700px){#nav{display:none}}
+
+/* ══════════════════════════════════════════
+   HERO: Turner's light, full canvas
+══════════════════════════════════════════ */
+#s0{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px clamp(20px,7vw,120px);
+  position:relative;overflow:hidden;
+}
+/* luminous sky behind */
+#s0::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 30%,rgba(240,215,150,.55) 0%,transparent 50%),
+    radial-gradient(ellipse at 15% 70%,rgba(190,160,110,.3) 0%,transparent 45%),
+    radial-gradient(ellipse at 85% 60%,rgba(160,140,100,.25) 0%,transparent 40%),
+    radial-gradient(ellipse at 50% 100%,rgba(130,110,80,.2) 0%,transparent 50%);
+  pointer-events:none;
+}
+/* vignette */
+#s0::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(30,26,20,.12) 100%);
+  pointer-events:none;
+}
+.hero-inner{
+  max-width:860px;width:100%;
+  text-align:center;
+  position:relative;z-index:2;
+}
+.hero-ornament{
+  font-family:var(--cinzel);font-size:11px;
+  letter-spacing:.45em;text-transform:uppercase;
+  color:var(--sepia2);opacity:.6;
+  margin-bottom:3rem;
+  display:flex;align-items:center;justify-content:center;gap:1.5rem;
+}
+.hero-ornament::before,.hero-ornament::after{
+  content:'';flex:0 0 40px;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold2));
+}
+.hero-ornament::after{
+  background:linear-gradient(to left,transparent,var(--gold2));
+}
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(52px,9vw,120px);
+  font-weight:400;line-height:.88;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  margin-bottom:.8rem;
+}
+.hero-title em{
+  font-style:italic;font-weight:400;
+  color:var(--sepia);
+}
+.hero-divider{
+  width:80px;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold2),transparent);
+  margin:2rem auto;
+}
+.hero-subtitle{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(16px,2.2vw,22px);
+  line-height:1.75;
+  color:rgba(30,26,20,.5);
+  max-width:600px;margin:0 auto 3rem;
+}
+.hero-meta{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(92,74,46,.35);
+  display:flex;align-items:center;justify-content:center;gap:1.5rem;
+  flex-wrap:wrap;
+}
+.hero-meta-dot{color:var(--gold);}
+.hero-scroll{
+  margin-top:4rem;
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(92,74,46,.3);
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.65}}
+.hero-flourish{
+  font-size:20px;color:var(--gold2);opacity:.5;
+  letter-spacing:.3em;margin-bottom:1rem;
+  display:block;
+}
+
+/* ══════════════════════════════════════════
+   PREFACE
+══════════════════════════════════════════ */
+#s1{
+  min-height:80vh;
+  padding:100px clamp(20px,7vw,120px);
+}
+.preface-inner{max-width:680px;margin:0 auto;}
+.part-label{
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.38em;text-transform:uppercase;
+  color:var(--sepia2);opacity:.6;
+  margin-bottom:2rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.part-label::after{
+  content:'';flex:0 0 32px;height:1px;
+  background:var(--gold2);opacity:.5;
+}
+.section-title{
+  font-family:var(--display);
+  font-size:clamp(28px,4.5vw,52px);
+  font-weight:400;font-style:italic;
+  line-height:1.05;letter-spacing:-.01em;
+  color:var(--ink);margin-bottom:2rem;
+}
+.section-title strong{font-weight:700;font-style:normal;}
+.body-p{
+  font-size:19px;font-weight:400;
+  line-height:1.95;color:rgba(30,26,20,.72);
+  margin-bottom:1.6rem;
+}
+.body-p em{font-style:italic;color:var(--ink);}
+.body-p strong{font-weight:400;color:var(--sepia);}
+.drop::first-letter{
+  float:left;
+  font-family:var(--display);font-weight:700;
+  font-size:88px;line-height:.72;
+  color:var(--gold);
+  margin:6px 14px 0 0;
+  text-shadow:2px 2px 12px rgba(154,125,62,.2);
+}
+.ornamental-rule{
+  display:flex;align-items:center;gap:1rem;
+  margin:3rem 0;
+}
+.ornamental-rule::before,.ornamental-rule::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(to right,transparent,rgba(154,125,62,.3),transparent);
+}
+.ornamental-rule span{
+  font-size:14px;color:var(--gold2);opacity:.6;
+  letter-spacing:.2em;
+}
+
+/* ══════════════════════════════════════════
+   PART I: THE OBSOLETE
+   Friedrich's lonely wanderer
+══════════════════════════════════════════ */
+#s2{
+  padding:100px clamp(20px,7vw,120px);
+  position:relative;overflow:hidden;
+}
+/* misty mountain behind */
+#s2::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to top,rgba(140,154,170,.08),transparent);
+  pointer-events:none;
+}
+.part-header{
+  max-width:900px;margin:0 auto 4rem;
+  display:grid;grid-template-columns:auto 1fr;
+  gap:3rem;align-items:end;
+}
+@media(max-width:640px){.part-header{grid-template-columns:1fr;gap:1.5rem}}
+.part-numeral{
+  font-family:var(--display);
+  font-size:clamp(100px,14vw,180px);
+  font-weight:900;line-height:.8;
+  color:rgba(30,26,20,.05);
+  user-select:none;letter-spacing:-.04em;
+}
+.part-title-block{}
+.part-roman{
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.38em;text-transform:uppercase;
+  color:var(--sepia2);opacity:.55;margin-bottom:.8rem;
+}
+.part-name{
+  font-family:var(--display);
+  font-size:clamp(32px,5.5vw,68px);
+  font-weight:700;line-height:.92;
+  letter-spacing:-.025em;color:var(--ink);
+}
+.part-name em{
+  font-weight:400;font-style:italic;
+  color:var(--sepia);display:block;
+  font-size:.7em;margin-top:.3rem;
+}
+.two-col{
+  max-width:960px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:start;
+}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;gap:40px}}
+
+/* register cards */
+.register{
+  padding:2rem 0;
+  border-top:1px solid rgba(154,125,62,.2);
+  margin-bottom:2rem;
+}
+.register-num{
+  font-family:var(--cinzel);font-size:8px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.5rem;
+}
+.register-title{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(18px,2.5vw,24px);
+  letter-spacing:-.01em;color:var(--ink);
+  margin-bottom:.8rem;
+}
+.register-p{
+  font-size:17px;line-height:1.88;
+  color:rgba(30,26,20,.62);
+}
+.register-p em{font-style:italic;color:rgba(30,26,20,.85);}
+
+/* pullquote: as if painted onto canvas */
+.painting-quote{
+  max-width:800px;margin:4rem auto;
+  padding:3rem 3.5rem;
+  background:linear-gradient(135deg,rgba(240,225,190,.6),rgba(220,205,165,.4));
+  border:1px solid rgba(154,125,62,.2);
+  border-left:4px solid var(--gold);
+  position:relative;
+  box-shadow:4px 8px 32px rgba(30,26,20,.06),inset 0 0 60px rgba(200,160,90,.03);
+}
+.painting-quote::before{
+  content:'\201C';
+  position:absolute;top:-1rem;left:2rem;
+  font-family:var(--display);font-size:100px;
+  color:rgba(154,125,62,.12);line-height:1;
+  pointer-events:none;
+}
+.pq-text{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(19px,2.5vw,26px);
+  line-height:1.58;color:rgba(30,26,20,.78);
+  position:relative;z-index:1;
+}
+.pq-attr{
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:var(--sepia2);opacity:.6;
+  margin-top:1.2rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.pq-attr::before{
+  content:'';flex:0 0 24px;height:1px;
+  background:var(--gold2);
+}
+
+/* source note */
+.source-note{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.06em;
+  color:rgba(92,74,46,.35);
+  border-top:1px solid rgba(154,125,62,.1);
+  padding-top:.6rem;margin-top:.8rem;
+  line-height:1.7;
+}
+
+/* ══════════════════════════════════════════
+   RATIONAL LOGIC SECTION
+   Rembrandt: single lamp, night study
+══════════════════════════════════════════ */
+#s3{
+  padding:100px clamp(20px,7vw,120px);
+}
+.full-inner{max-width:820px;margin:0 auto;}
+.habit-card{
+  display:grid;grid-template-columns:3px 1fr;
+  gap:2rem;margin-bottom:3rem;
+  align-items:start;
+}
+.habit-bar{
+  background:linear-gradient(to bottom,var(--gold2),var(--gold),transparent);
+  height:100%;min-height:80px;
+  opacity:.5;
+}
+.habit-body{}
+.habit-name{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(18px,2.5vw,24px);
+  letter-spacing:-.01em;color:var(--ink);
+  margin-bottom:.5rem;
+}
+.habit-p{
+  font-size:18px;line-height:1.9;
+  color:rgba(30,26,20,.65);margin-bottom:.5rem;
+}
+.habit-p em{font-style:italic;color:rgba(30,26,20,.88);}
+
+/* ══════════════════════════════════════════
+   KAFKA / DOSTOYEVSKY
+   Delacroix: turbulent depth, warm shadow
+══════════════════════════════════════════ */
+#s4{
+  padding:100px clamp(20px,7vw,120px);
+}
+.author-section{
+  max-width:860px;margin:0 auto 5rem;
+}
+.author-header{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:2rem;align-items:center;margin-bottom:2.5rem;
+  padding-bottom:2rem;
+  border-bottom:1px solid rgba(154,125,62,.15);
+}
+@media(max-width:580px){.author-header{grid-template-columns:1fr}}
+.author-initial{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(60px,10vw,100px);
+  line-height:.85;
+  color:rgba(154,125,62,.15);
+  user-select:none;letter-spacing:-.02em;
+}
+.author-name{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(28px,4vw,44px);
+  letter-spacing:-.02em;color:var(--ink);
+  line-height:1;
+}
+.author-context{
+  font-family:var(--serif);font-style:italic;
+  font-size:15px;color:rgba(92,74,46,.5);
+  margin-top:.4rem;line-height:1.6;
+}
+
+/* ══════════════════════════════════════════
+   PART II: THE ABSOLUTE
+   Turner at dawn: revelation, pure light
+══════════════════════════════════════════ */
+#s5{
+  padding:100px clamp(20px,7vw,120px);
+}
+.tradition-grid{
+  max-width:960px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:0;
+  border:1px solid rgba(154,125,62,.12);
+}
+@media(max-width:760px){.tradition-grid{grid-template-columns:1fr}}
+.tradition-cell{
+  padding:2.5rem;
+  border-right:1px solid rgba(154,125,62,.1);
+}
+.tradition-cell:last-child{border-right:none;}
+@media(max-width:760px){
+  .tradition-cell{border-right:none;border-bottom:1px solid rgba(154,125,62,.1);}
+  .tradition-cell:last-child{border-bottom:none;}
+}
+.trad-name{
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.28em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.8rem;
+}
+.trad-philosopher{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(16px,2vw,20px);
+  color:var(--ink);margin-bottom:.8rem;letter-spacing:-.01em;
+}
+.trad-p{
+  font-size:16px;line-height:1.85;
+  color:rgba(30,26,20,.58);
+}
+.trad-p em{font-style:italic;color:rgba(30,26,20,.78);}
+
+/* Gödel block */
+.godel-block{
+  max-width:860px;margin:4rem auto;
+  background:linear-gradient(135deg,rgba(58,48,80,.06),rgba(40,32,64,.04));
+  border:1px solid rgba(58,48,80,.15);
+  padding:3rem 3.5rem;
+  position:relative;overflow:hidden;
+}
+.godel-block::before{
+  content:'∀';
+  position:absolute;right:-20px;top:-30px;
+  font-family:var(--display);font-size:200px;
+  color:rgba(58,48,80,.04);
+  pointer-events:none;line-height:1;
+  user-select:none;
+}
+.godel-label{
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(58,48,80,.5);margin-bottom:1rem;
+}
+.godel-theorem{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(18px,2.5vw,24px);
+  line-height:1.58;color:rgba(30,26,20,.75);
+  margin-bottom:1.5rem;
+}
+.godel-p{
+  font-size:17px;line-height:1.88;
+  color:rgba(30,26,20,.6);
+}
+.godel-p em{font-style:italic;color:rgba(30,26,20,.82);}
+
+/* ══════════════════════════════════════════
+   PART III: THE SIX CASES
+   Each case: a separate vignette, a painting within a painting
+══════════════════════════════════════════ */
+#s6{
+  padding:80px 0;
+}
+.cases-header{
+  max-width:820px;margin:0 auto 60px;
+  padding:0 clamp(20px,7vw,120px);
+}
+.case-vignette{
+  padding:60px clamp(20px,7vw,120px);
+  border-top:1px solid rgba(154,125,62,.08);
+  display:grid;
+  grid-template-columns:80px 1fr;
+  gap:3rem;align-items:start;
+  max-width:1100px;margin:0 auto;
+}
+@media(max-width:680px){.case-vignette{grid-template-columns:1fr;gap:1.5rem}}
+.case-num-col{
+  text-align:right;padding-top:.5rem;
+}
+.case-number{
+  font-family:var(--display);font-weight:900;
+  font-size:clamp(36px,5vw,60px);
+  line-height:.85;color:rgba(154,125,62,.15);
+  user-select:none;letter-spacing:-.02em;
+}
+.case-body{}
+.case-name{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(22px,3.5vw,34px);
+  letter-spacing:-.02em;color:var(--ink);
+  line-height:1;margin-bottom:.4rem;
+}
+.case-period{
+  font-family:var(--cinzel);font-size:8px;
+  letter-spacing:.28em;text-transform:uppercase;
+  color:var(--sepia2);opacity:.5;margin-bottom:1.2rem;
+}
+.case-p{
+  font-size:18px;line-height:1.92;
+  color:rgba(30,26,20,.66);margin-bottom:1rem;
+}
+.case-p em{font-style:italic;color:rgba(30,26,20,.88);}
+.case-p strong{font-weight:400;color:var(--sepia);}
+/* alternating backgrounds for cases */
+.case-vignette:nth-child(even){
+  background:rgba(200,185,160,.08);
+}
+
+/* ══════════════════════════════════════════
+   PART IV: SYNTHESIS
+   Final light: Caspar David Friedrich, man before the sea
+══════════════════════════════════════════ */
+#s7{
+  padding:100px clamp(20px,7vw,120px);
+}
+.synthesis-inner{max-width:820px;margin:0 auto;}
+.synth-thread{
+  margin-bottom:4rem;padding-bottom:4rem;
+  border-bottom:1px solid rgba(154,125,62,.1);
+}
+.synth-thread:last-of-type{border-bottom:none;}
+.synth-num{
+  font-family:var(--cinzel);font-size:8px;
+  letter-spacing:.3em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.6rem;
+}
+.synth-title{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(20px,3vw,30px);
+  letter-spacing:-.015em;color:var(--ink);
+  margin-bottom:1.2rem;
+}
+.synth-p{
+  font-size:18px;line-height:1.92;
+  color:rgba(30,26,20,.66);margin-bottom:1rem;
+}
+.synth-p em{font-style:italic;color:rgba(30,26,20,.88);}
+
+/* ══════════════════════════════════════════
+   CODA
+   Single candle. Near dark.
+══════════════════════════════════════════ */
+#s8{
+  padding:120px clamp(20px,7vw,120px);
+  text-align:center;
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(200,120,56,.08) 0%,transparent 55%),
+    var(--canvas2);
+}
+.coda-inner{max-width:580px;margin:0 auto;}
+.coda-flame{
+  font-size:32px;margin-bottom:2rem;
+  animation:flicker 4s ease-in-out infinite;
+  display:block;
+  filter:hue-rotate(0deg);
+}
+@keyframes flicker{
+  0%,100%{opacity:.6;transform:scale(1)}
+  25%{opacity:.9;transform:scale(1.05) rotate(1deg)}
+  50%{opacity:.7;transform:scale(.97)}
+  75%{opacity:.85;transform:scale(1.02) rotate(-1deg)}
+}
+.coda-title{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(22px,3.5vw,38px);
+  font-weight:400;line-height:1.3;
+  color:rgba(30,26,20,.7);margin-bottom:2rem;
+}
+.coda-p{
+  font-size:18px;line-height:1.92;
+  color:rgba(30,26,20,.5);margin-bottom:1.4rem;
+}
+.coda-final{
+  font-family:var(--display);font-style:italic;
+  font-size:clamp(18px,2.5vw,24px);
+  color:rgba(92,74,46,.55);
+  border-top:1px solid rgba(154,125,62,.2);
+  padding-top:2rem;margin-top:2rem;
+  line-height:1.6;
+}
+.coda-ornament{
+  margin-top:3rem;
+  font-family:var(--cinzel);font-size:9px;
+  letter-spacing:.4em;text-transform:uppercase;
+  color:rgba(154,125,62,.25);
+}
+
+/* shared utility */
+.inner-full{max-width:860px;margin:0 auto;}
+.spacer{height:2rem;}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="prog"></div>
+
+<nav id="nav" aria-label="Chapter navigation">
+  <button class="nd on" data-s="s0"><div class="nd-dot"></div><span class="nd-label">Cover</span></button>
+  <button class="nd" data-s="s1"><div class="nd-dot"></div><span class="nd-label">Preface</span></button>
+  <button class="nd" data-s="s2"><div class="nd-dot"></div><span class="nd-label">Obsolete</span></button>
+  <button class="nd" data-s="s3"><div class="nd-dot"></div><span class="nd-label">Habits</span></button>
+  <button class="nd" data-s="s4"><div class="nd-dot"></div><span class="nd-label">Kafka</span></button>
+  <button class="nd" data-s="s5"><div class="nd-dot"></div><span class="nd-label">Absolute</span></button>
+  <button class="nd" data-s="s6"><div class="nd-dot"></div><span class="nd-label">Cases</span></button>
+  <button class="nd" data-s="s7"><div class="nd-dot"></div><span class="nd-label">Synthesis</span></button>
+  <button class="nd" data-s="s8"><div class="nd-dot"></div><span class="nd-label">Coda</span></button>
+</nav>
+
+<!-- ════════════════════════════════════════
+     S0 — HERO: Turner's luminous sky
+════════════════════════════════════════ -->
+<section id="s0" class="paint-turner">
+  <div class="hero-inner">
+    <div class="hero-ornament r">A Philosophical Essay</div>
+    <span class="hero-flourish rf">✦ ✦ ✦</span>
+    <h1 class="hero-title r">
+      Obsolete<br>
+      <em>Makes</em><br>
+      Absolute
+    </h1>
+    <div class="hero-divider rf"></div>
+    <p class="hero-subtitle r">On the philosophical necessity of the eccentric, the anachronistic, and the dysfunctional in the production of anything that lasts.</p>
+    <div class="hero-meta r">
+      <span>Long Read</span>
+      <span class="hero-meta-dot">✦</span>
+      <span>Philosophy</span>
+      <span class="hero-meta-dot">✦</span>
+      <span>Kafka &nbsp; Dostoyevsky &nbsp; Gödel &nbsp; Hegel &nbsp; Spinoza</span>
+    </div>
+    <div class="hero-scroll r">✦ &nbsp; Scroll to read &nbsp; ✦</div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S1 — PREFACE
+════════════════════════════════════════ -->
+<section id="s1" class="paint-friedrich">
+  <div class="preface-inner">
+    <div class="part-label r">Preface</div>
+    <h2 class="section-title r">The <strong>Wrong</strong> Reading</h2>
+
+    <p class="body-p drop r">Most readings of eccentric genius treat it as colorful biography. Newton's alchemy. Tesla's celibacy and his pigeons. Gödel refusing to eat. Kafka burning his own manuscripts. The wrong question is: why were they strange? The right question is whether the strangeness is structurally related to the output, or merely coincidental to it.</p>
+
+    <p class="body-p r">This essay argues it is structurally related. Not because eccentricity causes genius. Because the same cognitive and behavioral architecture that produces genuine novelty also produces incompatibility with the operating norms of the surrounding system. The person who thinks in a fundamentally different organizational structure will also live in a fundamentally different organizational structure. The thought and the life share a source.</p>
+
+    <p class="body-p r">The deeper claim is philosophical and formally grounded. The <em>obsolete</em> and the <em>absolute</em> are not opposites. They are the same structure viewed from two different vantage points in time. The incomplete, the misfit, the anachronistic, the dysfunctional — these are not what the system discards on its way to completion. They are the pressure that forces the system toward a higher order of organization. The system does not produce the absolute despite its obsolete elements. It produces the absolute <em>through</em> them.</p>
+
+    <p class="body-p r">What a system cannot integrate becomes the force that compels it to become capable of integration. The inability to metabolize is exactly what drives metabolism forward.</p>
+
+    <div class="ornamental-rule r"><span>✦</span></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S2 — PART I: THE OBSOLETE
+     Friedrich's wanderer above the sea of fog
+════════════════════════════════════════ -->
+<section id="s2" class="paint-constable">
+  <div class="part-header r">
+    <div class="part-numeral">I</div>
+    <div class="part-title-block">
+      <div class="part-roman">Part One</div>
+      <div class="part-name">Defining the Obsolete<em>The philosophical anatomy of the outcast, the anachronism, the misfit</em></div>
+    </div>
+  </div>
+
+  <div style="max-width:960px;margin:0 auto;">
+    <p class="body-p r" style="max-width:720px;">Not all obsolescence is the same. There are three distinct registers, and confusing them produces the biographical reading this essay is trying to move past. The registers are structural categories, not character types.</p>
+
+    <div class="spacer"></div>
+
+    <div class="two-col">
+      <div>
+        <div class="register r">
+          <div class="register-num">Register 01 &nbsp; ✦</div>
+          <div class="register-title">The Temporally Misplaced</div>
+          <p class="register-p">Too early or too late for their moment. Gregor Mendel's genetics sat unpublished for 35 years because the conceptual infrastructure to receive it did not yet exist. Ludwig Boltzmann's statistical mechanics was rejected because atomism had no foundation yet. He died by suicide in 1906. The work was not wrong. The system was not ready. The obsolescence was a timing failure, not a quality failure.</p>
+          <div class="source-note">Sources: Nils Roll-Hansen, The Mendel Controversy (2014); Abraham Pais, Subtle is the Lord (1982)</div>
+        </div>
+
+        <div class="register r">
+          <div class="register-num">Register 02 &nbsp; ✦</div>
+          <div class="register-title">The Behaviorally Incompatible</div>
+          <p class="register-p">Those whose cognitive architecture produces outputs the system values while generating behaviors the system cannot accommodate. Ramanujan arriving in Cambridge with no formal training and results Hardy could not derive. Nash's paranoid schizophrenia and game theory produced simultaneously from the same mind. Cantor's transfinite sets and his recurring institutional breakdowns emerging from the same obsessive architecture. The behavior and the output share a source. <em>Suppressing one suppresses the other.</em></p>
+          <div class="source-note">Sources: Sylvia Nasar, A Beautiful Mind (1998); Robert Kanigel, The Man Who Knew Infinity (1991); Joseph Dauben, Georg Cantor (1979)</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="register r">
+          <div class="register-num">Register 03 &nbsp; ✦</div>
+          <div class="register-title">The Methodologically Heretical</div>
+          <p class="register-p">Those who refuse the dominant method of their field and produce results the dominant method cannot. Barbara McClintock working alone on maize cytogenetics for decades, rejected by mainstream genetics, eventually awarded the Nobel in 1983 for work done in the 1940s and 1950s. Ignaz Semmelweis insisting on hand-washing in 1847, rejected and institutionalized, vindicated 20 years after his death. The method was wrong by the system's standards. The system was wrong by the evidence's standards.</p>
+          <div class="source-note">Sources: Evelyn Fox Keller, A Feeling for the Organism (1983); Sherwin Nuland, The Doctors' Plague (2003)</div>
+        </div>
+
+        <div class="painting-quote r">
+          <div class="pq-text">The person who is structurally incompatible with the present system is not failing to be normal. They are succeeding at being something the present system has no category for.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S3 — RATIONAL LOGIC OF IRRATIONAL HABITS
+════════════════════════════════════════ -->
+<section id="s3" class="paint-rembrandt">
+  <div class="full-inner">
+    <div class="part-label r">Part One, Continued</div>
+    <h2 class="section-title r">The Rational Logic of <em>Irrational Habits</em></h2>
+    <p class="body-p r">This section is not about romanticizing dysfunction. It is about reading the function inside the apparent dysfunction. Every habit below served a precise cognitive purpose. The abnormality was the solution, not the problem.</p>
+    <div class="spacer"></div>
+
+    <div class="habit-card r">
+      <div class="habit-bar"></div>
+      <div class="habit-body">
+        <div class="habit-name">Kafka's Nocturnal Schedule</div>
+        <p class="habit-p">Kafka worked from 11pm to 3am every night, calling it the only time the world's demand on his attention ceased. His employment at the Workers' Accident Insurance Institute consumed his days processing claims of workers injured by machinery. The irrational schedule was a rational solution to a precise problem: protecting cognitive space from social obligation. <em>The Trial</em> and <em>The Castle</em> were written in those hours. The abnormal schedule was the load-bearing structure of the output.</p>
+        <div class="source-note">Sources: Reiner Stach, Kafka: The Years of Insight (2013); Kafka's Diaries (1910-1923)</div>
+      </div>
+    </div>
+
+    <div class="habit-card r">
+      <div class="habit-bar"></div>
+      <div class="habit-body">
+        <div class="habit-name">Darwin's Sandwalk Compulsion</div>
+        <p class="habit-p">Darwin walked the Sandwalk at Down House three circuits every day, counting laps with a pile of flints, regardless of weather. His son Francis described this as essential to his father's thinking. The repetitive physical ritual was the cognitive condition for sustained theoretical work. Not despite the compulsion. <em>Because of it.</em> Remove the walk, you remove the thought that happened during it.</p>
+        <div class="source-note">Sources: Janet Browne, Charles Darwin: The Power of Place (2002)</div>
+      </div>
+    </div>
+
+    <div class="habit-card r">
+      <div class="habit-bar"></div>
+      <div class="habit-body">
+        <div class="habit-name">Newton's 20-Year Silence</div>
+        <p class="habit-p">The Principia was dragged out of Newton by Halley in 1687, twenty years after Newton had the core results. The gap was not laziness. Newton was working the problem to a standard of completeness that no contemporary could evaluate or demand, because no contemporary operated at that level. The abnormality was a standard so high it appeared as dysfunction. The delay was the proof's quality expressed in time.</p>
+        <div class="source-note">Sources: Richard Westfall, Never at Rest (1980)</div>
+      </div>
+    </div>
+
+    <div class="habit-card r">
+      <div class="habit-bar"></div>
+      <div class="habit-body">
+        <div class="habit-name">Wittgenstein's Abandonments</div>
+        <p class="habit-p">Wittgenstein abandoned Cambridge, gave away his inheritance, worked as a schoolteacher in rural Austria and a gardener at a monastery. These were not episodes of breakdown. They were periods of philosophical reconfiguration. The <em>Philosophical Investigations</em> emerged from a mind that had dismantled and rebuilt its operating framework twice. The abandonment of position was the condition for the revision of thought. Every departure was a productive dismantling.</p>
+        <div class="source-note">Sources: Ray Monk, Ludwig Wittgenstein: The Duty of Genius (1990)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S4 — KAFKA AND DOSTOYEVSKY
+     Delacroix's turbulent depth
+════════════════════════════════════════ -->
+<section id="s4" class="paint-delacroix">
+  <div style="max-width:920px;margin:0 auto;padding:0;">
+    <div class="part-label r">Part One, Philosophical Core</div>
+    <h2 class="section-title r" style="max-width:700px;">On the Obsolescence of the <em>Human Being Itself</em></h2>
+    <p class="body-p r" style="max-width:700px;">This is not biographical eccentricity. The claim here is structural: the human being itself, as a type, is obsolete within the systems it has created. Kafka and Dostoyevsky are the two writers who made this diagnosis with the greatest precision and without flinching from its implications.</p>
+
+    <div class="ornamental-rule r"><span>✦</span></div>
+
+    <div class="author-section r">
+      <div class="author-header">
+        <div class="author-initial">K</div>
+        <div>
+          <div class="author-name">Franz Kafka</div>
+          <div class="author-context">Prague, 1883-1924 &nbsp; · &nbsp; The Trial (1925) · The Metamorphosis (1915) · The Castle (1926)</div>
+        </div>
+      </div>
+
+      <p class="body-p">Gregor Samsa does not become obsolete when he transforms into a vermin. He was already obsolete. The transformation makes visible what was already structurally true: the human worker inside the economic system is a means of production that happens to have a body with needs the system was not designed for and cannot accommodate. <em>The Metamorphosis</em> is not a horror story about transformation. It is a precision diagnosis of what the system was already doing to the person before the transformation. The vermin is the truth the human form was concealing.</p>
+
+      <p class="body-p">Josef K. in <em>The Trial</em> is charged with a crime he never learns. He is processed by a system whose logic he cannot access, whose rules he cannot read, which ultimately executes him. Kafka's biographical context is essential here: he was employed at the Workers' Accident Insurance Institute, sitting at the intersection of the human body and the industrial system, processing the evidence of what the system did to bodies it could not fully use. <em>The Trial</em> is the juridical form of that processing applied to the individual self.</p>
+
+      <div class="painting-quote r">
+        <div class="pq-text">The human being is structurally mismatched to the bureaucratic and economic systems it has created. Not accidentally. The systems were optimized for throughput, not for persons. The person who insists on being a person inside a system designed for processing units is, by the system's definition, defective.</div>
+        <div class="pq-attr">On Kafka's structural diagnosis</div>
+      </div>
+
+      <p class="body-p r">Kafka's protagonists are all persons insisting on being persons. This is why they all fail by the system's metric. And this is why they are the only figures in the literature who feel true. The obsolete self is the self that refuses reduction. The refusal is what makes it alive.</p>
+
+      <div class="source-note r">Sources: Reiner Stach, Kafka: The Decisive Years (2005); Walter Benjamin, Franz Kafka: On the Tenth Anniversary of His Death (1934); Hannah Arendt, The Origins of Totalitarianism (1951)</div>
+    </div>
+
+    <div class="ornamental-rule r"><span>✦</span></div>
+
+    <div class="author-section r">
+      <div class="author-header">
+        <div class="author-initial">D</div>
+        <div>
+          <div class="author-name">Fyodor Dostoyevsky</div>
+          <div class="author-context">Saint Petersburg, 1821-1881 &nbsp; · &nbsp; Notes from Underground (1864) · Crime and Punishment (1866)</div>
+        </div>
+      </div>
+
+      <p class="body-p">The Underground Man in <em>Notes from Underground</em> is Dostoyevsky's most precise philosophical instrument. He is not a sympathetic character. He is a demonstration. He refuses to accept that 2+2=4 as a complete description of reality, not because he disputes arithmetic, but because he disputes the claim that arithmetic exhausts what can be said about human experience. "What sort of free will is left when we come to tabulation and arithmetic, when it will all be a case of twice two makes four?"</p>
+
+      <p class="body-p">The Underground Man's obsolescence is his insistence on excess. He exceeds every category the rational-utilitarian system provides for him. He is too much: too self-aware, too contradictory, too unwilling to be reduced to a calculable unit. And this excess is precisely what makes him unmanageable. The rational utilitarian system Dostoyevsky was attacking requires persons who can be modeled as rational maximizers. The Underground Man refuses. The refusal makes him useless to the system. It also makes him the only figure in the novel who is <em>fully alive.</em></p>
+
+      <div class="painting-quote r">
+        <div class="pq-text">The obsolete individual — the one who cannot be fitted into the system's categories — is the site where the system's limitations become visible. You cannot diagnose the cage from inside it. You need the one who does not fit to show you where the bars are.</div>
+        <div class="pq-attr">On Dostoyevsky's Underground Man</div>
+      </div>
+
+      <p class="body-p r">Raskolnikov in <em>Crime and Punishment</em> performs the same argument at higher stakes. The extraordinary individual is precisely the one who has outgrown ordinary moral categories. The theory is wrong. Dostoyevsky knows it is wrong. But the energy behind it, the demand to be categorically irreducible, is the same energy that gives the novel its moral depth. The problem of the obsolete individual is not solved by destroying him. It is solved only by building a system large enough to contain him.</p>
+
+      <div class="source-note r">Sources: Joseph Frank, Dostoevsky: The Stir of Liberation (1986); Mikhail Bakhtin, Problems of Dostoevsky's Poetics (1963)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S5 — PART II: THE ABSOLUTE
+     Turner's sun rising through mist
+════════════════════════════════════════ -->
+<section id="s5" class="paint-turner">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div class="part-label r">Part Two</div>
+    <div class="part-name r" style="font-family:var(--display);font-size:clamp(32px,5.5vw,68px);font-weight:700;line-height:.92;letter-spacing:-.025em;color:var(--ink);margin-bottom:2.5rem;">Defining the Absolute<em style="font-weight:400;font-style:italic;color:var(--sepia);display:block;font-size:.65em;margin-top:.4rem;">From the philosophical tradition, not from common usage</em></div>
+
+    <p class="body-p r" style="max-width:700px;margin-bottom:3rem;">The word absolute comes from the Latin <em>absolutus</em>, from <em>absolvere</em>: to set free, to complete, to finish. The absolute is literally that which has been freed from conditions. It has no dependencies. It is not relative to anything outside itself. Three major philosophical traditions treat this concept, and all three are necessary to understand what the absolute actually requires.</p>
+
+    <div class="tradition-grid r">
+      <div class="tradition-cell">
+        <div class="trad-name">Western / German Idealism</div>
+        <div class="trad-philosopher">Hegel's Absolute Spirit</div>
+        <p class="trad-p">In the <em>Phenomenology of Spirit</em> (1807), the Absolute is the endpoint of a dialectical process in which consciousness progressively overcomes its limitations by confronting what negates it. The key mechanism: each stage is <em>aufgehoben</em>, sublated, simultaneously cancelled, preserved, and elevated. The obsolete is not discarded. It is taken up into the absolute as a necessary moment. The absolute contains every negation that produced it.</p>
+        <div class="source-note" style="margin-top:.8rem;">Hegel (1807); Robert Pippin, Hegel's Idealism (1989)</div>
+      </div>
+      <div class="tradition-cell">
+        <div class="trad-name">Rationalist / Substance</div>
+        <div class="trad-philosopher">Spinoza's Absolute Substance</div>
+        <p class="trad-p">Spinoza's <em>Ethics</em> (1677) defines the absolute as <em>causa sui</em>, that which is its own cause, depending on nothing outside itself. Everything that exists is a mode of one absolute substance. The incomplete, the obsolete, the eccentric are all modes of the absolute's self-expression, not exceptions to it. The difference between the obsolete and the celebrated is modal, not substantial.</p>
+        <div class="source-note" style="margin-top:.8rem;">Spinoza, Ethics (1677); Gilles Deleuze, Spinoza: Practical Philosophy (1981)</div>
+      </div>
+      <div class="tradition-cell">
+        <div class="trad-name">Eastern / Non-Dualist</div>
+        <div class="trad-philosopher">Brahman &amp; the Tao</div>
+        <p class="trad-p">Shankara's Advaita Vedanta defines Brahman as the undifferentiated absolute consciousness underlying all appearance. What the system calls obsolete is already Brahman. Laozi's Tao is precisely what cannot be named or categorized. Chapter 11: <em>"It is the center hole that makes the wheel useful."</em> The empty, the incomplete, the yielding is where the absolute operates.</p>
+        <div class="source-note" style="margin-top:.8rem;">Shankara, Vivekachudamani (8th c.); Laozi, Tao Te Ching, tr. D.C. Lau (1963)</div>
+      </div>
+    </div>
+
+    <div class="godel-block r">
+      <div class="godel-label">Mathematical Absolute &nbsp; · &nbsp; Kurt Gödel, 1931</div>
+      <div class="godel-theorem">"Any consistent formal system powerful enough to describe basic arithmetic contains true statements that cannot be proven within the system."</div>
+      <p class="godel-p">This is the theorem that locks the essay's argument together formally. The absolute, understood as the complete and the self-sufficient, is <em>formally unreachable from within any system.</em> Every system that aspires to completeness contains within it statements that are true but unprovable. The incompleteness is not a defect of specific systems. It is a property of all sufficiently powerful formal systems.</p>
+      <p class="godel-p" style="margin-top:1rem;">The obsolete, in this framework, is the true-but-unprovable statement. It is what the system cannot integrate not because it is false but because the system's internal logic cannot reach it yet. Mendel before genetics. Boltzmann before quantum mechanics. The Underground Man whose excess cannot be reduced to a utility function. They are all Gödel sentences: true, unprovable from within, and exactly where the next extension will be found.</p>
+      <div class="source-note" style="margin-top:1.2rem;">Kurt Gödel (1931); Douglas Hofstadter, Gödel, Escher, Bach (1979); Rebecca Goldstein, Incompleteness (2005)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S6 — PART III: SIX CASES
+     Six vignettes, six lives
+════════════════════════════════════════ -->
+<section id="s6">
+  <div class="cases-header">
+    <div class="part-label r">Part Three</div>
+    <h2 class="section-title r">How Obsolete Makes Absolute Possible<em style="display:block;font-size:.7em;color:var(--sepia2);opacity:.7;margin-top:.3rem;">Six extended cases. Each one a life where the absolute emerged from the obsolete.</em></h2>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">01</div></div>
+    <div class="case-body">
+      <div class="case-name">Nikola Tesla</div>
+      <div class="case-period">1856 &nbsp; · &nbsp; 1943 &nbsp; · &nbsp; Electrical Engineering</div>
+      <p class="case-p">The technologies Tesla developed — alternating current power systems, the rotating magnetic field, radio transmission — were ahead of the system's capacity to implement or monetize them. His later work on wireless energy transmission was dismissed as mania. He died in poverty in a hotel room. His core contributions, AC power, which operates every electrical system in the world, were initially defeated by Edison's DC campaign and required Westinghouse's commercial intervention to survive.</p>
+      <p class="case-p">The obsolescence of the man was not related to the validity of the work. The system's inability to process the man was separate from, and did not determine, the system's eventual adoption of the work. <em>The work was absolute. The man was obsolete. These were the same condition expressed from different vantage points in time.</em></p>
+      <div class="source-note">W. Bernard Carlson, Tesla: Inventor of the Electrical Age (2013)</div>
+    </div>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">02</div></div>
+    <div class="case-body">
+      <div class="case-name">Georg Cantor</div>
+      <div class="case-period">1845 &nbsp; · &nbsp; 1918 &nbsp; · &nbsp; Mathematics</div>
+      <p class="case-p">Cantor developed transfinite set theory, the mathematics of actual infinity, between 1874 and 1884. He was institutionalized for mental illness multiple times. Kronecker called him a "corrupter of youth." Poincaré called his work a "disease." Cantor believed his results were communicated to him by God. He died in a sanatorium in 1918.</p>
+      <p class="case-p">His work is now the foundation of modern mathematics. Without Cantor's transfinite numbers there is no modern topology, no modern analysis, no Hilbert spaces, no quantum mechanics. The man who was institutionalized for mathematical mania produced the foundation on which <em>the most precise science in human history rests.</em> The rejection was the pressure. The pressure was the mechanism. The absolute was the output.</p>
+      <div class="source-note">Joseph Dauben, Georg Cantor (1979); Bertrand Russell, The Principles of Mathematics (1903)</div>
+    </div>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">03</div></div>
+    <div class="case-body">
+      <div class="case-name">Simone Weil</div>
+      <div class="case-period">1909 &nbsp; · &nbsp; 1943 &nbsp; · &nbsp; Philosophy</div>
+      <p class="case-p">Camus, who published her posthumous work at Gallimard, considered her the greatest mind of her generation. She was anorexic, physically incapable of tolerating ordinary social life, and died at 34 weighing less than 30 kilograms. Her work — <em>The Need for Roots</em>, <em>Waiting for God</em>, <em>Gravity and Grace</em> — addresses with exceptional precision the conditions under which human beings are either rooted in or uprooted from the sources of meaning.</p>
+      <p class="case-p">She understood uprootedness because she was constitutionally uprooted. The obsolescence of her body and her social position was the epistemic condition for her analysis of what grounds human life. You cannot map the territory you inhabit completely. You can only map what you are both inside and outside of simultaneously. <em>Her marginality was her instrument.</em></p>
+      <div class="source-note">Simone Pétrement, Simone Weil: A Life (1976); Albert Camus, Preface to The Need for Roots (1949)</div>
+    </div>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">04</div></div>
+    <div class="case-body">
+      <div class="case-name">Herman Melville</div>
+      <div class="case-period">1819 &nbsp; · &nbsp; 1891 &nbsp; · &nbsp; Literature</div>
+      <p class="case-p"><em>Moby-Dick</em> (1851) was a commercial failure. It sold approximately 3,500 copies in Melville's lifetime, earning him roughly $556. After the failure of <em>Pierre</em> (1852) he essentially stopped writing fiction and worked as a customs inspector in New York for 19 years. He died in near-total obscurity in 1891.</p>
+      <p class="case-p">The <em>Moby-Dick</em> revival began in the 1920s and has not stopped. The novel is now considered among the greatest in any language. The absolute quality of the work was not recognized by the system contemporaneous with its production. The system required 70 years to develop the interpretive apparatus capable of receiving it. <em>The work was not late. The world was.</em></p>
+      <div class="source-note">Hershel Parker, Herman Melville: A Biography (1996); F.O. Matthiessen, American Renaissance (1941)</div>
+    </div>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">05</div></div>
+    <div class="case-body">
+      <div class="case-name">Barbara McClintock</div>
+      <div class="case-period">1902 &nbsp; · &nbsp; 1992 &nbsp; · &nbsp; Genetics</div>
+      <p class="case-p">McClintock's discovery of genetic transposition was presented at Cold Spring Harbor in 1951 and met with silence. She continued working alone on her maize plants for three decades. The Nobel Prize in 1983, awarded 32 years after the key presentation, was explicit institutional acknowledgment that the system had been wrong for three decades.</p>
+      <p class="case-p">The methodology that made her work possible — patient, solitary, organism-centered observation over decades without publication pressure — was only possible because she had been marginalized. <em>The marginalization was the condition of the quality.</em> Integration into the mainstream system, with its publication rhythms and collaborative pressures, would have changed the method. Changing the method would have changed the result.</p>
+      <div class="source-note">Evelyn Fox Keller, A Feeling for the Organism (1983)</div>
+    </div>
+  </div>
+
+  <div class="case-vignette r">
+    <div class="case-num-col"><div class="case-number">06</div></div>
+    <div class="case-body">
+      <div class="case-name">Ludwig van Beethoven</div>
+      <div class="case-period">1770 &nbsp; · &nbsp; 1827 &nbsp; · &nbsp; Music</div>
+      <p class="case-p">Beethoven became deaf progressively and completely in his late twenties. The late string quartets, Op. 127 through Op. 135, composed between 1824 and 1826 when he was entirely deaf, were described by contemporaries as incomprehensible. The violinist who premiered the Op. 131 quartet reportedly wept, saying it was not music for humans.</p>
+      <p class="case-p">The late quartets are now considered the summit of the chamber music literature. The deafness was not incidental to the late style. A composer who could no longer hear the social performance of music could only hear the internal structure. The obsolescence of his hearing was the condition for the absolute quality of the work. <em>The external system had been removed. What remained was the structure itself.</em></p>
+      <div class="source-note">Lewis Lockwood, Beethoven: The Music and the Life (2003); The Heiligenstadt Testament (1802)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S7 — PART IV: SYNTHESIS
+     Friedrich: the wanderer finally sees the sea
+════════════════════════════════════════ -->
+<section id="s7" class="paint-night">
+  <div class="synthesis-inner">
+    <div class="part-label r">Part Four</div>
+    <h2 class="section-title r">The Philosophical <em>Synthesis</em></h2>
+    <p class="body-p r">The six cases are not coincidences arranged to support a thesis. They are instantiations of the same mechanism operating across different domains. The mechanism has three philosophical names depending on which tradition you use. All three describe the same structure.</p>
+
+    <div class="ornamental-rule r"><span>✦</span></div>
+
+    <div class="synth-thread r">
+      <div class="synth-num">Hegel Applied &nbsp; ✦</div>
+      <div class="synth-title">The Dialectical Necessity</div>
+      <p class="synth-p">In Hegelian terms, the absolute does not transcend the obsolete. It <em>sublates</em> it. The obsolete is not left behind. It is taken up into the absolute as the moment of negativity through which the absolute constituted itself. The absolute Beethoven of the late quartets contains within it the obsolete Beethoven, the deaf man in isolation, as its necessary precondition. Remove the obsolescence and you remove the absolute. They are not separate stages. They are the same process viewed at different points in its own unfolding.</p>
+    </div>
+
+    <div class="synth-thread r">
+      <div class="synth-num">Spinoza Applied &nbsp; ✦</div>
+      <div class="synth-title">Modes of One Substance</div>
+      <p class="synth-p">The obsolete and the absolute are not different substances. They are different modal expressions of the same substance. The system that declares something obsolete and the absolute that eventually incorporates it are both expressions of the one reality. The tension between them is not a conflict between two different things. It is the one substance working through its own self-expression. Cantor's madness and Cantor's mathematics are modes of the same substance. The institutional rejection and the eventual foundation are modes of the same substance.</p>
+    </div>
+
+    <div class="synth-thread r">
+      <div class="synth-num">Gödel Applied &nbsp; ✦</div>
+      <div class="synth-title">The Structural Guarantee</div>
+      <p class="synth-p">Gödel guarantees that no system can be simultaneously complete and consistent. Every system powerful enough to produce anything interesting contains true statements it cannot prove. The obsolete elements, the true-but-unprovable statements of any given system, are the sites where the next extension will be found. The absolute is not the system that has no obsolete elements. The absolute is the <em>direction</em> toward which every system extends itself by incorporating what it previously could not process. The obsolete is not the opposite of the absolute. It is its next move.</p>
+    </div>
+
+    <div class="synth-thread r">
+      <div class="synth-num">Structural Implication &nbsp; ✦</div>
+      <div class="synth-title">What This Means for Every System</div>
+      <p class="synth-p">The systems that produce the most consequential outputs are the systems with the highest tolerance for incompatible elements. Bell Labs between 1925 and 1975. The Vienna Circle. Renaissance Florence. These are not systems that produced the absolute by excluding the obsolete. They are systems that maintained enough structural openness to keep the productive misfits inside long enough for the incompatibility to generate rather than simply disrupt.</p>
+      <p class="synth-p">The implication is cold and direct. If you optimize a system for internal consistency, you optimize it for closure. A closed system tends to equilibrium. Equilibrium is the death of differentiation. It is the end of all process. The misfits, the anachronisms, the behaviorally incompatible, the methodologically heretical are not the system's problems. <em>They are its pressure source.</em> Without pressure, there is no work. Without work, there is no change of state. Without change of state, there is no absolute. There is only the current state, running to entropy.</p>
+    </div>
+
+    <div class="painting-quote r">
+      <div class="pq-text">Every closed system tends toward equilibrium. Every open system produces the next one. The obsolete is not what fell behind. It is what kept the system from closing.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     S8 — CODA
+     Single candle in the dark
+════════════════════════════════════════ -->
+<section id="s8" class="paint-friedrich">
+  <div class="coda-inner">
+    <span class="coda-flame rf">🕯</span>
+    <h2 class="coda-title r">The Obsolete Essay</h2>
+    <p class="coda-p r">This essay is about obsolescence and is therefore probably obsolete in at least one respect. The argument that the eccentric and the misfit are necessary for the production of the absolute is itself an argument that most institutional systems are currently optimized to reject.</p>
+    <p class="coda-p r">The peer review process, the grant funding structure, the publication incentive system, the university hiring mechanism: all of these select for the compatible, the timely, the methodologically orthodox. All of these are doing, at the institutional level, what Kronecker did to Cantor. What the medical establishment did to Semmelweis. What the concert halls did to the late Beethoven. What the literary market did to Melville.</p>
+    <p class="coda-p r">The essay cannot offer a solution. The mechanism that produces the problem is the same mechanism that would need to do the correcting. What it can do is name the structure. And naming is not nothing. It is the minimum viable act of a mind that has not yet been fully processed by the system that would prefer it to produce something more compatible.</p>
+    <div class="coda-final r">
+      A civilization dies when it can no longer tolerate the people who are too much for it.<br>
+      The absolute requires the obsolete.<br>
+      It always has.
+    </div>
+    <div class="ornamental-rule r"><span>✦</span></div>
+    <div class="coda-ornament r">
+      Hegel &nbsp; · &nbsp; Spinoza &nbsp; · &nbsp; Kafka &nbsp; · &nbsp; Dostoyevsky &nbsp; · &nbsp; Gödel<br>
+      Cantor &nbsp; · &nbsp; Weil &nbsp; · &nbsp; Beethoven &nbsp; · &nbsp; Melville &nbsp; · &nbsp; McClintock &nbsp; · &nbsp; Tesla
+    </div>
+  </div>
+</section>
+
+<script>
+// cursor
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';
+  cur.style.top=e.clientY+'px';
+});
+document.querySelectorAll('p,h1,h2,h3,blockquote').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+
+// progress
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(scrollY/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+// reveal
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:0.06});
+document.querySelectorAll('.r,.rf,.rs').forEach(el=>obs.observe(el));
+
+// nav
+const sections=document.querySelectorAll('section[id]');
+const dots=document.querySelectorAll('.nd');
+const sObs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id;
+      dots.forEach(d=>d.classList.toggle('on',d.dataset.s===id));
+    }
+  });
+},{threshold:0.3});
+sections.forEach(s=>sObs.observe(s));
+dots.forEach(d=>d.addEventListener('click',()=>{
+  document.getElementById(d.dataset.s)?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+</script>
+</body>
+</html>

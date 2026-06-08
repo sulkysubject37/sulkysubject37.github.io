@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Obsolete Makes Absolute",
+            date: "June 7, 2026",
+            summary: "A philosophical inquiry into the structural necessity of the eccentric, the anachronistic, and the dysfunctional. Exploring how the absolute emerges through the sublation of the obsolete, from Kafka and Beethoven to Cantor and Gödel.",
+            link: "Obsolete-Makes-Absolute.html"
+        },
+        {
             title: "Your System is Working Perfectly. That is the Problem.",
             date: "June 7, 2026",
             summary: "A structural post-mortem on the failure mode of local optimization. Analyzing how the pursuit of a single metric in Aviation, Finance, and Software destroys the load-bearing variables the system depends on but refuses to measure.",
