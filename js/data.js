@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "What Makes You Muslim? — A Global Narrative Project",
+            date: "June 12, 2026",
+            summary: "A global inquiry into Muslim identity, utilizing NLP emotion spectrum analysis (Valence, Arousal, Dominance) to map the gap between external media narratives and lived internal reality. Data-driven inquiry into the 'Calculus of Daily Life'.",
+            link: "WMY-GP1.html"
+        },
+        {
             title: "Obsolete Makes Absolute",
             date: "June 7, 2026",
             summary: "A philosophical inquiry into the structural necessity of the eccentric, the anachronistic, and the dysfunctional. Exploring how the absolute emerges through the sublation of the obsolete, from Kafka and Beethoven to Cantor and Gödel.",
