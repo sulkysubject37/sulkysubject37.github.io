@@ -239,6 +239,12 @@ const portfolioData = {
     ],
     posts: [
         {
+            title: "Infinity Is Not Constant",
+            date: "June 23, 2026",
+            summary: "A post-Cantorian structural essay on why one word governs too many territories and rules none of them accurately. Mathematics, theology, physics, computation, language, desire, attention, science, and selfhood are separated into distinct forms of unboundedness.",
+            link: "Infinity-Is-Not-Constant.html"
+        },
+        {
             title: "What Makes You Muslim? — A Global Narrative Project",
             date: "June 12, 2026",
             summary: "A global inquiry into Muslim identity, utilizing NLP emotion spectrum analysis (Valence, Arousal, Dominance) to map the gap between external media narratives and lived internal reality. Data-driven inquiry into the 'Calculus of Daily Life'.",

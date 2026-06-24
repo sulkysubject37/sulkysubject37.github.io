@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinity Is Not Constant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IM+Fell+English:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=Libre+Caslon+Text:ital@0;1&family=Unbounded:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --void:#050507;
+  --void2:#0b0d12;
+  --ink:#111114;
+  --paper:#f4efe4;
+  --paper2:#e7decc;
+  --muted:#a7a092;
+  --acid:#b7ff2a;
+  --cyan:#4bd7ff;
+  --violet:#8f6dff;
+  --red:#d63a2f;
+  --amber:#d2a240;
+  --green:#2ca36b;
+  --blue:#1f4f86;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Libre Caslon Text',Georgia,serif;
+  --fell:'IM Fell English',Georgia,serif;
+  --display:'Unbounded',system-ui,sans-serif;
+  --sans:'Inter',system-ui,sans-serif;
+}
+body{
+  background:var(--void);
+  color:var(--paper);
+  font-family:var(--serif);
+  overflow-x:hidden;
+  cursor:none;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:998;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.025),rgba(255,255,255,.025) 1px,transparent 1px,transparent 5px),
+    radial-gradient(circle at 50% 20%,rgba(75,215,255,.05),transparent 38%),
+    radial-gradient(circle at 80% 70%,rgba(143,109,255,.04),transparent 35%);
+  mix-blend-mode:screen;
+}
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:997;
+  pointer-events:none;
+  opacity:.3;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+}
+a{color:inherit}
+#cur{
+  position:fixed;
+  width:9px;
+  height:9px;
+  border:1px solid rgba(244,239,228,.65);
+  pointer-events:none;
+  z-index:9999;
+  transform:translate(-50%,-50%) rotate(45deg);
+  transition:width .2s ease,height .2s ease,border-color .2s ease,background .2s ease;
+}
+#cur.big{width:34px;height:34px;border-color:rgba(183,255,42,.22);background:rgba(183,255,42,.06)}
+#prog{
+  position:fixed;
+  top:0;
+  left:0;
+  height:3px;
+  width:0;
+  z-index:9998;
+  background:linear-gradient(90deg,var(--cyan),var(--acid),var(--violet),var(--red));
+  box-shadow:0 0 18px rgba(183,255,42,.35);
+}
+.r{opacity:0;transform:translateY(22px);transition:opacity .85s ease,transform .85s ease}
+.r.on{opacity:1;transform:none}
+.rf{opacity:0;transition:opacity 1.2s ease}
+.rf.on{opacity:1}
+.topbar{
+  position:fixed;
+  top:18px;
+  left:18px;
+  right:18px;
+  z-index:900;
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  pointer-events:none;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(244,239,228,.34);
+}
+.topbar span{
+  border:1px solid rgba(244,239,228,.12);
+  background:rgba(5,5,7,.48);
+  backdrop-filter:blur(10px);
+  padding:.65rem .85rem;
+}
+.navdots{
+  position:fixed;
+  right:20px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:901;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.navdots button{
+  width:8px;
+  height:8px;
+  border:1px solid rgba(244,239,228,.28);
+  background:transparent;
+  transform:rotate(45deg);
+  cursor:pointer;
+}
+.navdots button.on{background:var(--acid);border-color:var(--acid);box-shadow:0 0 12px rgba(183,255,42,.5)}
+section{
+  position:relative;
+  padding:110px clamp(20px,6vw,100px);
+}
+.inner{max-width:1080px;margin:0 auto;position:relative;z-index:2}
+.narrow{max-width:820px;margin:0 auto;position:relative;z-index:2}
+.label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(244,239,228,.38);
+  margin-bottom:1.5rem;
+}
+.light .label{color:rgba(17,17,20,.38)}
+h1,h2,h3{font-weight:inherit}
+.body-p{
+  font-size:clamp(18px,1.8vw,22px);
+  line-height:1.86;
+  color:rgba(244,239,228,.78);
+  margin-bottom:1.35rem;
+}
+.light .body-p{color:rgba(17,17,20,.76)}
+.body-p strong{color:var(--paper);font-weight:700}
+.light .body-p strong{color:var(--ink)}
+.body-p em{font-style:italic;color:rgba(183,255,42,.9)}
+.light .body-p em{color:#6b4f00}
+.source-note{
+  font-family:var(--mono);
+  font-size:10px;
+  line-height:1.7;
+  color:rgba(244,239,228,.36);
+  border-left:2px solid rgba(183,255,42,.42);
+  padding-left:1rem;
+  margin-top:1.4rem;
+}
+.light .source-note{color:rgba(17,17,20,.48);border-left-color:rgba(31,79,134,.5)}
+.quote{
+  border:1px solid rgba(244,239,228,.12);
+  background:rgba(244,239,228,.04);
+  padding:1.8rem;
+  margin:2rem 0;
+}
+.quote-text{
+  font-family:var(--fell);
+  font-style:italic;
+  font-size:clamp(24px,3vw,38px);
+  line-height:1.18;
+  color:var(--paper);
+}
+.light .quote{border-color:rgba(17,17,20,.12);background:rgba(17,17,20,.04)}
+.light .quote-text{color:var(--ink)}
+.mono-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:rgba(244,239,228,.14);
+  margin:2.5rem 0;
+}
+.mono-cell{
+  background:rgba(5,5,7,.94);
+  padding:1.2rem;
+  min-height:150px;
+}
+.mono-k{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--acid);
+  margin-bottom:.8rem;
+}
+.mono-v{
+  font-family:var(--serif);
+  font-size:18px;
+  line-height:1.55;
+  color:rgba(244,239,228,.72);
+}
+@media(max-width:850px){
+  body{cursor:auto}
+  #cur{display:none}
+  .mono-grid{grid-template-columns:1fr}
+  .navdots{display:none}
+  .topbar{position:absolute}
+}
+
+/* Cover */
+#cover{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(75,215,255,.17),transparent 26%),
+    radial-gradient(circle at 80% 30%,rgba(143,109,255,.16),transparent 30%),
+    radial-gradient(circle at 55% 80%,rgba(183,255,42,.1),transparent 28%),
+    linear-gradient(135deg,#030306 0%,#0b0d12 55%,#050507 100%);
+}
+#cover::before{
+  content:'∞';
+  position:absolute;
+  inset:-20%;
+  display:grid;
+  place-items:center;
+  font-family:var(--display);
+  font-size:60vw;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(244,239,228,.06);
+  transform:rotate(-8deg);
+}
+.cover-grid{
+  width:min(1180px,100%);
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:3rem;
+  align-items:end;
+}
+.cover-tag{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+  color:rgba(244,239,228,.45);
+  margin-bottom:2rem;
+}
+.cover-title{
+  font-family:var(--display);
+  font-size:clamp(48px,8.2vw,122px);
+  line-height:.86;
+  letter-spacing:-.05em;
+  text-transform:uppercase;
+}
+.cover-title span{
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(244,239,228,.78);
+}
+.cover-title strong{
+  display:block;
+  color:var(--paper);
+  font-weight:800;
+}
+.cover-sub{
+  max-width:620px;
+  margin-top:2rem;
+  font-size:clamp(18px,2vw,25px);
+  line-height:1.65;
+  color:rgba(244,239,228,.68);
+}
+.size-stack{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.size-card{
+  border:1px solid rgba(244,239,228,.12);
+  background:rgba(244,239,228,.04);
+  padding:1rem;
+}
+.size-num{
+  font-family:var(--display);
+  font-size:clamp(26px,4vw,54px);
+  line-height:1;
+  color:var(--acid);
+}
+.size-label{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(244,239,228,.42);
+  margin-top:.4rem;
+}
+.cover-warning{
+  font-family:var(--mono);
+  font-size:10px;
+  line-height:1.7;
+  color:rgba(244,239,228,.58);
+  border-top:1px solid rgba(244,239,228,.15);
+  margin-top:1.5rem;
+  padding-top:1.2rem;
+}
+@media(max-width:850px){.cover-grid{grid-template-columns:1fr}}
+
+/* Preface */
+#preface{
+  background:
+    linear-gradient(90deg,rgba(17,17,20,.05) 1px,transparent 1px),
+    linear-gradient(rgba(17,17,20,.04) 1px,transparent 1px),
+    var(--paper);
+  background-size:24px 24px;
+  color:var(--ink);
+}
+.lingo-board{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:2rem;
+  align-items:start;
+}
+.ethno-title{
+  font-family:var(--display);
+  font-size:clamp(38px,6vw,86px);
+  line-height:.92;
+  letter-spacing:-.045em;
+  color:var(--ink);
+  margin-bottom:1.5rem;
+}
+.ethno-title em{
+  display:block;
+  font-family:var(--fell);
+  font-style:italic;
+  font-weight:400;
+  color:#7a1c17;
+  letter-spacing:0;
+  text-transform:none;
+}
+.language-map{
+  border:1px solid rgba(17,17,20,.16);
+  background:rgba(255,255,255,.55);
+  padding:1rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.territory{
+  min-height:128px;
+  padding:.9rem;
+  border:1px solid rgba(17,17,20,.1);
+  background:rgba(244,239,228,.85);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.territory:nth-child(2n){background:#e5eddc}
+.territory:nth-child(3n){background:#dde8f0}
+.territory:nth-child(4n){background:#eee1de}
+.territory-k{
+  font-family:var(--mono);
+  font-size:8px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(17,17,20,.48);
+}
+.territory-v{
+  font-family:var(--display);
+  font-size:20px;
+  line-height:1;
+  color:var(--ink);
+}
+@media(max-width:900px){.lingo-board{grid-template-columns:1fr}.language-map{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.language-map{grid-template-columns:1fr}}
+
+/* Cantor */
+#cantor{
+  background:
+    linear-gradient(90deg,transparent 0 48px,rgba(75,215,255,.08) 48px 49px,transparent 49px 96px),
+    radial-gradient(circle at 75% 18%,rgba(183,255,42,.11),transparent 28%),
+    linear-gradient(180deg,#07080c,#11131a 55%,#07080c);
+}
+.paper-panel{
+  border:1px solid rgba(244,239,228,.14);
+  background:rgba(244,239,228,.04);
+  box-shadow:0 0 0 1px rgba(75,215,255,.08),0 0 60px rgba(75,215,255,.04);
+  padding:clamp(1.2rem,4vw,3rem);
+}
+.techno-title{
+  font-family:var(--display);
+  font-size:clamp(34px,6vw,76px);
+  line-height:.96;
+  letter-spacing:-.045em;
+  text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.techno-title span{color:var(--acid)}
+.equation-strip{
+  font-family:var(--mono);
+  font-size:clamp(14px,2.5vw,28px);
+  color:var(--cyan);
+  border-top:1px solid rgba(75,215,255,.25);
+  border-bottom:1px solid rgba(75,215,255,.25);
+  padding:1.2rem 0;
+  margin:2rem 0;
+  overflow-x:auto;
+}
+.proof{
+  counter-reset:proof;
+  display:grid;
+  gap:1px;
+  background:rgba(75,215,255,.18);
+  margin:2.5rem 0;
+}
+.proof-step{
+  counter-increment:proof;
+  background:#090b10;
+  padding:1.4rem;
+  display:grid;
+  grid-template-columns:70px 1fr;
+  gap:1.2rem;
+}
+.proof-step::before{
+  content:counter(proof,decimal-leading-zero);
+  font-family:var(--display);
+  font-size:32px;
+  color:var(--acid);
+}
+.proof-step p{
+  font-size:18px;
+  line-height:1.7;
+  color:rgba(244,239,228,.78);
+}
+.correction-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+  margin-top:2rem;
+}
+.correction{
+  border:1px solid rgba(183,255,42,.18);
+  padding:1.2rem;
+  background:rgba(183,255,42,.045);
+}
+.correction h3{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--acid);
+  margin-bottom:.8rem;
+}
+.correction p{font-size:16px;line-height:1.65;color:rgba(244,239,228,.7)}
+@media(max-width:850px){.correction-grid{grid-template-columns:1fr}.proof-step{grid-template-columns:1fr}}
+
+/* Comfort antagonist */
+#intuition{
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,242,198,.75),transparent 30%),
+    radial-gradient(circle at 80% 45%,rgba(255,183,197,.55),transparent 32%),
+    radial-gradient(circle at 50% 90%,rgba(188,219,255,.6),transparent 35%),
+    #fbf0d7;
+  color:var(--ink);
+}
+#intuition::after{
+  content:'forever forever forever forever forever forever forever forever';
+  position:absolute;
+  inset:0;
+  font-family:var(--display);
+  font-size:9vw;
+  line-height:.85;
+  color:rgba(17,17,20,.035);
+  overflow:hidden;
+  pointer-events:none;
+}
+.comfort-title{
+  font-family:var(--fell);
+  font-size:clamp(42px,7vw,104px);
+  line-height:.88;
+  color:#4b1f1b;
+  max-width:900px;
+}
+.false-list{
+  margin-top:3rem;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+}
+.false-card{
+  min-height:280px;
+  padding:1.3rem;
+  background:rgba(255,255,255,.52);
+  border:1px solid rgba(17,17,20,.12);
+  transform:rotate(var(--rot));
+}
+.false-card:nth-child(1){--rot:-1.3deg}
+.false-card:nth-child(2){--rot:1.4deg}
+.false-card:nth-child(3){--rot:-.7deg}
+.false-card:nth-child(4){--rot:1deg}
+.false-num{
+  font-family:var(--display);
+  font-size:42px;
+  color:#b22c22;
+}
+.false-card h3{
+  font-family:var(--sans);
+  font-size:18px;
+  line-height:1.15;
+  font-weight:900;
+  margin:.8rem 0;
+}
+.false-card p{
+  font-size:16px;
+  line-height:1.62;
+  color:rgba(17,17,20,.72);
+}
+@media(max-width:1000px){.false-list{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.false-list{grid-template-columns:1fr}.false-card{transform:none}}
+
+/* Domains */
+#domains{
+  background:#0c0d0f;
+}
+.domain-head{
+  max-width:980px;
+  margin:0 auto 4rem auto;
+}
+.domain-title{
+  font-family:var(--display);
+  font-size:clamp(34px,6vw,78px);
+  line-height:.94;
+  letter-spacing:-.045em;
+  text-transform:uppercase;
+}
+.domain-title span{color:var(--cyan)}
+.domain-card{
+  --accent:var(--cyan);
+  border-top:1px solid rgba(244,239,228,.14);
+  padding:3rem 0;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:3rem;
+}
+.domain-card:nth-child(3n){--accent:var(--acid)}
+.domain-card:nth-child(3n+1){--accent:var(--violet)}
+.domain-card:nth-child(3n+2){--accent:var(--amber)}
+.domain-side{
+  position:sticky;
+  top:90px;
+  align-self:start;
+}
+.domain-num{
+  font-family:var(--display);
+  font-size:44px;
+  color:var(--accent);
+}
+.domain-name{
+  font-family:var(--display);
+  font-size:24px;
+  line-height:1.05;
+  margin-top:.6rem;
+}
+.domain-meta{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(244,239,228,.38);
+  margin-top:1rem;
+  line-height:1.8;
+}
+.domain-body h3{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin:1.6rem 0 .8rem;
+}
+.domain-body p{
+  font-size:18px;
+  line-height:1.82;
+  color:rgba(244,239,228,.76);
+  margin-bottom:1rem;
+}
+.triad{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:rgba(244,239,228,.12);
+  margin:1.6rem 0;
+}
+.triad div{
+  background:#111318;
+  padding:1rem;
+  min-height:120px;
+}
+.triad b{
+  display:block;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.7rem;
+}
+.triad span{
+  font-size:15px;
+  line-height:1.6;
+  color:rgba(244,239,228,.68);
+}
+@media(max-width:900px){.domain-card{grid-template-columns:1fr}.domain-side{position:relative;top:auto}.triad{grid-template-columns:1fr}}
+
+/* Linguistic failure */
+#monopoly{
+  background:
+    linear-gradient(135deg,#170f0e,#090909 45%,#19100f);
+}
+.scream-title{
+  font-family:var(--display);
+  font-size:clamp(40px,8vw,112px);
+  line-height:.82;
+  letter-spacing:-.06em;
+  text-transform:uppercase;
+  color:var(--paper);
+  max-width:960px;
+}
+.scream-title span{color:var(--red)}
+.compression-wall{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:1px;
+  background:rgba(214,58,47,.28);
+  margin:3rem 0;
+}
+.compression-wall div{
+  background:rgba(5,5,7,.82);
+  min-height:120px;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  font-family:var(--display);
+  font-size:clamp(16px,2vw,30px);
+  color:rgba(244,239,228,.86);
+  padding:1rem;
+}
+.compression-wall div:nth-child(2n){color:rgba(214,58,47,.95)}
+@media(max-width:900px){.compression-wall{grid-template-columns:1fr 1fr}}
+
+/* Causation */
+#causation{
+  background:
+    radial-gradient(circle at 15% 15%,rgba(44,163,107,.18),transparent 28%),
+    radial-gradient(circle at 85% 70%,rgba(75,215,255,.12),transparent 32%),
+    #07100d;
+}
+.causal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  align-items:start;
+}
+.kill-card{
+  border:1px solid rgba(44,163,107,.28);
+  background:rgba(44,163,107,.045);
+  padding:1.4rem;
+  margin-bottom:1rem;
+}
+.kill-card h3{
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#67e09c;
+  margin-bottom:.9rem;
+}
+.kill-card p{
+  font-size:17px;
+  line-height:1.7;
+  color:rgba(244,239,228,.74);
+}
+.causal-title{
+  font-family:var(--display);
+  font-size:clamp(36px,6vw,84px);
+  line-height:.9;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+}
+.causal-title span{color:#67e09c}
+@media(max-width:900px){.causal-grid{grid-template-columns:1fr}}
+
+/* Coda */
+#coda{
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(210,162,64,.24),transparent 42%),
+    linear-gradient(180deg,#f6efe2,#ded2bd);
+  color:var(--ink);
+}
+.coda-box{
+  max-width:860px;
+  margin:0 auto;
+  text-align:center;
+}
+.coda-title{
+  font-family:var(--fell);
+  font-size:clamp(44px,7vw,96px);
+  line-height:.95;
+  color:#4c3520;
+}
+.coda-p{
+  font-size:clamp(19px,2vw,24px);
+  line-height:1.85;
+  color:rgba(17,17,20,.72);
+  margin:2rem auto 0;
+  max-width:780px;
+}
+.instrument-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:rgba(17,17,20,.16);
+  margin:3rem auto;
+  max-width:900px;
+}
+.instrument-list div{
+  background:rgba(246,239,226,.8);
+  padding:1rem;
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(17,17,20,.68);
+}
+.sources{
+  text-align:left;
+  margin-top:4rem;
+  border-top:1px solid rgba(17,17,20,.16);
+  padding-top:2rem;
+}
+.sources h3{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(17,17,20,.5);
+  margin-bottom:1rem;
+}
+.sources p{
+  font-family:var(--mono);
+  font-size:11px;
+  line-height:1.8;
+  color:rgba(17,17,20,.58);
+  margin-bottom:.8rem;
+}
+@media(max-width:760px){.instrument-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="prog"></div>
+<div class="topbar">
+  <span>Document INF-001</span>
+  <span>One word, incompatible structures</span>
+</div>
+<nav class="navdots" aria-label="Section navigation">
+  <button class="on" data-s="cover" aria-label="Cover"></button>
+  <button data-s="preface" aria-label="Preface"></button>
+  <button data-s="cantor" aria-label="Cantor"></button>
+  <button data-s="intuition" aria-label="Pre-Cantorian intuition"></button>
+  <button data-s="domains" aria-label="Domains"></button>
+  <button data-s="monopoly" aria-label="Semantic monopoly"></button>
+  <button data-s="causation" aria-label="Association is not causation"></button>
+  <button data-s="coda" aria-label="Coda"></button>
+</nav>
+
+<section id="cover">
+  <div class="cover-grid">
+    <div>
+      <div class="cover-tag r">A structural essay on mathematical rupture, language failure, and false equivalence</div>
+      <h1 class="cover-title r">
+        <strong>Infinity</strong>
+        <span>Is Not</span>
+        <strong>Constant</strong>
+      </h1>
+      <p class="cover-sub r">On why one word governs too many territories and rules none of them accurately.</p>
+    </div>
+    <div class="size-stack r">
+      <div class="size-card">
+        <div class="size-num">ℵ₀</div>
+        <div class="size-label">Countable infinity. Endless, but still listable.</div>
+      </div>
+      <div class="size-card">
+        <div class="size-num">2^ℵ₀</div>
+        <div class="size-label">Continuum cardinality. Larger than countable infinity.</div>
+      </div>
+      <div class="size-card">
+        <div class="size-num">∞?</div>
+        <div class="size-label">The word culture keeps using as if the first two warnings never happened.</div>
+      </div>
+      <div class="cover-warning">The defect is not that people fail to respect infinity. The defect is that one word is asked to carry size, duration, divinity, desire, recursion, mystery, exhaustion, and engineered endlessness as if they shared one structure.</div>
+    </div>
+  </div>
+</section>
+
+<section id="preface" class="light">
+  <div class="lingo-board">
+    <div>
+      <div class="label r">Preface / The linguistic fault</div>
+      <h2 class="ethno-title r">The Word <em>That Lies By Being Useful</em></h2>
+      <p class="body-p r">The problem is not that infinity is difficult. Difficulty would be manageable. The deeper problem is that the word is too portable. It moves across mathematics, theology, physics, computation, language, economics, social media, science, and selfhood without being stopped at the border of each domain and asked for identification.</p>
+      <p class="body-p r">A term that travels this easily begins to look universal. Cognition mistakes the shared sign for a shared nature. The name remains stable, so the mind assumes the structure underneath it is stable too. That assumption is false.</p>
+      <p class="body-p r">This is the inverse failure of semantic satiation. There, a word loses weight through repetition. Here, a word loses precision through expansion. It accumulates meanings from incompatible territories and the accumulation reads as depth. It is not depth. It is compression damage.</p>
+      <p class="body-p r">The ordinary defense is that context resolves the problem. In a narrow conversation, that is partly true. A mathematician, a theologian, and an interface designer usually know what they mean when they use the word. But culture does not preserve the walls between contexts. It lets prestige leak. Mathematical precision leaks into theology. Theological depth leaks into romance. Interface design borrows the mood of cosmic endlessness. Economics borrows the inevitability of nature. The result is not communication. It is smuggling.</p>
+      <p class="body-p r">The word becomes a passport with too many stamps and no inspection history. It has crossed borders so often that people stop asking which jurisdiction applies.</p>
+    </div>
+    <div class="language-map r">
+      <div class="territory"><div class="territory-k">Domain 01</div><div class="territory-v">Cardinality</div></div>
+      <div class="territory"><div class="territory-k">Domain 02</div><div class="territory-v">Space</div></div>
+      <div class="territory"><div class="territory-k">Domain 03</div><div class="territory-v">Time</div></div>
+      <div class="territory"><div class="territory-k">Domain 04</div><div class="territory-v">God</div></div>
+      <div class="territory"><div class="territory-k">Domain 05</div><div class="territory-v">Desire</div></div>
+      <div class="territory"><div class="territory-k">Domain 06</div><div class="territory-v">Syntax</div></div>
+      <div class="territory"><div class="territory-k">Domain 07</div><div class="territory-v">Code</div></div>
+      <div class="territory"><div class="territory-k">Domain 08</div><div class="territory-v">Attention</div></div>
+      <div class="territory"><div class="territory-k">Domain 09</div><div class="territory-v">Self</div></div>
+    </div>
+  </div>
+  <div class="narrow">
+    <div class="quote r">
+      <div class="quote-text">The list is not decoration. The list is the first proof. One word is being used for too many different structural jobs.</div>
+    </div>
+    <p class="body-p r">Wittgenstein's family resemblance model gives the first correction: not every word points to an essence. Some words hold together through overlapping uses. Saussure gives the second correction: the signifier does not enforce the signified. Lakoff and Johnson give the third: abstract concepts are often built from embodied metaphors, and metaphors do not automatically transfer across domains without residue.</p>
+    <p class="body-p r">Infinity is a family resemblance term pretending to be a natural kind. That pretension is the essay's target.</p>
+    <p class="body-p r">The central question therefore changes. It is not "what is infinity?" That question is already too compressed. The better question is procedural: when someone says infinite, which structure is being invoked, which structure is being hidden, and which inference is being smuggled from one field into another?</p>
+    <div class="source-note r">Sources: Ludwig Wittgenstein, Philosophical Investigations (1953); Ferdinand de Saussure, Course in General Linguistics (1916); George Lakoff and Mark Johnson, Philosophy in the Flesh (1999).</div>
+  </div>
+</section>
+
+<section id="cantor">
+  <div class="inner">
+    <div class="paper-panel">
+      <div class="label r">Part I / Cantor breaks the word</div>
+      <h2 class="techno-title r">The Mathematical Rupture <span>Culture Has Not Absorbed</span></h2>
+      <p class="body-p r">Before Cantor, the common intuition treats infinity as horizon. It is the unreachable, the endless, the thing that recedes as you move toward it. Aristotle's potential infinity gives this intuition its classical form: a process can continue without end, but an actually completed infinite totality is rejected.</p>
+      <p class="body-p r">Cantor's work breaks that intuition. Between the 1874 paper on countability and the later foundations of transfinite set theory, infinity becomes not merely endlessness but a structured mathematical object. Infinite sets can be compared. Some infinities are strictly larger than others. The word can no longer mean only "goes on forever."</p>
+      <div class="equation-strip r">|N| = ℵ₀ &nbsp;&nbsp; / &nbsp;&nbsp; |R| = 2^ℵ₀ &nbsp;&nbsp; / &nbsp;&nbsp; ℵ₀ &lt; 2^ℵ₀</div>
+      <p class="body-p r">The decisive argument is diagonalization. The proof does not rely on mood, metaphor, or reverence before the infinite. It forces a contradiction inside the attempt to list all real numbers between 0 and 1.</p>
+      <div class="proof r">
+        <div class="proof-step"><p>Assume that every real number between 0 and 1 can be placed in a complete infinite list. This assumption is the target. If the list is complete, every decimal expansion in that interval appears somewhere on it.</p></div>
+        <div class="proof-step"><p>Write the list as rows of digits. The first number has a first digit, the second number has a second digit, the third number has a third digit, and so on. The diagonal is formed by taking the nth digit from the nth row.</p></div>
+        <div class="proof-step"><p>Now construct a new number by changing each diagonal digit. If the diagonal digit is 1, choose 2. If it is not 1, choose 1. The exact replacement rule is not sacred. What matters is that the new digit differs from the diagonal digit at every position.</p></div>
+        <div class="proof-step"><p>The constructed number differs from the first listed number in the first digit, from the second listed number in the second digit, from the third listed number in the third digit, and from the nth listed number in the nth digit.</p></div>
+        <div class="proof-step"><p>Therefore the constructed number is not anywhere on the supposedly complete list. The assumption that the real numbers in the interval can be listed is false. The real numbers are uncountable. Their infinity is larger than the infinity of the natural numbers.</p></div>
+      </div>
+      <p class="body-p r">This is the hinge. The natural numbers never end. The real numbers between 0 and 1 also never end. But they are not equally infinite. Endlessness is not enough information. The structure of the endlessness matters.</p>
+      <p class="body-p r">Hilbert's Hotel gives the intuition a second wound. A hotel with countably infinite rooms can be full and still accommodate one more guest by moving the guest in room 1 to room 2, room 2 to room 3, and so on. It can even accommodate countably many new guests by shifting every current guest from room n to room 2n and placing the newcomers in the odd numbered rooms. The hotel is full. The hotel still has room. The contradiction is only a contradiction for finite intuitions pretending they understand the infinite.</p>
+      <p class="body-p r">This is why Cantor matters beyond mathematics. He does not merely add a technical distinction. He exposes a cognitive defect. The human mind treats "without end" as a single category because finite life rarely requires more. Cantor proves that this category is too crude for the object it claims to name.</p>
+      <div class="correction-grid r">
+        <div class="correction"><h3>Correction 01</h3><p>Infinite does not mean maximal. Cantor's hierarchy does not terminate in a largest aleph.</p></div>
+        <div class="correction"><h3>Correction 02</h3><p>Infinite does not mean equal. Countable and uncountable infinities are not the same size.</p></div>
+        <div class="correction"><h3>Correction 03</h3><p>Infinite does not mean complete. An infinite set can still lack elements, closure, proof, or a terminal account.</p></div>
+      </div>
+      <p class="body-p r">The diagonal argument also shows why the essay cannot be built on atmosphere. Infinity is not made plural by poetic preference. It is made plural by proof. Once the proof is admitted, every non-mathematical use of infinity becomes obligated to specify its own structure or confess that it is using the word rhetorically.</p>
+      <div class="source-note r">Sources: Georg Cantor, 1874 paper on countability; Cantor, Beiträge zur Begründung der transfiniten Mengenlehre (1895, 1897); Joseph Dauben, Georg Cantor: His Mathematics and Philosophy of the Infinite (1979); Douglas Hofstadter, Gödel, Escher, Bach (1979); David Hilbert, Über das Unendliche (1925); Bertrand Russell, Introduction to Mathematical Philosophy (1919).</div>
+    </div>
+  </div>
+</section>
+
+<section id="intuition" class="light">
+  <div class="inner">
+    <div class="label r">Part II / The old intuition keeps running</div>
+    <h2 class="comfort-title r">Culture never got the Cantorian update.</h2>
+    <p class="body-p r" style="max-width:820px;margin-top:2rem">The pre-Cantorian intuition survives because it is psychologically comfortable. Infinity as horizon feels noble. Infinity as mystery feels deep. Infinity as endlessness feels easy to understand. Cantor's correction is colder: infinity is not one mood. It is structured, plural, and sometimes strictly unequal to itself.</p>
+    <p class="body-p r" style="max-width:820px">Most domains do not need to import Cantor's formal machinery directly. Theology does not become set theory. Physics does not become pure cardinal arithmetic. Desire does not become a subset relation. But every domain that uses the word "infinite" inherits dangers from the old intuition unless it states what is actually unbounded.</p>
+    <p class="body-p r" style="max-width:820px">The failure is not ignorance. It is a legacy process still running. Aristotle's potential infinity remains psychologically dominant because it maps cleanly onto experience: keep counting, keep walking, keep waiting, keep scrolling. Actual infinity, structured infinity, unequal infinity, incomplete infinity, and formal undecidability do not map cleanly onto everyday sensation. So culture defaults to the felt version and calls it obvious.</p>
+    <div class="false-list r">
+      <div class="false-card">
+        <div class="false-num">01</div>
+        <h3>All infinities are equivalent.</h3>
+        <p>Cantor disproves this inside mathematics. The correction should make every other domain cautious about treating shared endlessness as shared structure.</p>
+      </div>
+      <div class="false-card">
+        <div class="false-num">02</div>
+        <h3>Infinity means absence of structure.</h3>
+        <p>The transfinite hierarchy is structure, not fog. It is possible for infinity to be precise rather than mystical.</p>
+      </div>
+      <div class="false-card">
+        <div class="false-num">03</div>
+        <h3>Infinity means incompleteness.</h3>
+        <p>This confuses mathematical size with epistemic failure. Not knowing the end of something is not the same as proving its infinitude.</p>
+      </div>
+      <div class="false-card">
+        <div class="false-num">04</div>
+        <h3>Vocabulary transfers structure.</h3>
+        <p>Calling two things infinite does not license inference between them. The shared word is an association, not a mechanism.</p>
+      </div>
+    </div>
+    <div class="quote r" style="max-width:900px;margin-top:3rem">
+      <div class="quote-text" style="color:#4b1f1b">The old intuition does not survive because it is correct. It survives because it is easy to imagine.</div>
+    </div>
+    <div class="source-note r">Sources: Aristotle, Physics Book III; A.W. Moore, The Infinite (1990, 2nd ed. 2001); Ian Stewart, Infinity: A Very Short Introduction (2017); Rudy Rucker, Infinity and the Mind (1982).</div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="domain-head">
+    <div class="label r">Part III / Domain by domain dissection</div>
+    <h2 class="domain-title r">What is actually unbounded <span>here?</span></h2>
+    <p class="body-p r">Each domain gets the same three questions. What is claimed to be infinite? What is structurally happening? What does the misuse of the word conceal?</p>
+    <p class="body-p r">This section is not a survey of everything infinity has ever meant. That would repeat the error at a larger scale. The point is to isolate the local mechanism in each field and refuse the false comfort of a unified word.</p>
+  </div>
+  <div class="inner">
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.1</div>
+        <div class="domain-name">Mathematics</div>
+        <div class="domain-meta">Cardinality / hierarchy / incompleteness</div>
+      </aside>
+      <div class="domain-body">
+        <p>Mathematics is the one domain in this essay where infinity becomes fully technical. The natural numbers form a countable infinity. The real numbers form an uncountable infinity. The transfinite hierarchy names levels beyond the first endlessness.</p>
+        <p>Gödel's incompleteness theorems do not say the same thing as Cantor's diagonal argument, but they share a structural family resemblance. A formal system can be powerful enough to generate infinite mathematical reach and still fail to prove every truth expressible within it. Infinity of extent does not guarantee completeness of authority.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>Mathematical infinity is a precise formal object.</span></div>
+          <div><b>Structure</b><span>Countability, uncountability, hierarchy, proof limits.</span></div>
+          <div><b>Confusion</b><span>Endlessness gets mistaken for sameness or totality.</span></div>
+        </div>
+        <p>Cantor also gestures toward Absolute Infinity, which he associated with God. That gesture matters because it shows the boundary even inside Cantor's own thought. The transfinite hierarchy is mathematical. Absolute Infinity is not simply another aleph waiting higher up the ladder.</p>
+        <h3>Boundary condition</h3>
+        <p>Mathematics allows the word infinite only after formal discipline. The set must be specified. The relation must be specified. The comparison must be proved. Without that discipline, "infinite" is not mathematical language. It is costume.</p>
+        <div class="source-note">Sources: Cantor; Gödel, Über formal unentscheidbare Sätze (1931); Rebecca Goldstein, Incompleteness (2005); Dauben (1979).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.2</div>
+        <div class="domain-name">Physics and Cosmology</div>
+        <div class="domain-meta">Space / time / singularities / renormalization</div>
+      </aside>
+      <div class="domain-body">
+        <p>Physics contains several things called infinite, but they do not behave the same. A spatially infinite universe is not the same question as a temporally endless cosmology. A singularity in general relativity is not a metaphysical declaration that nature contains an actual infinite density as a stable object. It is often treated as a sign that the model has reached its limit.</p>
+        <p>The same caution applies to infinities in quantum field calculations. Renormalization is not a casual erasure of inconvenience. It is a formal response to the appearance of divergent quantities inside a framework that still produces empirically successful predictions. The infinity marks a structural pressure point between model, scale, and measurement.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>The physical universe may contain infinities of space, time, or quantity.</span></div>
+          <div><b>Structure</b><span>Model limits, singular behavior, scale dependence, unresolved cosmology.</span></div>
+          <div><b>Confusion</b><span>A mathematical divergence is mistaken for a final description of reality.</span></div>
+        </div>
+        <p>The physical lesson is severe: when an equation produces infinity, the correct question is not automatically "what infinite thing exists?" It may be "which coordinate system, approximation, or theory has stopped being valid?"</p>
+        <h3>Boundary condition</h3>
+        <p>Physics teaches a discipline opposite to popular metaphysics. An infinity inside a model is not automatically a revelation. It may be an alarm. It may mark the point where a theory is being asked to speak beyond its jurisdiction.</p>
+        <div class="source-note">Sources: Roger Penrose, The Road to Reality (2004); Max Tegmark, 1998 paper on mathematical structures and physical reality; Freeman Dyson on renormalization; Carlo Rovelli, Reality Is Not What It Seems (2016).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.3</div>
+        <div class="domain-name">Computation</div>
+        <div class="domain-meta">Loops / recursion / halting / state space</div>
+      </aside>
+      <div class="domain-body">
+        <p>Computation gives infinity a practical brutality. An infinite loop is not a completed infinite object. It is a process that fails to terminate. Unbounded recursion is not metaphysical depth. It is a control flow pattern that consumes stack, time, or machine resources until a limit is hit.</p>
+        <p>Turing's halting problem is the deeper rupture. There is no general algorithm that decides for every arbitrary program and input whether the program will halt. The impossibility is formal. It is not a matter of needing a faster machine.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>Programs can run forever, generate unbounded processes, or resist termination analysis.</span></div>
+          <div><b>Structure</b><span>Potential infinity, undecidability, resource limits, state explosion.</span></div>
+          <div><b>Confusion</b><span>Nontermination gets romanticized as infinity instead of diagnosed as absent closure.</span></div>
+        </div>
+        <p>Physical hardware cannot execute an actual completed infinity. It executes steps until termination, exhaustion, interruption, or failure. Computation makes the distinction between potential infinity and actual infinity operational.</p>
+        <h3>Boundary condition</h3>
+        <p>In computation, infinity is often a bug report written in grand language. A loop that never ends is not profound because it is endless. It is diagnostically important because the exit condition is absent, unreachable, or undecidable from the outside.</p>
+        <div class="source-note">Sources: Alan Turing, On Computable Numbers (1936); Donald Knuth, The Art of Computer Programming Vol. 1 (1968); Michael Sipser, Introduction to the Theory of Computation (1996).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.4</div>
+        <div class="domain-name">Language and Linguistics</div>
+        <div class="domain-meta">Syntax / generation / meaning</div>
+      </aside>
+      <div class="domain-body">
+        <p>Generative grammar gives language a real formal infinity: a finite rule system can generate an unbounded number of grammatical sentences. This is not a slogan. It is a structural claim about recursive syntax.</p>
+        <p>But syntactic infinity is not semantic infinity. A grammar can generate sentences that are well formed without being useful, truthful, meaningful, or worth saying. The ability to produce endlessly many strings does not produce endlessly many significant acts of speech.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>Finite linguistic systems can generate infinitely many sentences.</span></div>
+          <div><b>Structure</b><span>Recursive syntax, competence, performance limits, semantic filtering.</span></div>
+          <div><b>Confusion</b><span>Expressibility gets mistaken for meaning.</span></div>
+        </div>
+        <p>This is where language exposes its own danger. The same machinery that creates unbounded expression can flood the channel with valid emptiness. Infinite grammatical capacity does not solve semantic precision. It makes precision more necessary.</p>
+        <h3>Boundary condition</h3>
+        <p>Language can produce an unbounded number of legal forms. It cannot guarantee that those forms carry reality. This is why the phrase "infinite expressibility" is dangerous when it forgets the difference between generation and meaning.</p>
+        <div class="source-note">Sources: Noam Chomsky, Syntactic Structures (1957); Chomsky, Aspects of the Theory of Syntax (1965); Ray Jackendoff, Foundations of Language (2002); Saussure (1916).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.5</div>
+        <div class="domain-name">Theology</div>
+        <div class="domain-meta">Aseity / non-dependence / absolute infinity</div>
+      </aside>
+      <div class="domain-body">
+        <p>Divine infinity is not the claim that God is an enormous number. In classical theology, it is ontological. It concerns non-dependence, fullness of being, lack of external limitation, and the refusal to place God inside the scale of finite beings.</p>
+        <p>Aquinas explicitly treats divine infinity as different from quantitative infinity. A line can be extended without end, but God is not a line extended to the largest possible length. Divine infinity is not measurement. It is a category of being.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>God is infinite.</span></div>
+          <div><b>Structure</b><span>Aseity, ontological non-dependence, transcendence of finite limitation.</span></div>
+          <div><b>Confusion</b><span>Ontological infinity gets reduced to mathematical magnitude.</span></div>
+        </div>
+        <p>Cantor's own theology sharpens the distinction rather than dissolving it. His Absolute Infinity is not simply the next cardinal after the transfinite hierarchy. It is not one more mathematical object among mathematical objects.</p>
+        <h3>Boundary condition</h3>
+        <p>Theology loses precision when divine infinity is imagined as maximum quantity. A maximum quantity still belongs to quantity. Classical divine infinity refuses that placement. It is not the biggest member of the scale. It is not on the scale.</p>
+        <div class="source-note">Sources: Thomas Aquinas, Summa Theologica I, Q.7; Dauben (1979) on Cantor's correspondence with Cardinal Franzelin; Leo Sweeney, Divine Infinity in Greek and Medieval Thought (1992); David Bentley Hart, The Experience of God (2013).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.6</div>
+        <div class="domain-name">Desire and Economics</div>
+        <div class="domain-meta">Wants / scarcity / satiation</div>
+      </aside>
+      <div class="domain-body">
+        <p>Economics often begins with scarcity: resources are finite, wants are treated as unbounded, and allocation becomes the central problem. But "unbounded wants" is not Cantorian infinity. It is a behavioral and institutional claim about absence of satiation.</p>
+        <p>That distinction matters. If desire is treated as naturally infinite, then expansion, competition, and permanent scarcity begin to look like laws of being. Veblen's account of socially constructed consumption and Simon's bounded rationality both disturb this picture. Wants are not merely natural quantities waiting inside the individual. They are produced, ranked, trained, compared, advertised, and socially amplified.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>Human wants are infinite while resources are finite.</span></div>
+          <div><b>Structure</b><span>Non-satiation, social production of desire, bounded choice, scarcity models.</span></div>
+          <div><b>Confusion</b><span>Policy and market assumptions borrow grandeur from mathematical infinity without earning it.</span></div>
+        </div>
+        <p>The more precise question is not whether desire is infinite. The precise question is which desires fail to reach closure, which institutions profit from keeping them open, and which constraints are biological, social, or manufactured.</p>
+        <h3>Boundary condition</h3>
+        <p>Economic language becomes ideological when "infinite wants" is treated as a neutral human fact rather than a contested model of behavior. If wants are culturally intensified, then scarcity is not only a resource relation. It is also an engineered relation between attention, comparison, and status.</p>
+        <div class="source-note">Sources: Paul Samuelson, Economics (1948); Thorstein Veblen, The Theory of the Leisure Class (1899); Herbert Simon, A Behavioral Model of Rational Choice (1955).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.7</div>
+        <div class="domain-name">Social Media and Attention</div>
+        <div class="domain-meta">Infinite scroll / terminal condition removal</div>
+      </aside>
+      <div class="domain-body">
+        <p>Infinite scroll is not infinite. It is a user-interface decision that removes a visible terminal condition. The content available to a given system at a given time remains finite. The experience of endlessness is manufactured by hiding the boundary and continuously loading the next unit before the user's attention can meet an end.</p>
+        <p>This is engineered horizon. It simulates the old pre-Cantorian intuition: keep moving and the end keeps receding. But the trick is not metaphysical. It is architectural. The bottom of the page was removed.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>The feed is infinite.</span></div>
+          <div><b>Structure</b><span>Boundary concealment, refresh loops, attention capture, engagement optimization.</span></div>
+          <div><b>Confusion</b><span>Designed absence of stopping point is mistaken for actual endlessness.</span></div>
+        </div>
+        <p>The danger is not that the feed is infinite. The danger is that it does not need to be infinite to produce the behavioral effect of infinity. A finite system can still destroy attention by removing closure.</p>
+        <h3>Boundary condition</h3>
+        <p>This is one of the most important modern distinctions: actual infinity is unnecessary when perceived endlessness is enough. The platform does not need an infinite archive. It needs a user who never encounters the bottom.</p>
+        <div class="source-note">Sources: Aza Raskin's account of infinite scroll in BBC documentary Smartphones: The Dark Side (2018); Tristan Harris, How Technology Hijacks People's Minds (2016); James Williams, Stand Out of Our Light (2018).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.8</div>
+        <div class="domain-name">Scientific Regress</div>
+        <div class="domain-meta">Justification / priors / foundations</div>
+      </aside>
+      <div class="domain-body">
+        <p>Science and philosophy inherit a different infinity: regress. Every explanation leans on prior assumptions. Those assumptions can be challenged, which produces further demands for justification. Hans Albert's Münchhausen Trilemma names the structure: infinite regress, circularity, or dogmatic stopping.</p>
+        <p>Popper's falsificationism is one attempt to stop verification from requiring impossible final foundations. Bayesian inference relocates the problem into priors. Then comes the question: what justifies the prior? The regress returns, not as a failure of intelligence, but as a structural property of justification.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>Inquiry can continue without final foundation.</span></div>
+          <div><b>Structure</b><span>Potential regress, fallibilism, priors, stopping rules.</span></div>
+          <div><b>Confusion</b><span>Absence of final certainty is mistaken for absence of knowledge.</span></div>
+        </div>
+        <p>Deutsch's counterpoint matters: the absence of final closure need not be despair. It can be the condition for explanation. But even there, the word infinity names openness of improvement, not cardinality.</p>
+        <h3>Boundary condition</h3>
+        <p>Infinite regress is not a number of causes stacked in a warehouse. It is a structure of justification without a final self-authorizing floor. The practical question is not how to finish the regress. The practical question is which stopping rule is honest enough for the work being done.</p>
+        <div class="source-note">Sources: Hans Albert, Treatise on Critical Reason (1968, tr. 1985); Karl Popper, The Logic of Scientific Discovery (1934, tr. 1959); David Deutsch, The Beginning of Infinity (2011).</div>
+      </div>
+    </article>
+
+    <article class="domain-card r">
+      <aside class="domain-side">
+        <div class="domain-num">3.9</div>
+        <div class="domain-name">Selfhood and Identity</div>
+        <div class="domain-meta">Interpretability / narrative / underdetermination</div>
+      </aside>
+      <div class="domain-body">
+        <p>The self is not infinite in the mathematical sense. It is unbounded in interpretability. Any memory can be reframed. Any action can be reread under a later theory of the person. Any trait can become evidence for a different account once the narrative grammar changes.</p>
+        <p>Ricoeur's narrative identity framework treats the self as constituted through an ongoing account that never reaches final closure. Parfit's work disturbs the assumption that personal identity must be a sharply determinate fact. Nagel's account of subjective experience adds another pressure: first-person reality has an interiority that resists full external translation.</p>
+        <div class="triad">
+          <div><b>Claim</b><span>The self is endlessly interpretable.</span></div>
+          <div><b>Structure</b><span>Open text, underdetermination, narrative revision, subjective inaccessibility.</span></div>
+          <div><b>Confusion</b><span>Interpretive openness gets mistaken for infinite essence.</span></div>
+        </div>
+        <p>The precise claim is colder and more useful. The self lacks a canonical final description. That is not infinity as quantity. It is infinity as absence of final interpretive closure.</p>
+        <h3>Boundary condition</h3>
+        <p>Selfhood is not infinite because it contains endless content. It is unclosed because every description of the self can become material for another description. The interpreter is inside the text being interpreted.</p>
+        <div class="source-note">Sources: Paul Ricoeur, Oneself as Another (1992); Derek Parfit, Reasons and Persons (1984); Thomas Nagel, What Is It Like to Be a Bat? (1974).</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="monopoly">
+  <div class="inner">
+    <div class="label r">Part IV / The linguistic failure</div>
+    <h2 class="scream-title r">Semantic <span>Monopoly</span></h2>
+    <p class="body-p r" style="max-width:860px;margin-top:2rem">A semantic monopoly is a word that owns too many territories and governs none of them accurately. "Infinity" is the clearest example because its mathematical aura makes it seem more precise than ordinary language. That precision is real inside mathematics. It does not transfer automatically.</p>
+    <p class="body-p r" style="max-width:860px">The word compresses at least ten structural properties into one sign. The compression is lossy. It preserves the feeling of depth and discards the mechanism.</p>
+    <div class="compression-wall r">
+      <div>Size</div>
+      <div>Duration</div>
+      <div>Complexity</div>
+      <div>Incompleteness</div>
+      <div>Mystery</div>
+      <div>Recursion</div>
+      <div>Unreachability</div>
+      <div>Divinity</div>
+      <div>Abundance</div>
+      <div>Exhaustion</div>
+    </div>
+    <p class="body-p r" style="max-width:860px">In the earlier language failure, repetition made words stop carrying reality. Here the failure is different. Overextension makes one word carry too many realities. Repetition erodes weight. Overextension erodes precision. Both are failures of language as a compression channel.</p>
+    <p class="body-p r" style="max-width:860px">This is why infinity has become dangerous as a casual word. It appears to clarify. It often does the opposite. It imports mathematical seriousness into domains where the relevant structure may be closure failure, dependency, desire, computation, or attention architecture.</p>
+    <p class="body-p r" style="max-width:860px">The monopoly works because each territory pays tribute to the same sign. Mathematics lends rigor. Theology lends awe. Physics lends scale. Economics lends inevitability. Social media lends everyday bodily proof. The self lends intimacy. By the time the word arrives in an argument, it is already overfunded. It has more authority than the local claim deserves.</p>
+    <p class="body-p r" style="max-width:860px">This is the epistemic damage: the word lets a weak claim borrow strength from a strong domain. A marketing claim becomes cosmic. A desire becomes natural law. A feed becomes fate. A computational loop becomes existential. A personal feeling becomes metaphysical. The transfer happens under the cover of a single word.</p>
+    <div class="quote r" style="max-width:900px">
+      <div class="quote-text">The word looks like a telescope. Too often it is a fog machine.</div>
+    </div>
+    <p class="body-p r" style="max-width:860px">The corrective action is not to police metaphor out of language. Metaphor is not the enemy. Unmarked metaphor is the enemy. The problem begins when a metaphor starts making mechanical claims without naming the mechanism. Infinity can remain poetic, theological, mathematical, computational, and existential. It cannot be allowed to pretend that those uses are interchangeable.</p>
+    <div class="source-note r">Sources: Wittgenstein, Philosophical Investigations §65-67; W.V.O. Quine, Two Dogmas of Empiricism (1951); Lakoff and Johnson (1999); Nelson Goodman, Languages of Art (1968).</div>
+  </div>
+</section>
+
+<section id="causation">
+  <div class="inner causal-grid">
+    <div>
+      <div class="label r">Part V / Association is not causation</div>
+      <h2 class="causal-title r">A metaphor is <span>not</span> a mechanism.</h2>
+      <p class="body-p r" style="margin-top:2rem">Because two things are both called infinite, cognition associates them. This association then produces illegal transfers. Divine infinity borrows from mathematical infinity. Infinite scroll borrows from metaphysical endlessness. Infinite love borrows from quantity. Infinite possibility borrows from probability. The transfer feels meaningful because the word is shared. The structure is not.</p>
+      <p class="body-p r">Pearl's distinction between association and causation is useful outside statistics because the deeper discipline is the same: relation is not mechanism. Co-occurrence is not cause. Shared vocabulary is not shared ontology.</p>
+      <p class="body-p r">Analogy has legitimate force when the structure is preserved. Polya's work on mathematical reasoning respects analogy precisely because good analogy is not resemblance by mood. It is resemblance by relation. The lazy version of infinity violates that discipline. It sees two territories with the same sign at the entrance and assumes the roads inside must connect.</p>
+      <p class="body-p r">Korzybski's warning about maps and territories lands here with unusual force. The word "infinity" is a map symbol. It is not the territory. In this case, the same map symbol has been printed over multiple territories with different terrain, different weather, different laws, and different failure conditions.</p>
+    </div>
+    <div class="r">
+      <div class="kill-card">
+        <h3>Conflation killed 01</h3>
+        <p>Divine infinity as ontological non-dependence is not mathematical infinity as cardinality beyond the natural numbers.</p>
+      </div>
+      <div class="kill-card">
+        <h3>Conflation killed 02</h3>
+        <p>Infinite scroll as engineered absence of visible terminal condition is not metaphysical endlessness as a property of time or space.</p>
+      </div>
+      <div class="kill-card">
+        <h3>Conflation killed 03</h3>
+        <p>Infinite love or possibility as felt surplus without visible closure is not infinite probability, infinite quantity, or infinite measure.</p>
+      </div>
+      <div class="kill-card">
+        <h3>Final rule</h3>
+        <p>Naming two things with the same word does not make them structurally related. The pointer is not the territory. In the case of infinity, the pointer has been pointed at too many territories to illuminate any of them without further instrumentation.</p>
+      </div>
+      <div class="source-note">Sources: Judea Pearl and Dana Mackenzie, The Book of Why (2018); Alfred Korzybski, Science and Sanity (1933); George Polya, Mathematics and Plausible Reasoning (1954).</div>
+    </div>
+  </div>
+</section>
+
+<section id="coda" class="light">
+  <div class="coda-box">
+    <div class="label r">Coda / What precision recovers</div>
+    <h2 class="coda-title r">Not consolation. Instruments.</h2>
+    <p class="coda-p r">The word will not be retired. Language does not work that way. No civilization pauses itself, performs semantic audit, and returns with a clean vocabulary. The word infinity will continue moving across mathematics, prayer, desire, computation, cosmology, and grief.</p>
+    <p class="coda-p r">But the reader can stop using one blunt object where nine instruments are required.</p>
+    <div class="instrument-list r">
+      <div>What is unbounded?</div>
+      <div>What is merely unfinished?</div>
+      <div>What is the closure condition?</div>
+      <div>What would termination look like?</div>
+      <div>What is finite but hidden?</div>
+      <div>Who benefits from endlessness?</div>
+      <div>Is this cardinality?</div>
+      <div>Is this dependence?</div>
+      <div>Is this engineered horizon?</div>
+    </div>
+    <p class="coda-p r">Precision does not make infinity smaller. It stops the word from stealing authority from one domain and spending it fraudulently in another.</p>
+    <p class="coda-p r" style="font-style:italic;color:#4c3520">Infinity is not constant. The word is constant. That was the problem.</p>
+    <div class="sources r">
+      <h3>Consolidated source register</h3>
+      <p><strong>Mathematics:</strong> Cantor (1874, 1895, 1897); Dauben (1979); Hilbert (1925); Gödel (1931); Goldstein (2005); Hofstadter (1979); Russell (1919).</p>
+      <p><strong>Physics:</strong> Penrose (2004); Tegmark (1998); Rovelli (2016); Dyson on renormalization.</p>
+      <p><strong>Computation:</strong> Turing (1936); Knuth (1968); Sipser (1996).</p>
+      <p><strong>Linguistics:</strong> Chomsky (1957, 1965); Jackendoff (2002); Saussure (1916).</p>
+      <p><strong>Theology:</strong> Aquinas, Summa Theologica I Q.7; Dauben (1979) on Cantor's theology; Sweeney (1992); Hart (2013).</p>
+      <p><strong>Economics and desire:</strong> Samuelson (1948); Veblen (1899); Simon (1955).</p>
+      <p><strong>Attention and technology:</strong> Raskin in BBC (2018); Harris (2016); Williams (2018).</p>
+      <p><strong>Philosophy of science:</strong> Albert (1968); Popper (1959); Deutsch (2011).</p>
+      <p><strong>Selfhood:</strong> Ricoeur (1992); Parfit (1984); Nagel (1974).</p>
+      <p><strong>Linguistic theory and causality:</strong> Wittgenstein (1953); Quine (1951); Lakoff and Johnson (1999); Goodman (1968); Korzybski (1933); Pearl and Mackenzie (2018); Polya (1954).</p>
+      <p><strong>General history of infinity:</strong> Moore (2001); Stewart (2017); Rucker (1982); Aristotle, Physics Book III.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';
+  cur.style.top=e.clientY+'px';
+});
+document.querySelectorAll('p,h1,h2,h3,.territory,.size-card,.kill-card,.compression-wall div').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('big'));
+});
+const prog=document.getElementById('prog');
+const dots=[...document.querySelectorAll('.navdots button')];
+const sections=[...document.querySelectorAll('section')];
+function tick(){
+  const max=document.documentElement.scrollHeight-window.innerHeight;
+  prog.style.width=(max>0?(window.scrollY/max)*100:0)+'%';
+  let active=sections[0].id;
+  sections.forEach(s=>{
+    const box=s.getBoundingClientRect();
+    if(box.top<window.innerHeight*.45) active=s.id;
+  });
+  dots.forEach(d=>d.classList.toggle('on',d.dataset.s===active));
+}
+window.addEventListener('scroll',tick,{passive:true});
+window.addEventListener('resize',tick);
+dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.s).scrollIntoView({behavior:'smooth',block:'start'})));
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('on');
+  });
+},{threshold:.12});
+document.querySelectorAll('.r,.rf').forEach(el=>io.observe(el));
+tick();
+</script>
+</body>
+</html>
